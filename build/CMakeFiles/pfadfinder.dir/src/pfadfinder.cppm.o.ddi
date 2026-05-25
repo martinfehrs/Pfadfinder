@@ -1,0 +1,17 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/pfadfinder.dir/src/pfadfinder.cppm.o",
+"provides": [
+{
+"logical-name": "pfadfinder",
+"is-interface": true
+}
+],
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}

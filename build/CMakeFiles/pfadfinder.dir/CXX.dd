@@ -1,0 +1,4 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/pfadfinder.dir/src/pfadfinder.cppm.o | CMakeFiles/pfadfinder.dir/pfadfinder.gcm: dyndep
+  restat = 1
+

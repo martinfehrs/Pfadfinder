@@ -1,0 +1,12 @@
+{
+	"modules" : {},
+	"references" : 
+	{
+		"pfadfinder" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/pfadfinder.dir/pfadfinder.gcm"
+		}
+	},
+	"usages" : {}
+}

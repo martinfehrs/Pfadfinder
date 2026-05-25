@@ -1,0 +1,39 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "",
+	"cxx-modules" : 
+	{
+		"CMakeFiles/pfadfinder.dir/src/pfadfinder.cppm.o" : 
+		{
+			"bmi-only" : false,
+			"compile-features" : 
+			[
+				"cxx_std_23"
+			],
+			"compile-options" : [],
+			"definitions" : [],
+			"destination" : null,
+			"include-directories" : [],
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "/home/martin/Projekte/Pfadfinder/src/pfadfinder.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		}
+	},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/martin/Projekte/Pfadfinder/build",
+	"dir-cur-src" : "/home/martin/Projekte/Pfadfinder",
+	"dir-top-bld" : "/home/martin/Projekte/Pfadfinder/build",
+	"dir-top-src" : "/home/martin/Projekte/Pfadfinder",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : [],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/martin/Projekte/Pfadfinder/build/CMakeFiles/pfadfinder.dir",
+	"sources" : {}
+}

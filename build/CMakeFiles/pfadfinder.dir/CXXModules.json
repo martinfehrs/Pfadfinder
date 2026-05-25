@@ -1,0 +1,19 @@
+{
+	"modules" : 
+	{
+		"pfadfinder" : 
+		{
+			"bmi" : "/home/martin/Projekte/Pfadfinder/build/CMakeFiles/pfadfinder.dir/pfadfinder.gcm",
+			"is-private" : false
+		}
+	},
+	"references" : 
+	{
+		"pfadfinder" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/pfadfinder.dir/pfadfinder.gcm"
+		}
+	},
+	"usages" : {}
+}
