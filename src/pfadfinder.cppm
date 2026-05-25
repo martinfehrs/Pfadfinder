@@ -79,7 +79,8 @@ export enum class error
  */
 export const char* error_message(error err) noexcept
 {
-    switch (err) {
+    switch (err)
+    {
         case error::platform_not_supported:
             return "Platform not supported";
         case error::windows_get_module_file_name_failed:
@@ -132,13 +133,17 @@ public:
      */
     std::expected<fs::path, error> executable_path() const
     {
-        if (!cached_executable_path_.has_value()) {
+        if (!cached_executable_path_.has_value())
+        {
 #ifdef _WIN32
             // Windows-Implementierung
             wchar_t path[MAX_PATH] = {0};
-            if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0) {
+            if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
+            {
                 cached_executable_path_ = std::unexpected(error::windows_get_module_file_name_failed);
-            } else {
+            }
+            else
+            {
                 cached_executable_path_ = fs::path(path);
             }
 
@@ -146,14 +151,20 @@ public:
             // macOS-Implementierung
             char path[PATH_MAX] = {0};
             uint32_t size = sizeof(path);
-            if (_NSGetExecutablePath(path, &size) != 0) {
+            if (_NSGetExecutablePath(path, &size) != 0)
+            {
                 cached_executable_path_ = std::unexpected(error::macos_get_executable_path_failed);
-            } else {
+            }
+            else
+            {
                 // Symbolische Links auflösen, um den tatsächlichen Pfad zu erhalten
                 char real_path[PATH_MAX] = {0};
-                if (realpath(path, real_path) == nullptr) {
+                if (realpath(path, real_path) == nullptr)
+                {
                     cached_executable_path_ = std::unexpected(error::macos_realpath_failed);
-                } else {
+                }
+                else
+                {
                     cached_executable_path_ = fs::path(real_path);
                 }
             }
@@ -162,9 +173,12 @@ public:
             // Linux-Implementierung
             char path[PATH_MAX] = {0};
             ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
-            if (len == -1) {
+            if (len == -1)
+            {
                 cached_executable_path_ = std::unexpected(error::linux_readlink_failed);
-            } else {
+            }
+            else
+            {
                 path[len] = '\0';
                 cached_executable_path_ = fs::path(path);
             }
@@ -184,11 +198,15 @@ public:
      */
     std::expected<fs::path, error> executable_directory() const
     {
-        if (!cached_executable_directory_.has_value()) {
+        if (!cached_executable_directory_.has_value())
+        {
             auto result = executable_path();
-            if (!result) {
+            if (!result)
+            {
                 cached_executable_directory_ = std::unexpected(result.error());
-            } else {
+            }
+            else
+            {
                 cached_executable_directory_ = result->parent_path();
             }
         }
@@ -210,7 +228,8 @@ public:
     std::expected<fs::path, error> data_directory() const
     {
         auto exe_dir_result = executable_directory();
-        if (!exe_dir_result) {
+        if (!exe_dir_result)
+        {
             return std::unexpected(exe_dir_result.error());
         }
         auto exe_dir = *exe_dir_result;
@@ -222,10 +241,13 @@ public:
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
         std::string exe_dir_str = exe_dir.string();
-        if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+        if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+        {
             // Bundle: von .../Contents/MacOS/ zu .../Contents/Resources/
             return exe_dir.parent_path().parent_path() / "Resources" / app_name_;
-        } else {
+        }
+        else
+        {
             // Nicht gebündelt: ähnlich wie Linux
             return exe_dir.parent_path() / "share" / app_name_;
         }
@@ -253,37 +275,53 @@ public:
      */
     std::expected<fs::path, error> user_data_directory() const
     {
-        if (!cached_user_data_directory_.has_value()) {
+        if (!cached_user_data_directory_.has_value())
+        {
 #ifdef _WIN32
             // Windows: %APPDATA%/<appname>
             const char* appdata = std::getenv("APPDATA");
-            if (!appdata) {
+            if (!appdata)
+            {
                 cached_user_data_directory_ = std::unexpected(error::appdata_not_set);
-            } else {
+            }
+            else
+            {
                 cached_user_data_directory_ = fs::path(appdata) / app_name_;
             }
 
 #elif defined(__APPLE__)
             // macOS: Prüfen, ob wir in einem Bundle sind
             auto exe_dir_result = executable_directory();
-            if (!exe_dir_result) {
+            if (!exe_dir_result)
+            {
                 cached_user_data_directory_ = std::unexpected(exe_dir_result.error());
-            } else {
+            }
+            else
+            {
                 std::string exe_dir_str = exe_dir_result->string();
-                if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+                if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                {
                     // Bundle: ~/Library/Application Support/<appname>
                     const char* home = std::getenv("HOME");
-                    if (!home) {
+                    if (!home)
+                    {
                         cached_user_data_directory_ = std::unexpected(error::home_not_set);
-                    } else {
+                    }
+                    else
+                    {
                         cached_user_data_directory_ = fs::path(home) / "Library" / "Application Support" / app_name_;
                     }
-                } else {
+                }
+                else
+                {
                     // Nicht gebündelt: ~/.local/share/<appname>
                     const char* home = std::getenv("HOME");
-                    if (!home) {
+                    if (!home)
+                    {
                         cached_user_data_directory_ = std::unexpected(error::home_not_set);
-                    } else {
+                    }
+                    else
+                    {
                         cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
                     }
                 }
@@ -292,9 +330,12 @@ public:
 #elif defined(__linux__)
             // Linux: ~/.local/share/<appname>
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 cached_user_data_directory_ = std::unexpected(error::home_not_set);
-            } else {
+            }
+            else
+            {
                 cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
             }
 
@@ -322,7 +363,8 @@ public:
 #ifdef _WIN32
         // Windows: %APPDATA%/<appname>
         const char* appdata = std::getenv("APPDATA");
-        if (!appdata) {
+        if (!appdata)
+        {
             return std::unexpected(error::appdata_not_set);
         }
         return fs::path(appdata) / app_name_;
@@ -330,21 +372,27 @@ public:
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
         auto exe_dir_result = executable_directory();
-        if (!exe_dir_result) {
+        if (!exe_dir_result)
+        {
             return std::unexpected(exe_dir_result.error());
         }
         std::string exe_dir_str = exe_dir_result->string();
-        if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+        if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+        {
             // Bundle: ~/Library/Preferences/<appname>
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 return std::unexpected(error::home_not_set);
             }
             return fs::path(home) / "Library" / "Preferences" / app_name_;
-        } else {
+        }
+        else
+        {
             // Nicht gebündelt: ~/.config/<appname>
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 return std::unexpected(error::home_not_set);
             }
             return fs::path(home) / ".config" / app_name_;
@@ -353,7 +401,8 @@ public:
 #elif defined(__linux__)
         // Linux: ~/.config/<appname> (XDG Base Directory Specification)
         const char* home = std::getenv("HOME");
-        if (!home) {
+        if (!home)
+        {
             return std::unexpected(error::home_not_set);
         }
         return fs::path(home) / ".config" / app_name_;
@@ -377,37 +426,53 @@ public:
      */
     std::expected<fs::path, error> cache_directory() const
     {
-        if (!cached_cache_directory_.has_value()) {
+        if (!cached_cache_directory_.has_value())
+        {
 #ifdef _WIN32
             // Windows: %LOCALAPPDATA%/<appname>/Cache
             const char* localappdata = std::getenv("LOCALAPPDATA");
-            if (!localappdata) {
+            if (!localappdata)
+            {
                 cached_cache_directory_ = std::unexpected(error::localappdata_not_set);
-            } else {
+            }
+            else
+            {
                 cached_cache_directory_ = fs::path(localappdata) / app_name_ / "Cache";
             }
 
 #elif defined(__APPLE__)
             // macOS: Prüfen, ob wir in einem Bundle sind
             auto exe_dir_result = executable_directory();
-            if (!exe_dir_result) {
+            if (!exe_dir_result)
+            {
                 cached_cache_directory_ = std::unexpected(exe_dir_result.error());
-            } else {
+            }
+            else
+            {
                 std::string exe_dir_str = exe_dir_result->string();
-                if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+                if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                {
                     // Bundle: ~/Library/Caches/<appname>
                     const char* home = std::getenv("HOME");
-                    if (!home) {
+                    if (!home)
+                    {
                         cached_cache_directory_ = std::unexpected(error::home_not_set);
-                    } else {
+                    }
+                    else
+                    {
                         cached_cache_directory_ = fs::path(home) / "Library" / "Caches" / app_name_;
                     }
-                } else {
+                }
+                else
+                {
                     // Nicht gebündelt: ~/.cache/<appname>
                     const char* home = std::getenv("HOME");
-                    if (!home) {
+                    if (!home)
+                    {
                         cached_cache_directory_ = std::unexpected(error::home_not_set);
-                    } else {
+                    }
+                    else
+                    {
                         cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
                     }
                 }
@@ -416,9 +481,12 @@ public:
 #elif defined(__linux__)
             // Linux: ~/.cache/<appname> (XDG Base Directory Specification)
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 cached_cache_directory_ = std::unexpected(error::home_not_set);
-            } else {
+            }
+            else
+            {
                 cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
             }
 
@@ -446,7 +514,8 @@ public:
 #ifdef _WIN32
         // Windows: %LOCALAPPDATA%/<appname>/Logs
         const char* localappdata = std::getenv("LOCALAPPDATA");
-        if (!localappdata) {
+        if (!localappdata)
+        {
             return std::unexpected(error::localappdata_not_set);
         }
         return fs::path(localappdata) / app_name_ / "Logs";
@@ -454,21 +523,27 @@ public:
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
         auto exe_dir_result = executable_directory();
-        if (!exe_dir_result) {
+        if (!exe_dir_result)
+        {
             return std::unexpected(exe_dir_result.error());
         }
         std::string exe_dir_str = exe_dir_result->string();
-        if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+        if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+        {
             // Bundle: ~/Library/Logs/<appname>
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 return std::unexpected(error::home_not_set);
             }
             return fs::path(home) / "Library" / "Logs" / app_name_;
-        } else {
+        }
+        else
+        {
             // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 return std::unexpected(error::home_not_set);
             }
             return fs::path(home) / ".local" / "state" / app_name_ / "log";
@@ -477,7 +552,8 @@ public:
 #elif defined(__linux__)
         // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
         const char* home = std::getenv("HOME");
-        if (!home) {
+        if (!home)
+        {
             return std::unexpected(error::home_not_set);
         }
         return fs::path(home) / ".local" / "state" / app_name_ / "log";
@@ -503,7 +579,8 @@ public:
 #ifdef _WIN32
         // Windows: %TEMP%/<appname>
         const char* temp = std::getenv("TEMP");
-        if (!temp) {
+        if (!temp)
+        {
             return std::unexpected(error::home_not_set); // Fallback: Home nicht gesetzt
         }
         return fs::path(temp) / app_name_;
@@ -511,18 +588,23 @@ public:
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
         auto exe_dir_result = executable_directory();
-        if (!exe_dir_result) {
+        if (!exe_dir_result)
+        {
             return std::unexpected(exe_dir_result.error());
         }
         std::string exe_dir_str = exe_dir_result->string();
-        if (exe_dir_str.find("Contents/MacOS") != std::string::npos) {
+        if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+        {
             // Bundle: ~/Library/Caches/TemporaryItems/<appname>
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 return std::unexpected(error::home_not_set);
             }
             return fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
-        } else {
+        }
+        else
+        {
             // Nicht gebündelt: /tmp/<appname>
             return fs::temp_directory_path() / app_name_;
         }
@@ -548,22 +630,29 @@ public:
      */
     std::expected<fs::path, error> user_directory() const
     {
-        if (!cached_user_directory_.has_value()) {
+        if (!cached_user_directory_.has_value())
+        {
 #ifdef _WIN32
             // Windows: %USERPROFILE%
             const char* userprofile = std::getenv("USERPROFILE");
-            if (!userprofile) {
+            if (!userprofile)
+            {
                 cached_user_directory_ = std::unexpected(error::home_not_set);
-            } else {
+            }
+            else
+            {
                 cached_user_directory_ = fs::path(userprofile);
             }
 
 #elif defined(__APPLE__) || defined(__linux__)
             // Linux/macOS: $HOME
             const char* home = std::getenv("HOME");
-            if (!home) {
+            if (!home)
+            {
                 cached_user_directory_ = std::unexpected(error::home_not_set);
-            } else {
+            }
+            else
+            {
                 cached_user_directory_ = fs::path(home);
             }
 

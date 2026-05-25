@@ -111,7 +111,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         std::string user_dir_str = user_dir.string();
         // Unter Windows sollte APPDATA im Pfad enthalten sein
         const char* appdata = std::getenv("APPDATA");
-        if (appdata) {
+        if (appdata)
+        {
             REQUIRE(user_dir_str.find(appdata) != std::string::npos);
         }
 #elif defined(__linux__) || defined(__APPLE__)
@@ -120,7 +121,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         auto user_dir = user_dir_result.value();
         std::string user_dir_str = user_dir.string();
         const char* home = std::getenv("HOME");
-        if (home) {
+        if (home)
+        {
             REQUIRE(user_dir_str.find(home) != std::string::npos);
         }
 #endif
@@ -173,7 +175,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         // Unter macOS: Bundle -> ~/Library/Logs/<name>, CLI -> ~/.local/state/<name>/log
         std::string log_dir_str = log_dir.string();
         const char* home = std::getenv("HOME");
-        if (home) {
+        if (home)
+        {
             REQUIRE(log_dir_str.find(home) != std::string::npos);
         }
         REQUIRE(log_dir.filename() == test_app_name || log_dir.parent_path().filename() == "Logs");
@@ -233,20 +236,38 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         const char* expected_home = std::getenv("HOME");
 #endif
         
-        if (expected_home) {
+        if (expected_home)
+        {
             REQUIRE(user_dir == std::filesystem::path(expected_home));
         }
     }
 
-    SECTION("error_message gibt korrekte Fehlermeldungen zurück") {
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::platform_not_supported)) == "Platform not supported");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::windows_get_module_file_name_failed)) == "GetModuleFileNameW failed");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::appdata_not_set)) == "APPDATA environment variable not set");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::localappdata_not_set)) == "LOCALAPPDATA environment variable not set");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::macos_get_executable_path_failed)) == "_NSGetExecutablePath failed");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::macos_realpath_failed)) == "realpath failed");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::linux_readlink_failed)) == "readlink /proc/self/exe failed");
-        REQUIRE(std::string(pfadfinder::error_message(pfadfinder::error::home_not_set)) == "HOME environment variable not set");
+    SECTION("error_message gibt korrekte Fehlermeldungen zurück")
+    {
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::platform_not_supported)) ==
+            "Platform not supported");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::windows_get_module_file_name_failed)) ==
+            "GetModuleFileNameW failed");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::appdata_not_set)) ==
+            "APPDATA environment variable not set");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::localappdata_not_set)) ==
+            "LOCALAPPDATA environment variable not set");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::macos_get_executable_path_failed)) ==
+            "_NSGetExecutablePath failed");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::macos_realpath_failed)) ==
+            "realpath failed");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::linux_readlink_failed)) ==
+            "readlink /proc/self/exe failed");
+        REQUIRE(
+            std::string(pfadfinder::error_message(pfadfinder::error::home_not_set)) ==
+            "HOME environment variable not set");
     }
 
     SECTION("Mehrere Instanzen mit verschiedenen app_names") {
