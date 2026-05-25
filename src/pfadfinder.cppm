@@ -21,7 +21,7 @@
  *    - enum class error      : Fehlertypen für alle Pfadfunktionen (snake_case)
  *    - error_message()       : Menschlesbare Fehlermeldungen für error-Werte
  * 
- * Alle Pfadfunktionen geben std::expected<std::filesystem::path, error> zurück.
+ * Alle Pfadfunktionen geben std::expected<fs::path, error> zurück.
  */
 
 module;
@@ -42,6 +42,8 @@ module;
 #include <string>
 
 export module pfadfinder;
+
+namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
@@ -105,7 +107,7 @@ export const char* error_message(error err) noexcept
  * Datenverzeichnis, Konfigurationsverzeichnis und Cache-Verzeichnis für verschiedene
  * Plattformen (Windows, Linux, macOS).
  * 
- * Alle Methoden geben std::expected<std::filesystem::path, error> zurück,
+ * Alle Methoden geben std::expected<fs::path, error> zurück,
  * wobei error eine typsichere Aufzählung ist, die die möglichen Fehlerfälle
  * beschreibt.
  * 
@@ -125,10 +127,10 @@ public:
 
     /**
      * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-     * @return std::expected<std::filesystem::path, error> Der vollständige Pfad zur
+     * @return std::expected<fs::path, error> Der vollständige Pfad zur
      *         ausführbaren Datei oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> executable_path() const
+    std::expected<fs::path, error> executable_path() const
     {
         if (!cached_executable_path_.has_value()) {
 #ifdef _WIN32
@@ -137,7 +139,7 @@ public:
             if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0) {
                 cached_executable_path_ = std::unexpected(error::windows_get_module_file_name_failed);
             } else {
-                cached_executable_path_ = std::filesystem::path(path);
+                cached_executable_path_ = fs::path(path);
             }
 
 #elif defined(__APPLE__)
@@ -152,7 +154,7 @@ public:
                 if (realpath(path, real_path) == nullptr) {
                     cached_executable_path_ = std::unexpected(error::macos_realpath_failed);
                 } else {
-                    cached_executable_path_ = std::filesystem::path(real_path);
+                    cached_executable_path_ = fs::path(real_path);
                 }
             }
 
@@ -164,7 +166,7 @@ public:
                 cached_executable_path_ = std::unexpected(error::linux_readlink_failed);
             } else {
                 path[len] = '\0';
-                cached_executable_path_ = std::filesystem::path(path);
+                cached_executable_path_ = fs::path(path);
             }
 
 #else
@@ -177,10 +179,10 @@ public:
 
     /**
      * @brief Gibt das Verzeichnis der ausführbaren Datei zurück.
-     * @return std::expected<std::filesystem::path, error> Das Verzeichnis, das
+     * @return std::expected<fs::path, error> Das Verzeichnis, das
      *         die ausführbare Datei enthält oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> executable_directory() const
+    std::expected<fs::path, error> executable_directory() const
     {
         if (!cached_executable_directory_.has_value()) {
             auto result = executable_path();
@@ -202,10 +204,10 @@ public:
      * Unter macOS wird bei gebündelten Anwendungen das Resources-Verzeichnis
      * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Datenverzeichnis
+     * @return std::expected<fs::path, error> Das Datenverzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> data_directory() const
+    std::expected<fs::path, error> data_directory() const
     {
         auto exe_dir_result = executable_directory();
         if (!exe_dir_result) {
@@ -246,10 +248,10 @@ public:
      * Unter macOS entspricht dies bei gebündelten Anwendungen
      * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Benutzer-Datenverzeichnis
+     * @return std::expected<fs::path, error> Das Benutzer-Datenverzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> user_data_directory() const
+    std::expected<fs::path, error> user_data_directory() const
     {
         if (!cached_user_data_directory_.has_value()) {
 #ifdef _WIN32
@@ -258,7 +260,7 @@ public:
             if (!appdata) {
                 cached_user_data_directory_ = std::unexpected(error::appdata_not_set);
             } else {
-                cached_user_data_directory_ = std::filesystem::path(appdata) / app_name_;
+                cached_user_data_directory_ = fs::path(appdata) / app_name_;
             }
 
 #elif defined(__APPLE__)
@@ -274,7 +276,7 @@ public:
                     if (!home) {
                         cached_user_data_directory_ = std::unexpected(error::home_not_set);
                     } else {
-                        cached_user_data_directory_ = std::filesystem::path(home) / "Library" / "Application Support" / app_name_;
+                        cached_user_data_directory_ = fs::path(home) / "Library" / "Application Support" / app_name_;
                     }
                 } else {
                     // Nicht gebündelt: ~/.local/share/<appname>
@@ -282,7 +284,7 @@ public:
                     if (!home) {
                         cached_user_data_directory_ = std::unexpected(error::home_not_set);
                     } else {
-                        cached_user_data_directory_ = std::filesystem::path(home) / ".local" / "share" / app_name_;
+                        cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
                     }
                 }
             }
@@ -293,7 +295,7 @@ public:
             if (!home) {
                 cached_user_data_directory_ = std::unexpected(error::home_not_set);
             } else {
-                cached_user_data_directory_ = std::filesystem::path(home) / ".local" / "share" / app_name_;
+                cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
             }
 
 #else
@@ -312,10 +314,10 @@ public:
      * Unter macOS entspricht dies bei gebündelten Anwendungen
      * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Konfigurationsverzeichnis
+     * @return std::expected<fs::path, error> Das Konfigurationsverzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> config_directory() const
+    std::expected<fs::path, error> config_directory() const
     {
 #ifdef _WIN32
         // Windows: %APPDATA%/<appname>
@@ -323,7 +325,7 @@ public:
         if (!appdata) {
             return std::unexpected(error::appdata_not_set);
         }
-        return std::filesystem::path(appdata) / app_name_;
+        return fs::path(appdata) / app_name_;
 
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
@@ -338,14 +340,14 @@ public:
             if (!home) {
                 return std::unexpected(error::home_not_set);
             }
-            return std::filesystem::path(home) / "Library" / "Preferences" / app_name_;
+            return fs::path(home) / "Library" / "Preferences" / app_name_;
         } else {
             // Nicht gebündelt: ~/.config/<appname>
             const char* home = std::getenv("HOME");
             if (!home) {
                 return std::unexpected(error::home_not_set);
             }
-            return std::filesystem::path(home) / ".config" / app_name_;
+            return fs::path(home) / ".config" / app_name_;
         }
 
 #elif defined(__linux__)
@@ -354,7 +356,7 @@ public:
         if (!home) {
             return std::unexpected(error::home_not_set);
         }
-        return std::filesystem::path(home) / ".config" / app_name_;
+        return fs::path(home) / ".config" / app_name_;
 
 #else
         // Fallback für andere Plattformen
@@ -370,10 +372,10 @@ public:
      * Unter macOS entspricht dies bei gebündelten Anwendungen
      * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Cache-Verzeichnis
+     * @return std::expected<fs::path, error> Das Cache-Verzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> cache_directory() const
+    std::expected<fs::path, error> cache_directory() const
     {
         if (!cached_cache_directory_.has_value()) {
 #ifdef _WIN32
@@ -382,7 +384,7 @@ public:
             if (!localappdata) {
                 cached_cache_directory_ = std::unexpected(error::localappdata_not_set);
             } else {
-                cached_cache_directory_ = std::filesystem::path(localappdata) / app_name_ / "Cache";
+                cached_cache_directory_ = fs::path(localappdata) / app_name_ / "Cache";
             }
 
 #elif defined(__APPLE__)
@@ -398,7 +400,7 @@ public:
                     if (!home) {
                         cached_cache_directory_ = std::unexpected(error::home_not_set);
                     } else {
-                        cached_cache_directory_ = std::filesystem::path(home) / "Library" / "Caches" / app_name_;
+                        cached_cache_directory_ = fs::path(home) / "Library" / "Caches" / app_name_;
                     }
                 } else {
                     // Nicht gebündelt: ~/.cache/<appname>
@@ -406,7 +408,7 @@ public:
                     if (!home) {
                         cached_cache_directory_ = std::unexpected(error::home_not_set);
                     } else {
-                        cached_cache_directory_ = std::filesystem::path(home) / ".cache" / app_name_;
+                        cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
                     }
                 }
             }
@@ -417,7 +419,7 @@ public:
             if (!home) {
                 cached_cache_directory_ = std::unexpected(error::home_not_set);
             } else {
-                cached_cache_directory_ = std::filesystem::path(home) / ".cache" / app_name_;
+                cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
             }
 
 #else
@@ -436,10 +438,10 @@ public:
      * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
      * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Log-Verzeichnis
+     * @return std::expected<fs::path, error> Das Log-Verzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> log_directory() const
+    std::expected<fs::path, error> log_directory() const
     {
 #ifdef _WIN32
         // Windows: %LOCALAPPDATA%/<appname>/Logs
@@ -447,7 +449,7 @@ public:
         if (!localappdata) {
             return std::unexpected(error::localappdata_not_set);
         }
-        return std::filesystem::path(localappdata) / app_name_ / "Logs";
+        return fs::path(localappdata) / app_name_ / "Logs";
 
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
@@ -462,14 +464,14 @@ public:
             if (!home) {
                 return std::unexpected(error::home_not_set);
             }
-            return std::filesystem::path(home) / "Library" / "Logs" / app_name_;
+            return fs::path(home) / "Library" / "Logs" / app_name_;
         } else {
             // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
             const char* home = std::getenv("HOME");
             if (!home) {
                 return std::unexpected(error::home_not_set);
             }
-            return std::filesystem::path(home) / ".local" / "state" / app_name_ / "log";
+            return fs::path(home) / ".local" / "state" / app_name_ / "log";
         }
 
 #elif defined(__linux__)
@@ -478,7 +480,7 @@ public:
         if (!home) {
             return std::unexpected(error::home_not_set);
         }
-        return std::filesystem::path(home) / ".local" / "state" / app_name_ / "log";
+        return fs::path(home) / ".local" / "state" / app_name_ / "log";
 
 #else
         // Fallback für andere Plattformen
@@ -493,10 +495,10 @@ public:
      * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
      * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
      * 
-     * @return std::expected<std::filesystem::path, error> Das temporäre Verzeichnis
+     * @return std::expected<fs::path, error> Das temporäre Verzeichnis
      *         der Anwendung oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> temp_directory() const
+    std::expected<fs::path, error> temp_directory() const
     {
 #ifdef _WIN32
         // Windows: %TEMP%/<appname>
@@ -504,7 +506,7 @@ public:
         if (!temp) {
             return std::unexpected(error::home_not_set); // Fallback: Home nicht gesetzt
         }
-        return std::filesystem::path(temp) / app_name_;
+        return fs::path(temp) / app_name_;
 
 #elif defined(__APPLE__)
         // macOS: Prüfen, ob wir in einem Bundle sind
@@ -519,15 +521,15 @@ public:
             if (!home) {
                 return std::unexpected(error::home_not_set);
             }
-            return std::filesystem::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
+            return fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
         } else {
             // Nicht gebündelt: /tmp/<appname>
-            return std::filesystem::temp_directory_path() / app_name_;
+            return fs::temp_directory_path() / app_name_;
         }
 
 #elif defined(__linux__)
         // Linux: /tmp/<appname> (XDG Base Directory Specification)
-        return std::filesystem::temp_directory_path() / app_name_;
+        return fs::temp_directory_path() / app_name_;
 
 #else
         // Fallback für andere Plattformen
@@ -541,46 +543,51 @@ public:
      * Unter Windows entspricht dies %USERPROFILE%.
      * Unter Linux und macOS entspricht dies $HOME.
      * 
-     * @return std::expected<std::filesystem::path, error> Das Home-Verzeichnis
+     * @return std::expected<fs::path, error> Das Home-Verzeichnis
      *         des Benutzers oder ein Fehlercode.
      */
-    std::expected<std::filesystem::path, error> user_directory() const
+    std::expected<fs::path, error> user_directory() const
     {
+        if (!cached_user_directory_.has_value()) {
 #ifdef _WIN32
-        // Windows: %USERPROFILE%
-        const char* userprofile = std::getenv("USERPROFILE");
-        if (!userprofile) {
-            return std::unexpected(error::home_not_set);
-        }
-        return std::filesystem::path(userprofile);
+            // Windows: %USERPROFILE%
+            const char* userprofile = std::getenv("USERPROFILE");
+            if (!userprofile) {
+                cached_user_directory_ = std::unexpected(error::home_not_set);
+            } else {
+                cached_user_directory_ = fs::path(userprofile);
+            }
 
 #elif defined(__APPLE__) || defined(__linux__)
-        // Linux/macOS: $HOME
-        const char* home = std::getenv("HOME");
-        if (!home) {
-            return std::unexpected(error::home_not_set);
-        }
-        return std::filesystem::path(home);
+            // Linux/macOS: $HOME
+            const char* home = std::getenv("HOME");
+            if (!home) {
+                cached_user_directory_ = std::unexpected(error::home_not_set);
+            } else {
+                cached_user_directory_ = fs::path(home);
+            }
 
 #else
-        // Fallback für andere Plattformen
-        return std::unexpected(error::platform_not_supported);
+            // Fallback für andere Plattformen
+            cached_user_directory_ = std::unexpected(error::platform_not_supported);
 #endif
+        }
+        return *cached_user_directory_;
     }
 
 private:
     std::string app_name_;
 
     // Cache für die berechneten Pfade (Lazy Initialization)
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_executable_path_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_executable_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_data_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_user_data_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_config_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_cache_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_log_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_temp_directory_;
-    mutable std::optional<std::expected<std::filesystem::path, error>> cached_user_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_executable_path_;
+    mutable std::optional<std::expected<fs::path, error>> cached_executable_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_data_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_user_data_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_config_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_cache_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_log_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_temp_directory_;
+    mutable std::optional<std::expected<fs::path, error>> cached_user_directory_;
 };
 
 } // namespace pfadfinder

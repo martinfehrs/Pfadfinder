@@ -20,7 +20,6 @@ Die Hauptklasse des Moduls, die alle Pfadfunktionen als Methoden bereitstellt.
 ### Konstruktor
 
 ```cpp
-#include <filesystem>
 import pfadfinder;
 
 pfadfinder::application_environment env("meine_app");
