@@ -112,9 +112,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         // Unter Windows sollte APPDATA im Pfad enthalten sein
         const char* appdata = std::getenv("APPDATA");
         if (appdata)
-        {
             REQUIRE(user_dir_str.find(appdata) != std::string::npos);
-        }
 #elif defined(__linux__) || defined(__APPLE__)
         auto user_dir_result = env.user_data_directory();
         REQUIRE(user_dir_result.has_value());
@@ -122,9 +120,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         std::string user_dir_str = user_dir.string();
         const char* home = std::getenv("HOME");
         if (home)
-        {
             REQUIRE(user_dir_str.find(home) != std::string::npos);
-        }
 #endif
     }
 
@@ -176,9 +172,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         std::string log_dir_str = log_dir.string();
         const char* home = std::getenv("HOME");
         if (home)
-        {
             REQUIRE(log_dir_str.find(home) != std::string::npos);
-        }
         REQUIRE(log_dir.filename() == test_app_name || log_dir.parent_path().filename() == "Logs");
 #endif
     }
@@ -237,9 +231,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 #endif
         
         if (expected_home)
-        {
             REQUIRE(user_dir == std::filesystem::path(expected_home));
-        }
     }
 
     SECTION("error_message gibt korrekte Fehlermeldungen zurück")
