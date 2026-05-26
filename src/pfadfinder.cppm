@@ -227,33 +227,42 @@ namespace pfadfinder
          */
         std::expected<fs::path, error> data_directory() const
         {
-            auto exe_dir_result = executable_directory();
-            if (!exe_dir_result)
-                return std::unexpected(exe_dir_result.error());
-            auto exe_dir = *exe_dir_result;
+            if (!cached_data_directory_.has_value())
+            {
+                auto exe_dir_result = executable_directory();
+                if (!exe_dir_result)
+                {
+                    cached_data_directory_ = std::unexpected(exe_dir_result.error());
+                }
+                else
+                {
+                    auto exe_dir = *exe_dir_result;
 
 #if IS_WINDOWS
-            // Windows: Datenverzeichnis ist das Binärverzeichnis
-            return exe_dir;
+                    // Windows: Datenverzeichnis ist das Binärverzeichnis
+                    cached_data_directory_ = exe_dir;
 
 #elif IS_MACOSX
-            // macOS: Prüfen, ob wir in einem Bundle sind
-            std::string exe_dir_str = exe_dir.string();
-            if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                // Bundle: von .../Contents/MacOS/ zu .../Contents/Resources/
-                return exe_dir.parent_path().parent_path() / "Resources" / app_name_;
-            else
-                // Nicht gebündelt: ähnlich wie Linux
-                return exe_dir.parent_path() / "share" / app_name_;
+                    // macOS: Prüfen, ob wir in einem Bundle sind
+                    std::string exe_dir_str = exe_dir.string();
+                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                        // Bundle: von .../Contents/MacOS/ zu .../Contents/Resources/
+                        cached_data_directory_ = exe_dir.parent_path().parent_path() / "Resources" / app_name_;
+                    else
+                        // Nicht gebündelt: ähnlich wie Linux
+                        cached_data_directory_ = exe_dir.parent_path() / "share" / app_name_;
 
 #elif IS_LINUX
-            // Linux: von /usr/bin/myapp zu /usr/share/myapp
-            return exe_dir.parent_path() / "share" / app_name_;
+                    // Linux: von /usr/bin/myapp zu /usr/share/myapp
+                    cached_data_directory_ = exe_dir.parent_path() / "share" / app_name_;
 
 #else
-            // Fallback für andere Plattformen
-            return std::unexpected(error::platform_not_supported);
+                    // Fallback für andere Plattformen
+                    cached_data_directory_ = std::unexpected(error::platform_not_supported);
 #endif
+                }
+            }
+            return *cached_data_directory_;
         }
 
         /**
