@@ -29,33 +29,69 @@ pfadfinder::application_environment env("meine_app");
 - `app_name` (erforderlich): Der Name der Anwendung, der für alle
   Verzeichnispfade verwendet wird.
 
+### Fehlerbehandlung
+
+Alle Pfadfunktionen geben `std::expected<fs::path, error>` zurück, wobei `error`
+ eine Aufzählung ist, die plattformspezifische Fehlerfälle beschreibt:
+
+- `platform_not_supported` - Plattform wird nicht unterstützt
+- `windows_get_module_file_name_failed` - GetModuleFileNameW scheiterte
+- `appdata_not_set` - Umgebungsvariable APPDATA nicht gesetzt
+- `localappdata_not_set` - Umgebungsvariable LOCALAPPDATA nicht gesetzt
+- `macos_get_executable_path_failed` - _NSGetExecutablePath scheiterte
+- `macos_realpath_failed` - realpath scheiterte
+- `linux_readlink_failed` - readlink /proc/self/exe scheiterte
+- `home_not_set` - Umgebungsvariable HOME nicht gesetzt
+
 ### Methoden
 
 #### `executable_path()`
 Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
 
-**Rückgabewert:** `std::filesystem::path` - Der vollständige Pfad zur ausführbaren Datei.
-
-**Ausnahmen:** `std::runtime_error` - Falls der Pfad nicht bestimmt werden kann.
+**Rückgabewert:** `std::expected<fs::path, error>` - Der vollständige Pfad zur
+ausführbaren Datei oder ein Fehlercode.
 
 **Beispiel:**
 ```cpp
+import pfadfinder;
+
 pfadfinder::application_environment env("meine_app");
-auto path = env.executable_path();
-// Linux: /usr/bin/test_pfadfinder
-// Windows: C:\\Projekte\\Pfadfinder\\build\\tests\\test_pfadfinder.exe
-// macOS: /Users/martin/Projekte/Pfadfinder/build/tests/test_pfadfinder
+auto result = env.executable_path();
+if (result)
+{
+    // Erfolg
+    std::cout << "Executable: " << result->string() << std::endl;
+    // Linux: /usr/bin/test_pfadfinder
+    // Windows: C:\\Projekte\\Pfadfinder\\build\\tests\\test_pfadfinder.exe
+    // macOS: /Users/martin/Projekte/Pfadfinder/build/tests/test_pfadfinder
+}
+else
+{
+    // Fehler
+    std::cerr << "Error: " << pfadfinder::error_message(result.error()) << std::endl;
+}
 ```
 
 #### `executable_directory()`
 Gibt das Verzeichnis zurück, das die ausführbare Datei enthält.
 
-**Rückgabewert:** `std::filesystem::path` - Das Verzeichnis der ausführbaren Datei.
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Verzeichnis der
+ausführbaren Datei oder ein Fehlercode.
 
 **Beispiel:**
 ```cpp
+import pfadfinder;
+
 pfadfinder::application_environment env("meine_app");
-auto dir = env.executable_directory();
+auto result = env.executable_directory();
+if (result)
+{
+    std::cout << "Executable Dir: " << result->string() << std::endl;
+}
+else
+{
+    std::cerr << "Error: " << pfadfinder::error_message(result.error()) << std::endl;
+}
 ```
 
 #### `data_directory()`
@@ -70,59 +106,86 @@ Gibt das systemweite Datenverzeichnis der Anwendung zurück.
   (z. B. `MeineApp.app/Contents/Resources/`)
 - **macOS CLI:** Ähnlich wie Linux (z. B. `/usr/local/share/meine_app`)
 
-**Rückgabewert:** `std::filesystem::path` - Das Datenverzeichnis.
-
-**Ausnahmen:** `std::runtime_error` - Falls der Pfad nicht bestimmt werden kann.
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Datenverzeichnis
+oder ein Fehlercode.
 
 #### `user_data_directory()`
 Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%APPDATA%/<appname>` zurück
+- **Windows:** Gibt `%APPDATA%\<appname>` zurück
   (z. B. `C:\\Users\\Benutzer\\AppData\\Roaming\\meine_app`)
 - **Linux:** Gibt `~/.local/share/<appname>` zurück
   (z. B. `/home/benutzer/.local/share/meine_app`)
 - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
 - **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
 
-**Rückgabewert:** `std::filesystem::path` - Das Benutzer-Datenverzeichnis.
-
-**Ausnahmen:** `std::runtime_error` - Falls die Umgebungsvariable (APPDATA/HOME)
-  nicht gesetzt ist oder die Plattform nicht unterstützt wird.
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Benutzer-Datenverzeichnis
+oder ein Fehlercode.
 
 #### `config_directory()`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%APPDATA%/<appname>` zurück
+- **Windows:** Gibt `%APPDATA%\<appname>` zurück
 - **Linux:** Gibt `~/.config/<appname>` zurück (XDG Base Directory Specification)
 - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
 - **macOS CLI:** Gibt `~/.config/<appname>` zurück
 
-**Rückgabewert:** `std::filesystem::path` - Das Konfigurationsverzeichnis.
-
-**Ausnahmen:** `std::runtime_error` - Falls die Umgebungsvariable (APPDATA/HOME)
-  nicht gesetzt ist oder die Plattform nicht unterstützt wird.
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Konfigurationsverzeichnis
+oder ein Fehlercode.
 
 #### `cache_directory()`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%LOCALAPPDATA%/<appname>/Cache` zurück
+- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache` zurück
 - **Linux:** Gibt `~/.cache/<appname>` zurück (XDG Base Directory Specification)
 - **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
 - **macOS CLI:** Gibt `~/.cache/<appname>` zurück
 
-**Rückgabewert:** `std::filesystem::path` - Das Cache-Verzeichnis.
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Cache-Verzeichnis
+oder ein Fehlercode.
 
-**Ausnahmen:** `std::runtime_error` - Falls die Umgebungsvariable
-  (LOCALAPPDATA/HOME) nicht gesetzt ist oder die Plattform nicht unterstützt
-  wird.
+#### `log_directory()`
+Gibt das Log-Verzeichnis der Anwendung zurück.
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs` zurück
+- **Linux:** Gibt `~/.local/state/<appname>/log` zurück (XDG Base Directory Specification)
+- **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
+- **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
+
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Log-Verzeichnis
+oder ein Fehlercode.
+
+#### `temp_directory()`
+Gibt das temporäre Verzeichnis der Anwendung zurück.
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%TEMP%\<appname>` zurück
+- **Linux:** Gibt `/tmp/<appname>` zurück (XDG Base Directory Specification)
+- **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
+- **macOS CLI:** Gibt `/tmp/<appname>` zurück
+
+**Rückgabewert:** `std::expected<fs::path, error>` - Das temporäre Verzeichnis
+oder ein Fehlercode.
+
+#### `user_directory()`
+Gibt das Home-Verzeichnis des Benutzers zurück.
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%USERPROFILE%` zurück
+- **Linux und macOS:** Gibt `$HOME` zurück
+
+**Rückgabewert:** `std::expected<fs::path, error>` - Das Home-Verzeichnis
+oder ein Fehlercode.
 
 ## Verwendungsbeispiel
 
 ```cpp
 #include <iostream>
+#include <expected>
 import pfadfinder;
 
 int main()
@@ -131,12 +194,41 @@ int main()
     pfadfinder::application_environment env("MeineApp");
     
     // Ermittle verschiedene Verzeichnisse
-    std::cout << "Executable: " << env.executable_path().string() << std::endl;
-    std::cout << "Executable Dir: " << env.executable_directory().string() << std::endl;
-    std::cout << "Data Dir: " << env.data_directory().string() << std::endl;
-    std::cout << "User Data Dir: " << env.user_data_directory().string() << std::endl;
-    std::cout << "Config Dir: " << env.config_directory().string() << std::endl;
-    std::cout << "Cache Dir: " << env.cache_directory().string() << std::endl;
+    auto exec_result = env.executable_path();
+    if (exec_result)
+        std::cout << "Executable: " << exec_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(exec_result.error()) << std::endl;
+    
+    auto exec_dir_result = env.executable_directory();
+    if (exec_dir_result)
+        std::cout << "Executable Dir: " << exec_dir_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(exec_dir_result.error()) << std::endl;
+    
+    auto data_dir_result = env.data_directory();
+    if (data_dir_result)
+        std::cout << "Data Dir: " << data_dir_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(data_dir_result.error()) << std::endl;
+    
+    auto user_data_dir_result = env.user_data_directory();
+    if (user_data_dir_result)
+        std::cout << "User Data Dir: " << user_data_dir_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(user_data_dir_result.error()) << std::endl;
+    
+    auto config_dir_result = env.config_directory();
+    if (config_dir_result)
+        std::cout << "Config Dir: " << config_dir_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(config_dir_result.error()) << std::endl;
+    
+    auto cache_dir_result = env.cache_directory();
+    if (cache_dir_result)
+        std::cout << "Cache Dir: " << cache_dir_result->string() << std::endl;
+    else
+        std::cerr << "Error: " << pfadfinder::error_message(cache_dir_result.error()) << std::endl;
     
     return 0;
 }
