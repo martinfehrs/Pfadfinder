@@ -117,6 +117,20 @@ namespace pfadfinder
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
      */
+    /**
+     * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
+     * 
+     * Diese Klasse kapselt die Logik zur Ermittlung von Pfaden wie dem Executable-Pfad,
+     * Datenverzeichnis, Konfigurationsverzeichnis und Cache-Verzeichnis für verschiedene
+     * Plattformen (Windows, Linux, macOS).
+     * 
+     * Alle Methoden geben std::expected<fs::path, error> zurück,
+     * wobei error eine typsichere Aufzählung ist, die die möglichen Fehlerfälle
+     * beschreibt.
+     * 
+     * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
+     * Berechnungen zu vermeiden.
+     */
     export class application_environment
     {
     public:
