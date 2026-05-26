@@ -19,13 +19,6 @@ The main class of the module that provides all path functions as methods.
 
 ### Constructor
 
-```cpp
-import std;
-import pfadfinder;
-
-pfadfinder::application_environment env("my_app");
-```
-
 **Parameter:**
 - `app_name` (required): The name of the application, used for all directory paths.
 
@@ -53,50 +46,11 @@ Returns the full path to the executable file.
 **Return value:** `std::expected<fs::path, error>` - The full path to the
 executable file or an error code.
 
-**Example:**
-```cpp
-import std;
-import pfadfinder;
-
-pfadfinder::application_environment env("my_app");
-auto result = env.executable_path();
-if (result)
-{
-    // Success
-    std::println("Executable: {}", result->string());
-    // Linux: /usr/bin/test_pfadfinder
-    // Windows: C:\\Projects\\Pfadfinder\\build\\tests\\test_pfadfinder.exe
-    // macOS: /Users/martin/Projects/Pfadfinder/build/tests/test_pfadfinder
-}
-else
-{
-    // Error
-    std::println(stderr, "Error: {}", pfadfinder::error_message(result.error()));
-}
-```
-
 #### `executable_directory()`
 Returns the directory containing the executable file.
 
 **Return value:** `std::expected<fs::path, error>` - The directory of the
 executable file or an error code.
-
-**Example:**
-```cpp
-import std;
-import pfadfinder;
-
-pfadfinder::application_environment env("my_app");
-auto result = env.executable_directory();
-if (result)
-{
-    std::println("Executable Dir: {}", result->string());
-}
-else
-{
-    std::println(stderr, "Error: {}", pfadfinder::error_message(result.error()));
-}
-```
 
 #### `data_directory()`
 Returns the system-wide data directory of the application.
