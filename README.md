@@ -63,7 +63,7 @@ auto result = env.executable_path();
 if (result)
 {
     // Success
-    cout << "Executable: " << result->string() << endl;
+    std::println("Executable: {}", result->string());
     // Linux: /usr/bin/test_pfadfinder
     // Windows: C:\\Projects\\Pfadfinder\\build\\tests\\test_pfadfinder.exe
     // macOS: /Users/martin/Projects/Pfadfinder/build/tests/test_pfadfinder
@@ -71,7 +71,7 @@ if (result)
 else
 {
     // Error
-    cerr << "Error: " << pfadfinder::error_message(result.error()) << endl;
+    std::println(stderr, "Error: {}", pfadfinder::error_message(result.error()));
 }
 ```
 
@@ -90,11 +90,11 @@ pfadfinder::application_environment env("my_app");
 auto result = env.executable_directory();
 if (result)
 {
-    cout << "Executable Dir: " << result->string() << endl;
+    std::println("Executable Dir: {}", result->string());
 }
 else
 {
-    cerr << "Error: " << pfadfinder::error_message(result.error()) << endl;
+    std::println(stderr, "Error: {}", pfadfinder::error_message(result.error()));
 }
 ```
 
@@ -199,39 +199,39 @@ int main()
     // Determine various directories
     auto exec_result = env.executable_path();
     if (exec_result)
-        cout << "Executable: " << exec_result->string() << endl;
+        std::println("Executable: {}", exec_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(exec_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(exec_result.error()));
     
     auto exec_dir_result = env.executable_directory();
     if (exec_dir_result)
-        cout << "Executable Dir: " << exec_dir_result->string() << endl;
+        std::println("Executable Dir: {}", exec_dir_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(exec_dir_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(exec_dir_result.error()));
     
     auto data_dir_result = env.data_directory();
     if (data_dir_result)
-        cout << "Data Dir: " << data_dir_result->string() << endl;
+        std::println("Data Dir: {}", data_dir_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(data_dir_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(data_dir_result.error()));
     
     auto user_data_dir_result = env.user_data_directory();
     if (user_data_dir_result)
-        cout << "User Data Dir: " << user_data_dir_result->string() << endl;
+        std::println("User Data Dir: {}", user_data_dir_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(user_data_dir_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(user_data_dir_result.error()));
     
     auto config_dir_result = env.config_directory();
     if (config_dir_result)
-        cout << "Config Dir: " << config_dir_result->string() << endl;
+        std::println("Config Dir: {}", config_dir_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(config_dir_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(config_dir_result.error()));
     
     auto cache_dir_result = env.cache_directory();
     if (cache_dir_result)
-        cout << "Cache Dir: " << cache_dir_result->string() << endl;
+        std::println("Cache Dir: {}", cache_dir_result->string());
     else
-        cerr << "Error: " << pfadfinder::error_message(cache_dir_result.error()) << endl;
+        std::println(stderr, "Error: {}", pfadfinder::error_message(cache_dir_result.error()));
     
     return 0;
 }
