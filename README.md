@@ -20,7 +20,7 @@ The main class of the module that provides all path functions as methods.
 ### Constructor
 
 ```cpp
-#include <filesystem>
+import std;
 import pfadfinder;
 
 pfadfinder::application_environment env("my_app");
@@ -55,6 +55,7 @@ executable file or an error code.
 
 **Example:**
 ```cpp
+import std;
 import pfadfinder;
 
 pfadfinder::application_environment env("my_app");
@@ -62,7 +63,7 @@ auto result = env.executable_path();
 if (result)
 {
     // Success
-    std::cout << "Executable: " << result->string() << std::endl;
+    cout << "Executable: " << result->string() << endl;
     // Linux: /usr/bin/test_pfadfinder
     // Windows: C:\\Projects\\Pfadfinder\\build\\tests\\test_pfadfinder.exe
     // macOS: /Users/martin/Projects/Pfadfinder/build/tests/test_pfadfinder
@@ -70,7 +71,7 @@ if (result)
 else
 {
     // Error
-    std::cerr << "Error: " << pfadfinder::error_message(result.error()) << std::endl;
+    cerr << "Error: " << pfadfinder::error_message(result.error()) << endl;
 }
 ```
 
@@ -82,17 +83,18 @@ executable file or an error code.
 
 **Example:**
 ```cpp
+import std;
 import pfadfinder;
 
 pfadfinder::application_environment env("my_app");
 auto result = env.executable_directory();
 if (result)
 {
-    std::cout << "Executable Dir: " << result->string() << std::endl;
+    cout << "Executable Dir: " << result->string() << endl;
 }
 else
 {
-    std::cerr << "Error: " << pfadfinder::error_message(result.error()) << std::endl;
+    cerr << "Error: " << pfadfinder::error_message(result.error()) << endl;
 }
 ```
 
@@ -186,8 +188,7 @@ or an error code.
 ## Usage Example
 
 ```cpp
-#include <iostream>
-#include <expected>
+import std;
 import pfadfinder;
 
 int main()
@@ -198,39 +199,39 @@ int main()
     // Determine various directories
     auto exec_result = env.executable_path();
     if (exec_result)
-        std::cout << "Executable: " << exec_result->string() << std::endl;
+        cout << "Executable: " << exec_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(exec_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(exec_result.error()) << endl;
     
     auto exec_dir_result = env.executable_directory();
     if (exec_dir_result)
-        std::cout << "Executable Dir: " << exec_dir_result->string() << std::endl;
+        cout << "Executable Dir: " << exec_dir_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(exec_dir_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(exec_dir_result.error()) << endl;
     
     auto data_dir_result = env.data_directory();
     if (data_dir_result)
-        std::cout << "Data Dir: " << data_dir_result->string() << std::endl;
+        cout << "Data Dir: " << data_dir_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(data_dir_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(data_dir_result.error()) << endl;
     
     auto user_data_dir_result = env.user_data_directory();
     if (user_data_dir_result)
-        std::cout << "User Data Dir: " << user_data_dir_result->string() << std::endl;
+        cout << "User Data Dir: " << user_data_dir_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(user_data_dir_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(user_data_dir_result.error()) << endl;
     
     auto config_dir_result = env.config_directory();
     if (config_dir_result)
-        std::cout << "Config Dir: " << config_dir_result->string() << std::endl;
+        cout << "Config Dir: " << config_dir_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(config_dir_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(config_dir_result.error()) << endl;
     
     auto cache_dir_result = env.cache_directory();
     if (cache_dir_result)
-        std::cout << "Cache Dir: " << cache_dir_result->string() << std::endl;
+        cout << "Cache Dir: " << cache_dir_result->string() << endl;
     else
-        std::cerr << "Error: " << pfadfinder::error_message(cache_dir_result.error()) << std::endl;
+        cerr << "Error: " << pfadfinder::error_message(cache_dir_result.error()) << endl;
     
     return 0;
 }
