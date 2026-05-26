@@ -1,0 +1,8 @@
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#define IS_WINDOWS @IS_WINDOWS@
+#define IS_MACOSX @IS_MACOSX@
+#define IS_LINUX @IS_LINUX@
+
+#endif // CONFIG_HPP

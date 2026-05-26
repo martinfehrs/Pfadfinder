@@ -168,11 +168,16 @@ cd build
 
 ```
 Pfadfinder/
+├── .github/
+│   └── workflows/
+│       └── cmake.yml    # GitHub Actions CI configuration
+├── CMakeLists.txt       # Main CMake configuration
+├── CMakePresets.json    # CMake Presets (Ninja as default)
 ├── LIESMICH.md          # Projektbeschreibung (Deutsch)
 ├── README.md           # Project description (English)
-├── CMakeLists.txt       # Main CMake configuration
+├── config.hpp.in        # Template for platform macros
 ├── src/
-│   └── pfadfinder.cppm  # C++20 interface module
+│   └── pfadfinder.cppm  # C++23 interface module
 └── tests/
     ├── CMakeLists.txt   # Test configuration
     └── test_pfadfinder.cpp  # Test cases with CATCH2

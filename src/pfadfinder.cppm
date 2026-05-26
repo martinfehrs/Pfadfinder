@@ -26,12 +26,14 @@
 
 module;
 
-#ifdef _WIN32
+#include "config.hpp"
+
+#if IS_WINDOWS
 #include <windows.h>
-#elif defined(__APPLE__)
+#elif IS_MACOSX
 #include <mach-o/dyld.h>
 #include <limits.h>
-#elif defined(__linux__)
+#elif IS_LINUX
 #include <unistd.h>
 #include <limits.h>
 #endif
@@ -135,7 +137,7 @@ namespace pfadfinder
         {
             if (!cached_executable_path_.has_value())
             {
-#ifdef _WIN32
+#if IS_WINDOWS
                 // Windows-Implementierung
                 wchar_t path[MAX_PATH] = {0};
                 if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
@@ -143,7 +145,7 @@ namespace pfadfinder
                 else
                     cached_executable_path_ = fs::path(path);
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
                 // macOS-Implementierung
                 char path[PATH_MAX] = {0};
                 uint32_t size = sizeof(path);
@@ -159,7 +161,7 @@ namespace pfadfinder
                         cached_executable_path_ = fs::path(real_path);
                 }
 
-#elif defined(__linux__)
+#elif IS_LINUX
                 // Linux-Implementierung
                 char path[PATH_MAX] = {0};
                 ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
@@ -216,11 +218,11 @@ namespace pfadfinder
                 return std::unexpected(exe_dir_result.error());
             auto exe_dir = *exe_dir_result;
 
-#ifdef _WIN32
+#if IS_WINDOWS
             // Windows: Datenverzeichnis ist das Binärverzeichnis
             return exe_dir / app_name_;
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
             // macOS: Prüfen, ob wir in einem Bundle sind
             std::string exe_dir_str = exe_dir.string();
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
@@ -230,7 +232,7 @@ namespace pfadfinder
                 // Nicht gebündelt: ähnlich wie Linux
                 return exe_dir.parent_path() / "share" / app_name_;
 
-#elif defined(__linux__)
+#elif IS_LINUX
             // Linux: von /usr/bin/myapp zu /usr/share/myapp
             return exe_dir.parent_path() / "share" / app_name_;
 
@@ -255,7 +257,7 @@ namespace pfadfinder
         {
             if (!cached_user_data_directory_.has_value())
             {
-#ifdef _WIN32
+#if IS_WINDOWS
                 // Windows: %APPDATA%/<appname>
                 const char* appdata = std::getenv("APPDATA");
                 if (!appdata)
@@ -263,7 +265,7 @@ namespace pfadfinder
                 else
                     cached_user_data_directory_ = fs::path(appdata) / app_name_;
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
                 // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
@@ -292,7 +294,7 @@ namespace pfadfinder
                     }
                 }
 
-#elif defined(__linux__)
+#elif IS_LINUX
                 // Linux: ~/.local/share/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
@@ -321,14 +323,14 @@ namespace pfadfinder
          */
         std::expected<fs::path, error> config_directory() const
         {
-#ifdef _WIN32
+#if IS_WINDOWS
             // Windows: %APPDATA%/<appname>
             const char* appdata = std::getenv("APPDATA");
             if (!appdata)
                 return std::unexpected(error::appdata_not_set);
             return fs::path(appdata) / app_name_;
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
             // macOS: Prüfen, ob wir in einem Bundle sind
             auto exe_dir_result = executable_directory();
             if (!exe_dir_result)
@@ -351,7 +353,7 @@ namespace pfadfinder
                 return fs::path(home) / ".config" / app_name_;
             }
 
-#elif defined(__linux__)
+#elif IS_LINUX
             // Linux: ~/.config/<appname> (XDG Base Directory Specification)
             const char* home = std::getenv("HOME");
             if (!home)
@@ -379,7 +381,7 @@ namespace pfadfinder
         {
             if (!cached_cache_directory_.has_value())
             {
-#ifdef _WIN32
+#if IS_WINDOWS
                 // Windows: %LOCALAPPDATA%/<appname>/Cache
                 const char* localappdata = std::getenv("LOCALAPPDATA");
                 if (!localappdata)
@@ -387,7 +389,7 @@ namespace pfadfinder
                 else
                     cached_cache_directory_ = fs::path(localappdata) / app_name_ / "Cache";
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
                 // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
@@ -415,7 +417,7 @@ namespace pfadfinder
                     }
                 }
 
-#elif defined(__linux__)
+#elif IS_LINUX
                 // Linux: ~/.cache/<appname> (XDG Base Directory Specification)
                 const char* home = std::getenv("HOME");
                 if (!home)
@@ -444,14 +446,14 @@ namespace pfadfinder
          */
         std::expected<fs::path, error> log_directory() const
         {
-#ifdef _WIN32
+#if IS_WINDOWS
             // Windows: %LOCALAPPDATA%/<appname>/Logs
             const char* localappdata = std::getenv("LOCALAPPDATA");
             if (!localappdata)
                 return std::unexpected(error::localappdata_not_set);
             return fs::path(localappdata) / app_name_ / "Logs";
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
             // macOS: Prüfen, ob wir in einem Bundle sind
             auto exe_dir_result = executable_directory();
             if (!exe_dir_result)
@@ -474,7 +476,7 @@ namespace pfadfinder
                 return fs::path(home) / ".local" / "state" / app_name_ / "log";
             }
 
-#elif defined(__linux__)
+#elif IS_LINUX
             // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
             const char* home = std::getenv("HOME");
             if (!home)
@@ -499,14 +501,14 @@ namespace pfadfinder
          */
         std::expected<fs::path, error> temp_directory() const
         {
-#ifdef _WIN32
+#if IS_WINDOWS
             // Windows: %TEMP%/<appname>
             const char* temp = std::getenv("TEMP");
             if (!temp)
                 return std::unexpected(error::home_not_set); // Fallback: Home nicht gesetzt
             return fs::path(temp) / app_name_;
 
-#elif defined(__APPLE__)
+#elif IS_MACOSX
             // macOS: Prüfen, ob wir in einem Bundle sind
             auto exe_dir_result = executable_directory();
             if (!exe_dir_result)
@@ -524,7 +526,7 @@ namespace pfadfinder
                 // Nicht gebündelt: /tmp/<appname>
                 return fs::temp_directory_path() / app_name_;
 
-#elif defined(__linux__)
+#elif IS_LINUX
             // Linux: /tmp/<appname> (XDG Base Directory Specification)
             return fs::temp_directory_path() / app_name_;
 
@@ -547,7 +549,7 @@ namespace pfadfinder
         {
             if (!cached_user_directory_.has_value())
             {
-#ifdef _WIN32
+#if IS_WINDOWS
                 // Windows: %USERPROFILE%
                 const char* userprofile = std::getenv("USERPROFILE");
                 if (!userprofile)
@@ -555,7 +557,7 @@ namespace pfadfinder
                 else
                     cached_user_directory_ = fs::path(userprofile);
 
-#elif defined(__APPLE__) || defined(__linux__)
+#elif IS_MACOSX || defined(__linux__)
                 // Linux/macOS: $HOME
                 const char* home = std::getenv("HOME");
                 if (!home)

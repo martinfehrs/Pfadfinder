@@ -144,9 +144,9 @@ int main()
 
 ## Voraussetzungen
 
-- C++20
+- C++23
 - CMake 4.3 oder höher
-- Compiler mit C++20 Modul-Unterstützung (GCC 15, Clang 17, MSVC 19.40+)
+- Compiler mit C++23 Modul-Unterstützung (GCC 15, Clang 17, MSVC 19.40+)
 
 ## Build
 
@@ -169,8 +169,13 @@ cd build
 
 ```
 Pfadfinder/
-├── LIESMICH.md          # Diese Datei
+├── .github/
+│   └── workflows/
+│       └── cmake.yml    # GitHub Actions CI-Konfiguration
 ├── CMakeLists.txt       # Haupt-CMake-Konfiguration
+├── CMakePresets.json    # CMake Presets (Ninja als Standard)
+├── LIESMICH.md          # Diese Datei
+├── config.hpp.in        # Vorlage für Plattform-Makros
 ├── src/
 │   └── pfadfinder.cppm  # C++23 Schnittstellenmodul
 └── tests/
