@@ -1,0 +1,67 @@
+# Build directory
+build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# Ninja generated files
+.ninja_deps
+.ninja_log
+build.ninja
+
+# Object files and libraries
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.exp
+*.pdb
+
+# Compiler generated files
+*.ddi
+*.ddi.d
+*.ddi.i
+*.modmap
+*.gcm
+
+# CMake module directories
+*.dir/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows specific files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editor specific files
+*.un~
+*.bak
+*.tmp
+
+# Test output
+ctest_output.txt
+Testing/
+
+# Catch2 build files
+_deps/
