@@ -234,7 +234,7 @@ namespace pfadfinder
 
 #if IS_WINDOWS
             // Windows: Datenverzeichnis ist das Binärverzeichnis
-            return exe_dir / app_name_;
+            return exe_dir;
 
 #elif IS_MACOSX
             // macOS: Prüfen, ob wir in einem Bundle sind
