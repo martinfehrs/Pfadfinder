@@ -332,47 +332,58 @@ namespace pfadfinder
          */
         std::expected<fs::path, error_code> config_directory() const
         {
+            if (!cached_config_directory_.has_value())
+            {
 #if IS_WINDOWS
-            // Windows: %APPDATA%/<appname>
-            const char* appdata = std::getenv("APPDATA");
-            if (!appdata)
-                return std::unexpected(error_code::appdata_not_set);
-            return fs::path(appdata) / app_name_;
+                // Windows: %APPDATA%/<appname>
+                const char* appdata = std::getenv("APPDATA");
+                if (!appdata)
+                    cached_config_directory_ = std::unexpected(error_code::appdata_not_set);
+                else
+                    cached_config_directory_ = fs::path(appdata) / app_name_;
 
 #elif IS_MACOSX
-            // macOS: Prüfen, ob wir in einem Bundle sind
-            auto exe_dir_result = executable_directory();
-            if (!exe_dir_result)
-                return std::unexpected(exe_dir_result.error());
-            std::string exe_dir_str = exe_dir_result->string();
-            if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-            {
-                // Bundle: ~/Library/Preferences/<appname>
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    return std::unexpected(error_code::home_not_set);
-                return fs::path(home) / "Library" / "Preferences" / app_name_;
-            }
-            else
-            {
-                // Nicht gebündelt: ~/.config/<appname>
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    return std::unexpected(error_code::home_not_set);
-                return fs::path(home) / ".config" / app_name_;
-            }
+                // macOS: Prüfen, ob wir in einem Bundle sind
+                auto exe_dir_result = executable_directory();
+                if (!exe_dir_result)
+                    cached_config_directory_ = std::unexpected(exe_dir_result.error());
+                else
+                {
+                    std::string exe_dir_str = exe_dir_result->string();
+                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                    {
+                        // Bundle: ~/Library/Preferences/<appname>
+                        const char* home = std::getenv("HOME");
+                        if (!home)
+                            cached_config_directory_ = std::unexpected(error_code::home_not_set);
+                        else
+                            cached_config_directory_ = fs::path(home) / "Library" / "Preferences" / app_name_;
+                    }
+                    else
+                    {
+                        // Nicht gebündelt: ~/.config/<appname>
+                        const char* home = std::getenv("HOME");
+                        if (!home)
+                            cached_config_directory_ = std::unexpected(error_code::home_not_set);
+                        else
+                            cached_config_directory_ = fs::path(home) / ".config" / app_name_;
+                    }
+                }
 
 #elif IS_LINUX
-            // Linux: ~/.config/<appname> (XDG Base Directory Specification)
-            const char* home = std::getenv("HOME");
-            if (!home)
-                return std::unexpected(error_code::home_not_set);
-            return fs::path(home) / ".config" / app_name_;
+                // Linux: ~/.config/<appname> (XDG Base Directory Specification)
+                const char* home = std::getenv("HOME");
+                if (!home)
+                    cached_config_directory_ = std::unexpected(error_code::home_not_set);
+                else
+                    cached_config_directory_ = fs::path(home) / ".config" / app_name_;
 
 #else
-            // Fallback für andere Plattformen
-            return std::unexpected(error_code::platform_not_supported);
+                // Fallback für andere Plattformen
+                cached_config_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
+            }
+            return *cached_config_directory_;
         }
 
         /**
@@ -455,47 +466,58 @@ namespace pfadfinder
          */
         std::expected<fs::path, error_code> log_directory() const
         {
+            if (!cached_log_directory_.has_value())
+            {
 #if IS_WINDOWS
-            // Windows: %LOCALAPPDATA%/<appname>/Logs
-            const char* localappdata = std::getenv("LOCALAPPDATA");
-            if (!localappdata)
-                return std::unexpected(error_code::localappdata_not_set);
-            return fs::path(localappdata) / app_name_ / "Logs";
+                // Windows: %LOCALAPPDATA%/<appname>/Logs
+                const char* localappdata = std::getenv("LOCALAPPDATA");
+                if (!localappdata)
+                    cached_log_directory_ = std::unexpected(error_code::localappdata_not_set);
+                else
+                    cached_log_directory_ = fs::path(localappdata) / app_name_ / "Logs";
 
 #elif IS_MACOSX
-            // macOS: Prüfen, ob wir in einem Bundle sind
-            auto exe_dir_result = executable_directory();
-            if (!exe_dir_result)
-                return std::unexpected(exe_dir_result.error());
-            std::string exe_dir_str = exe_dir_result->string();
-            if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-            {
-                // Bundle: ~/Library/Logs/<appname>
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    return std::unexpected(error_code::home_not_set);
-                return fs::path(home) / "Library" / "Logs" / app_name_;
-            }
-            else
-            {
-                // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    return std::unexpected(error_code::home_not_set);
-                return fs::path(home) / ".local" / "state" / app_name_ / "log";
-            }
+                // macOS: Prüfen, ob wir in einem Bundle sind
+                auto exe_dir_result = executable_directory();
+                if (!exe_dir_result)
+                    cached_log_directory_ = std::unexpected(exe_dir_result.error());
+                else
+                {
+                    std::string exe_dir_str = exe_dir_result->string();
+                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                    {
+                        // Bundle: ~/Library/Logs/<appname>
+                        const char* home = std::getenv("HOME");
+                        if (!home)
+                            cached_log_directory_ = std::unexpected(error_code::home_not_set);
+                        else
+                            cached_log_directory_ = fs::path(home) / "Library" / "Logs" / app_name_;
+                    }
+                    else
+                    {
+                        // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
+                        const char* home = std::getenv("HOME");
+                        if (!home)
+                            cached_log_directory_ = std::unexpected(error_code::home_not_set);
+                        else
+                            cached_log_directory_ = fs::path(home) / ".local" / "state" / app_name_ / "log";
+                    }
+                }
 
 #elif IS_LINUX
-            // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
-            const char* home = std::getenv("HOME");
-            if (!home)
-                return std::unexpected(error_code::home_not_set);
-            return fs::path(home) / ".local" / "state" / app_name_ / "log";
+                // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
+                const char* home = std::getenv("HOME");
+                if (!home)
+                    cached_log_directory_ = std::unexpected(error_code::home_not_set);
+                else
+                    cached_log_directory_ = fs::path(home) / ".local" / "state" / app_name_ / "log";
 
 #else
-            // Fallback für andere Plattformen
-            return std::unexpected(error_code::platform_not_supported);
+                // Fallback für andere Plattformen
+                cached_log_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
+            }
+            return *cached_log_directory_;
         }
 
         /**
@@ -510,39 +532,48 @@ namespace pfadfinder
          */
         std::expected<fs::path, error_code> temp_directory() const
         {
+            if (!cached_temp_directory_.has_value())
+            {
 #if IS_WINDOWS
-            // Windows: %TEMP%/<appname>
-            const char* temp = std::getenv("TEMP");
-            if (!temp)
-                return std::unexpected(error_code::home_not_set); // Fallback: Home nicht gesetzt
-            return fs::path(temp) / app_name_;
+                // Windows: %TEMP%/<appname>
+                const char* temp = std::getenv("TEMP");
+                if (!temp)
+                    cached_temp_directory_ = std::unexpected(error_code::home_not_set); // Fallback: Home nicht gesetzt
+                else
+                    cached_temp_directory_ = fs::path(temp) / app_name_;
 
 #elif IS_MACOSX
-            // macOS: Prüfen, ob wir in einem Bundle sind
-            auto exe_dir_result = executable_directory();
-            if (!exe_dir_result)
-                return std::unexpected(exe_dir_result.error());
-            std::string exe_dir_str = exe_dir_result->string();
-            if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-            {
-                // Bundle: ~/Library/Caches/TemporaryItems/<appname>
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    return std::unexpected(error_code::home_not_set);
-                return fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
-            }
-            else
-                // Nicht gebündelt: /tmp/<appname>
-                return fs::temp_directory_path() / app_name_;
+                // macOS: Prüfen, ob wir in einem Bundle sind
+                auto exe_dir_result = executable_directory();
+                if (!exe_dir_result)
+                    cached_temp_directory_ = std::unexpected(exe_dir_result.error());
+                else
+                {
+                    std::string exe_dir_str = exe_dir_result->string();
+                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
+                    {
+                        // Bundle: ~/Library/Caches/TemporaryItems/<appname>
+                        const char* home = std::getenv("HOME");
+                        if (!home)
+                            cached_temp_directory_ = std::unexpected(error_code::home_not_set);
+                        else
+                            cached_temp_directory_ = fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
+                    }
+                    else
+                        // Nicht gebündelt: /tmp/<appname>
+                        cached_temp_directory_ = fs::temp_directory_path() / app_name_;
+                }
 
 #elif IS_LINUX
-            // Linux: /tmp/<appname> (XDG Base Directory Specification)
-            return fs::temp_directory_path() / app_name_;
+                // Linux: /tmp/<appname> (XDG Base Directory Specification)
+                cached_temp_directory_ = fs::temp_directory_path() / app_name_;
 
 #else
-            // Fallback für andere Plattformen
-            return std::unexpected(error_code::platform_not_supported);
+                // Fallback für andere Plattformen
+                cached_temp_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
+            }
+            return *cached_temp_directory_;
         }
 
         /**
