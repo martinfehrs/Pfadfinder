@@ -53,7 +53,7 @@ namespace pfadfinder
     /**
      * @brief Fehlertypen für Pfadfinder-Operationen.
      */
-    export enum class error
+    export enum class error_code
     {
         // Plattform-spezifische Fehler
         platform_not_supported,
@@ -79,25 +79,25 @@ namespace pfadfinder
      * @param err Der Fehlercode.
      * @return const char* Die Fehlermeldung.
      */
-    export const char* error_message(error err) noexcept
+    export const char* error_message(error_code err) noexcept
     {
         switch (err)
         {
-            case error::platform_not_supported:
+            case error_code::platform_not_supported:
                 return "Platform not supported";
-            case error::windows_get_module_file_name_failed:
+            case error_code::windows_get_module_file_name_failed:
                 return "GetModuleFileNameW failed";
-            case error::appdata_not_set:
+            case error_code::appdata_not_set:
                 return "APPDATA environment variable not set";
-            case error::localappdata_not_set:
+            case error_code::localappdata_not_set:
                 return "LOCALAPPDATA environment variable not set";
-            case error::macos_get_executable_path_failed:
+            case error_code::macos_get_executable_path_failed:
                 return "_NSGetExecutablePath failed";
-            case error::macos_realpath_failed:
+            case error_code::macos_realpath_failed:
                 return "realpath failed";
-            case error::linux_readlink_failed:
+            case error_code::linux_readlink_failed:
                 return "readlink /proc/self/exe failed";
-            case error::home_not_set:
+            case error_code::home_not_set:
                 return "HOME environment variable not set";
         }
         return "Unknown error";
