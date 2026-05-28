@@ -1,3 +1,5 @@
+[🇩🇪 Deutsch (LIESMICH.md)](LIESMICH.md)
+
 # Pfadfinder
 
 Project for determining various directories of a running application.
