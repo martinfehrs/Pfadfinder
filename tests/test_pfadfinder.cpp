@@ -38,7 +38,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         // Hier nur als Dokumentation
         // auto path_result = env.executable_path();
         // REQUIRE_FALSE(path_result.has_value());
-        // REQUIRE(path_result.error() == pfadfinder::error::platform_not_supported);
+        // REQUIRE(path_result.error() == pfadfinder::error_code::platform_not_supported);
     }
     
     SECTION("executable_directory gibt ein gültiges Verzeichnis zurück") {
@@ -237,28 +237,28 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     SECTION("error_message gibt korrekte Fehlermeldungen zurück")
     {
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::platform_not_supported)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::platform_not_supported)) ==
             "Platform not supported");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::windows_get_module_file_name_failed)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::windows_get_module_file_name_failed)) ==
             "GetModuleFileNameW failed");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::appdata_not_set)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::appdata_not_set)) ==
             "APPDATA environment variable not set");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::localappdata_not_set)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::localappdata_not_set)) ==
             "LOCALAPPDATA environment variable not set");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::macos_get_executable_path_failed)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::macos_get_executable_path_failed)) ==
             "_NSGetExecutablePath failed");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::macos_realpath_failed)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::macos_realpath_failed)) ==
             "realpath failed");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::linux_readlink_failed)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::linux_readlink_failed)) ==
             "readlink /proc/self/exe failed");
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error::home_not_set)) ==
+            std::string(pfadfinder::error_message(pfadfinder::error_code::home_not_set)) ==
             "HOME environment variable not set");
     }
 

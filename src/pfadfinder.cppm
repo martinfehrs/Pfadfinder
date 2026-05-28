@@ -18,10 +18,10 @@
  *    - user_directory()      : Home-Verzeichnis des Benutzers
  * 
  * 2. Fehlerbehandlung:
- *    - enum class error      : Fehlertypen für alle Pfadfunktionen (snake_case)
- *    - error_message()       : Menschlesbare Fehlermeldungen für error-Werte
+ *    - enum class error_code : Fehlertypen für alle Pfadfunktionen (snake_case)
+ *    - error_message()       : Menschlesbare Fehlermeldungen für error_code-Werte
  * 
- * Alle Pfadfunktionen geben std::expected<fs::path, error> zurück.
+ * Alle Pfadfunktionen geben std::expected<fs::path, error_code> zurück.
  */
 
 module;
@@ -110,22 +110,8 @@ namespace pfadfinder
      * Datenverzeichnis, Konfigurationsverzeichnis und Cache-Verzeichnis für verschiedene
      * Plattformen (Windows, Linux, macOS).
      * 
-     * Alle Methoden geben std::expected<fs::path, error> zurück,
-     * wobei error eine typsichere Aufzählung ist, die die möglichen Fehlerfälle
-     * beschreibt.
-     * 
-     * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
-     * Berechnungen zu vermeiden.
-     */
-    /**
-     * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
-     * 
-     * Diese Klasse kapselt die Logik zur Ermittlung von Pfaden wie dem Executable-Pfad,
-     * Datenverzeichnis, Konfigurationsverzeichnis und Cache-Verzeichnis für verschiedene
-     * Plattformen (Windows, Linux, macOS).
-     * 
-     * Alle Methoden geben std::expected<fs::path, error> zurück,
-     * wobei error eine typsichere Aufzählung ist, die die möglichen Fehlerfälle
+     * Alle Methoden geben std::expected<fs::path, error_code> zurück,
+     * wobei error_code eine typsichere Aufzählung ist, die die möglichen Fehlerfälle
      * beschreibt.
      * 
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
@@ -144,10 +130,10 @@ namespace pfadfinder
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-         * @return std::expected<fs::path, error> Der vollständige Pfad zur
+         * @return std::expected<fs::path, error_code> Der vollständige Pfad zur
          *         ausführbaren Datei oder ein Fehlercode.
          */
-        std::expected<fs::path, error> executable_path() const
+        std::expected<fs::path, error_code> executable_path() const
         {
             if (!cached_executable_path_.has_value())
             {
@@ -155,7 +141,7 @@ namespace pfadfinder
                 // Windows-Implementierung
                 wchar_t path[MAX_PATH] = {0};
                 if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
-                    cached_executable_path_ = std::unexpected(error::windows_get_module_file_name_failed);
+                    cached_executable_path_ = std::unexpected(error_code::windows_get_module_file_name_failed);
                 else
                     cached_executable_path_ = fs::path(path);
 
@@ -164,13 +150,13 @@ namespace pfadfinder
                 char path[PATH_MAX] = {0};
                 uint32_t size = sizeof(path);
                 if (_NSGetExecutablePath(path, &size) != 0)
-                    cached_executable_path_ = std::unexpected(error::macos_get_executable_path_failed);
+                    cached_executable_path_ = std::unexpected(error_code::macos_get_executable_path_failed);
                 else
                 {
                     // Symbolische Links auflösen, um den tatsächlichen Pfad zu erhalten
                     char real_path[PATH_MAX] = {0};
                     if (realpath(path, real_path) == nullptr)
-                        cached_executable_path_ = std::unexpected(error::macos_realpath_failed);
+                        cached_executable_path_ = std::unexpected(error_code::macos_realpath_failed);
                     else
                         cached_executable_path_ = fs::path(real_path);
                 }
@@ -180,7 +166,7 @@ namespace pfadfinder
                 char path[PATH_MAX] = {0};
                 ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
                 if (len == -1)
-                    cached_executable_path_ = std::unexpected(error::linux_readlink_failed);
+                    cached_executable_path_ = std::unexpected(error_code::linux_readlink_failed);
                 else
                 {
                     path[len] = '\0';
@@ -189,7 +175,7 @@ namespace pfadfinder
 
 #else
                 // Fallback für andere Plattformen
-                cached_executable_path_ = std::unexpected(error::platform_not_supported);
+                cached_executable_path_ = std::unexpected(error_code::platform_not_supported);
 #endif
             }
             return *cached_executable_path_;
@@ -197,10 +183,10 @@ namespace pfadfinder
 
         /**
          * @brief Gibt das Verzeichnis der ausführbaren Datei zurück.
-         * @return std::expected<fs::path, error> Das Verzeichnis, das
+         * @return std::expected<fs::path, error_code> Das Verzeichnis, das
          *         die ausführbare Datei enthält oder ein Fehlercode.
          */
-        std::expected<fs::path, error> executable_directory() const
+        std::expected<fs::path, error_code> executable_directory() const
         {
             if (!cached_executable_directory_.has_value())
             {
@@ -222,10 +208,10 @@ namespace pfadfinder
          * Unter macOS wird bei gebündelten Anwendungen das Resources-Verzeichnis
          * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
          * 
-         * @return std::expected<fs::path, error> Das Datenverzeichnis
+         * @return std::expected<fs::path, error_code> Das Datenverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> data_directory() const
+        std::expected<fs::path, error_code> data_directory() const
         {
             if (!cached_data_directory_.has_value())
             {
@@ -258,7 +244,7 @@ namespace pfadfinder
 
 #else
                     // Fallback für andere Plattformen
-                    cached_data_directory_ = std::unexpected(error::platform_not_supported);
+                    cached_data_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
                 }
             }
@@ -273,10 +259,10 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
-         * @return std::expected<fs::path, error> Das Benutzer-Datenverzeichnis
+         * @return std::expected<fs::path, error_code> Das Benutzer-Datenverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> user_data_directory() const
+        std::expected<fs::path, error_code> user_data_directory() const
         {
             if (!cached_user_data_directory_.has_value())
             {
@@ -284,7 +270,7 @@ namespace pfadfinder
                 // Windows: %APPDATA%/<appname>
                 const char* appdata = std::getenv("APPDATA");
                 if (!appdata)
-                    cached_user_data_directory_ = std::unexpected(error::appdata_not_set);
+                    cached_user_data_directory_ = std::unexpected(error_code::appdata_not_set);
                 else
                     cached_user_data_directory_ = fs::path(appdata) / app_name_;
 
@@ -301,7 +287,7 @@ namespace pfadfinder
                         // Bundle: ~/Library/Application Support/<appname>
                         const char* home = std::getenv("HOME");
                         if (!home)
-                            cached_user_data_directory_ = std::unexpected(error::home_not_set);
+                            cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
                         else
                             cached_user_data_directory_ =
                                 fs::path(home) / "Library" / "Application Support" / app_name_;
@@ -311,7 +297,7 @@ namespace pfadfinder
                         // Nicht gebündelt: ~/.local/share/<appname>
                         const char* home = std::getenv("HOME");
                         if (!home)
-                            cached_user_data_directory_ = std::unexpected(error::home_not_set);
+                            cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
                         else
                             cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
                     }
@@ -321,13 +307,13 @@ namespace pfadfinder
                 // Linux: ~/.local/share/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    cached_user_data_directory_ = std::unexpected(error::home_not_set);
+                    cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
                 else
                     cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
 
 #else
                 // Fallback für andere Plattformen
-                cached_user_data_directory_ = std::unexpected(error::platform_not_supported);
+                cached_user_data_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
             }
             return *cached_user_data_directory_;
@@ -341,16 +327,16 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
          * 
-         * @return std::expected<fs::path, error> Das Konfigurationsverzeichnis
+         * @return std::expected<fs::path, error_code> Das Konfigurationsverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> config_directory() const
+        std::expected<fs::path, error_code> config_directory() const
         {
 #if IS_WINDOWS
             // Windows: %APPDATA%/<appname>
             const char* appdata = std::getenv("APPDATA");
             if (!appdata)
-                return std::unexpected(error::appdata_not_set);
+                return std::unexpected(error_code::appdata_not_set);
             return fs::path(appdata) / app_name_;
 
 #elif IS_MACOSX
@@ -364,7 +350,7 @@ namespace pfadfinder
                 // Bundle: ~/Library/Preferences/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    return std::unexpected(error::home_not_set);
+                    return std::unexpected(error_code::home_not_set);
                 return fs::path(home) / "Library" / "Preferences" / app_name_;
             }
             else
@@ -372,7 +358,7 @@ namespace pfadfinder
                 // Nicht gebündelt: ~/.config/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    return std::unexpected(error::home_not_set);
+                    return std::unexpected(error_code::home_not_set);
                 return fs::path(home) / ".config" / app_name_;
             }
 
@@ -380,12 +366,12 @@ namespace pfadfinder
             // Linux: ~/.config/<appname> (XDG Base Directory Specification)
             const char* home = std::getenv("HOME");
             if (!home)
-                return std::unexpected(error::home_not_set);
+                return std::unexpected(error_code::home_not_set);
             return fs::path(home) / ".config" / app_name_;
 
 #else
             // Fallback für andere Plattformen
-            return std::unexpected(error::platform_not_supported);
+            return std::unexpected(error_code::platform_not_supported);
 #endif
         }
 
@@ -397,10 +383,10 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
-         * @return std::expected<fs::path, error> Das Cache-Verzeichnis
+         * @return std::expected<fs::path, error_code> Das Cache-Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> cache_directory() const
+        std::expected<fs::path, error_code> cache_directory() const
         {
             if (!cached_cache_directory_.has_value())
             {
@@ -408,7 +394,7 @@ namespace pfadfinder
                 // Windows: %LOCALAPPDATA%/<appname>/Cache
                 const char* localappdata = std::getenv("LOCALAPPDATA");
                 if (!localappdata)
-                    cached_cache_directory_ = std::unexpected(error::localappdata_not_set);
+                    cached_cache_directory_ = std::unexpected(error_code::localappdata_not_set);
                 else
                     cached_cache_directory_ = fs::path(localappdata) / app_name_ / "Cache";
 
@@ -425,7 +411,7 @@ namespace pfadfinder
                         // Bundle: ~/Library/Caches/<appname>
                         const char* home = std::getenv("HOME");
                         if (!home)
-                            cached_cache_directory_ = std::unexpected(error::home_not_set);
+                            cached_cache_directory_ = std::unexpected(error_code::home_not_set);
                         else
                             cached_cache_directory_ = fs::path(home) / "Library" / "Caches" / app_name_;
                     }
@@ -434,7 +420,7 @@ namespace pfadfinder
                         // Nicht gebündelt: ~/.cache/<appname>
                         const char* home = std::getenv("HOME");
                         if (!home)
-                            cached_cache_directory_ = std::unexpected(error::home_not_set);
+                            cached_cache_directory_ = std::unexpected(error_code::home_not_set);
                         else
                             cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
                     }
@@ -444,13 +430,13 @@ namespace pfadfinder
                 // Linux: ~/.cache/<appname> (XDG Base Directory Specification)
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    cached_cache_directory_ = std::unexpected(error::home_not_set);
+                    cached_cache_directory_ = std::unexpected(error_code::home_not_set);
                 else
                     cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
 
 #else
                 // Fallback für andere Plattformen
-                cached_cache_directory_ = std::unexpected(error::platform_not_supported);
+                cached_cache_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
             }
             return *cached_cache_directory_;
@@ -464,16 +450,16 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
-         * @return std::expected<fs::path, error> Das Log-Verzeichnis
+         * @return std::expected<fs::path, error_code> Das Log-Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> log_directory() const
+        std::expected<fs::path, error_code> log_directory() const
         {
 #if IS_WINDOWS
             // Windows: %LOCALAPPDATA%/<appname>/Logs
             const char* localappdata = std::getenv("LOCALAPPDATA");
             if (!localappdata)
-                return std::unexpected(error::localappdata_not_set);
+                return std::unexpected(error_code::localappdata_not_set);
             return fs::path(localappdata) / app_name_ / "Logs";
 
 #elif IS_MACOSX
@@ -487,7 +473,7 @@ namespace pfadfinder
                 // Bundle: ~/Library/Logs/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    return std::unexpected(error::home_not_set);
+                    return std::unexpected(error_code::home_not_set);
                 return fs::path(home) / "Library" / "Logs" / app_name_;
             }
             else
@@ -495,7 +481,7 @@ namespace pfadfinder
                 // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    return std::unexpected(error::home_not_set);
+                    return std::unexpected(error_code::home_not_set);
                 return fs::path(home) / ".local" / "state" / app_name_ / "log";
             }
 
@@ -503,12 +489,12 @@ namespace pfadfinder
             // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
             const char* home = std::getenv("HOME");
             if (!home)
-                return std::unexpected(error::home_not_set);
+                return std::unexpected(error_code::home_not_set);
             return fs::path(home) / ".local" / "state" / app_name_ / "log";
 
 #else
             // Fallback für andere Plattformen
-            return std::unexpected(error::platform_not_supported);
+            return std::unexpected(error_code::platform_not_supported);
 #endif
         }
 
@@ -519,16 +505,16 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
          * 
-         * @return std::expected<fs::path, error> Das temporäre Verzeichnis
+         * @return std::expected<fs::path, error_code> Das temporäre Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error> temp_directory() const
+        std::expected<fs::path, error_code> temp_directory() const
         {
 #if IS_WINDOWS
             // Windows: %TEMP%/<appname>
             const char* temp = std::getenv("TEMP");
             if (!temp)
-                return std::unexpected(error::home_not_set); // Fallback: Home nicht gesetzt
+                return std::unexpected(error_code::home_not_set); // Fallback: Home nicht gesetzt
             return fs::path(temp) / app_name_;
 
 #elif IS_MACOSX
@@ -542,7 +528,7 @@ namespace pfadfinder
                 // Bundle: ~/Library/Caches/TemporaryItems/<appname>
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    return std::unexpected(error::home_not_set);
+                    return std::unexpected(error_code::home_not_set);
                 return fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
             }
             else
@@ -555,7 +541,7 @@ namespace pfadfinder
 
 #else
             // Fallback für andere Plattformen
-            return std::unexpected(error::platform_not_supported);
+            return std::unexpected(error_code::platform_not_supported);
 #endif
         }
 
@@ -565,10 +551,10 @@ namespace pfadfinder
          * Unter Windows entspricht dies %USERPROFILE%.
          * Unter Linux und macOS entspricht dies $HOME.
          * 
-         * @return std::expected<fs::path, error> Das Home-Verzeichnis
+         * @return std::expected<fs::path, error_code> Das Home-Verzeichnis
          *         des Benutzers oder ein Fehlercode.
          */
-        std::expected<fs::path, error> user_directory() const
+        std::expected<fs::path, error_code> user_directory() const
         {
             if (!cached_user_directory_.has_value())
             {
@@ -576,7 +562,7 @@ namespace pfadfinder
                 // Windows: %USERPROFILE%
                 const char* userprofile = std::getenv("USERPROFILE");
                 if (!userprofile)
-                    cached_user_directory_ = std::unexpected(error::home_not_set);
+                    cached_user_directory_ = std::unexpected(error_code::home_not_set);
                 else
                     cached_user_directory_ = fs::path(userprofile);
 
@@ -584,13 +570,13 @@ namespace pfadfinder
                 // Linux/macOS: $HOME
                 const char* home = std::getenv("HOME");
                 if (!home)
-                    cached_user_directory_ = std::unexpected(error::home_not_set);
+                    cached_user_directory_ = std::unexpected(error_code::home_not_set);
                 else
                     cached_user_directory_ = fs::path(home);
 
 #else
                 // Fallback für andere Plattformen
-                cached_user_directory_ = std::unexpected(error::platform_not_supported);
+                cached_user_directory_ = std::unexpected(error_code::platform_not_supported);
 #endif
             }
             return *cached_user_directory_;
@@ -600,15 +586,15 @@ namespace pfadfinder
         std::string app_name_;
 
         // Cache für die berechneten Pfade (Lazy Initialization)
-        mutable std::optional<std::expected<fs::path, error>> cached_executable_path_;
-        mutable std::optional<std::expected<fs::path, error>> cached_executable_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_data_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_user_data_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_config_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_cache_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_log_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_temp_directory_;
-        mutable std::optional<std::expected<fs::path, error>> cached_user_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_executable_path_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_executable_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_data_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_user_data_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_config_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_cache_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_log_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_temp_directory_;
+        mutable std::optional<std::expected<fs::path, error_code>> cached_user_directory_;
     };
 
 }
