@@ -17,10 +17,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y ninja-build
 
       - name: Install latest Clang
-        run: sudo apt-get install -y clang-18 lld-18
+        run: sudo apt-get install -y clang-19 lld-19
 
       - name: Configure CMake
-        run: cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++-18
+        run: cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++-19
 
       - name: Build
         run: cmake --build build
