@@ -236,6 +236,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 
     SECTION("error_message gibt korrekte Fehlermeldungen zurück")
     {
+#if defined(_WIN32)
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::windows_get_module_file_name_failed)) ==
             "GetModuleFileNameW failed");
@@ -245,15 +246,18 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::localappdata_not_set)) ==
             "LOCALAPPDATA environment variable not set");
+#elif defined(__APPLE__)
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::macos_get_executable_path_failed)) ==
             "_NSGetExecutablePath failed");
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::macos_realpath_failed)) ==
             "realpath failed");
+#elif defined(__linux__)
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::linux_readlink_failed)) ==
             "readlink failed");
+#endif
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::home_not_set)) ==
             "Home directory not set");

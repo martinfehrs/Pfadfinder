@@ -19,23 +19,11 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    // Fehlercodes - alle möglichen Fehler für alle Plattformen
+    // Fehlercodes für Linux
     export enum class error_code
     {
-        // Allgemeine Fehler
-        home_not_set,              ///< Home-Verzeichnis nicht gesetzt
-        appdata_not_set,           ///< APPDATA nicht gesetzt (Windows)
-        localappdata_not_set,      ///< LOCALAPPDATA nicht gesetzt (Windows)
-
-        // Windows-spezifisch
-        windows_get_module_file_name_failed,
-
-        // Linux-spezifisch
-        linux_readlink_failed,
-
-        // macOS-spezifisch
-        macos_get_executable_path_failed,
-        macos_realpath_failed
+        home_not_set,          ///< Home-Verzeichnis nicht gesetzt
+        linux_readlink_failed   ///< readlink /proc/self/exe fehlgeschlagen
     };
 
     std::expected<fs::path, error_code> get_executable_path()
@@ -97,6 +85,16 @@ namespace pfadfinder
         if (!home)
             return std::unexpected(error_code::home_not_set);
         return fs::path(home);
+    }
+
+    export const char* error_message(error_code ec)
+    {
+        switch (ec)
+        {
+            case error_code::home_not_set:         return "Home directory not set";
+            case error_code::linux_readlink_failed: return "readlink failed";
+            default:                               return "Unknown error";
+        }
     }
 
 }

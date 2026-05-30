@@ -44,20 +44,7 @@ namespace pfadfinder
      * @param ec Der Fehlercode
      * @return Zeiger auf eine statische Zeichenkette mit der Fehlermeldung
      */
-    export const char* error_message(error_code ec)
-    {
-        switch (ec)
-        {
-            case error_code::home_not_set:                        return "Home directory not set";
-            case error_code::appdata_not_set:                     return "APPDATA environment variable not set";
-            case error_code::localappdata_not_set:                return "LOCALAPPDATA environment variable not set";
-            case error_code::windows_get_module_file_name_failed: return "GetModuleFileNameW failed";
-            case error_code::linux_readlink_failed:               return "readlink failed";
-            case error_code::macos_get_executable_path_failed:    return "_NSGetExecutablePath failed";
-            case error_code::macos_realpath_failed:               return "realpath failed";
-            default:                                              return "Unknown error";
-        }
-    }
+
 
     /**
      * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
