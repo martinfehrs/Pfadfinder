@@ -47,7 +47,7 @@ namespace pfadfinder
         return fs::path(path);
     }
 
-    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir, const std::string& /*app_name*/)
+    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir)
     {
         // Windows: Datenverzeichnis ist das Binärverzeichnis
         return exe_dir;

@@ -55,13 +55,11 @@ ausführbaren Datei oder ein Fehlercode.
 Gibt das systemweite Datenverzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt das Binärverzeichnis zurück
-  (z. B. `C:\\App`)
-- **Linux:** Leitet das share-Verzeichnis aus dem Binärverzeichnis ab
-  (z. B. `/usr/share/meine_app`)
-- **macOS Bundle:** Gibt das Resources-Verzeichnis zurück
-  (z. B. `MeineApp.app/Contents/Resources/`)
-- **macOS CLI:** Ähnlich wie Linux (z. B. `/usr/local/share/meine_app`)
+- **Windows:** Gibt `<Binärverzeichnis>\\<appname>` zurück
+  (z. B. `C:\\App\\meine_app`)
+- **Linux:** Gibt `/usr/share/<appname>` zurück
+- **macOS Bundle:** Gibt `MeineApp.app/Contents/Resources/<appname>` zurück
+- **macOS CLI:** Gibt `/usr/local/share/<appname>` zurück
 
 **Rückgabewert:** `std::expected<fs::path, error>` - Das Datenverzeichnis
 oder ein Fehlercode.

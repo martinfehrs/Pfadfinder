@@ -46,10 +46,10 @@ namespace pfadfinder
         return fs::path(path);
     }
 
-    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir, const std::string& app_name)
+    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir)
     {
-        // Linux: von /usr/bin/myapp zu /usr/share/myapp
-        return exe_dir.parent_path() / "share" / app_name;
+        // Linux: von /usr/bin/myapp zu /usr/share
+        return exe_dir.parent_path() / "share";
     }
 
     std::expected<fs::path, error_code> get_user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)

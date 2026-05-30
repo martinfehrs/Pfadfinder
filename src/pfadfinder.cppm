@@ -123,11 +123,11 @@ namespace pfadfinder
                 cached_data_directory_ = std::unexpected(exe_dir.error());
             }
             else
-            {   
-                if (auto result = get_data_directory(*exe_dir, app_name_); !result)
+            {
+                if (auto result = get_data_directory(*exe_dir); !result)
                     cached_data_directory_ = std::unexpected(result.error());
                 else
-                    cached_data_directory_ = result;
+                    cached_data_directory_ = *result / app_name_;
             }
                 
             return *cached_data_directory_;

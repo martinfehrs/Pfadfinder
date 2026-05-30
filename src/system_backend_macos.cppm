@@ -53,19 +53,19 @@ namespace pfadfinder
         return fs::path(real_path);
     }
 
-    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir, const std::string& app_name)
+    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir)
     {
         // macOS: Prüfen, ob wir in einem Bundle sind
         std::string exe_dir_str = exe_dir.string();
         if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
         {
             // Bundle: von .../Contents/MacOS/ zu .../Contents/Resources/
-            return exe_dir.parent_path().parent_path() / "Resources" / app_name;
+            return exe_dir.parent_path().parent_path() / "Resources";
         }
         else
         {
             // Nicht gebündelt: ähnlich wie Linux
-            return exe_dir.parent_path() / "share" / app_name;
+            return exe_dir.parent_path() / "share";
         }
     }
 

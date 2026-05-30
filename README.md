@@ -58,13 +58,11 @@ executable file or an error code.
 Returns the system-wide data directory of the application.
 
 **Platform-specific behavior:**
-- **Windows:** Returns the binary directory
-  (e.g. `C:\\App`)
-- **Linux:** Derives the share directory from the binary directory
-  (e.g. `/usr/share/my_app`)
-- **macOS Bundle:** Returns the Resources directory
-  (e.g. `MyApp.app/Contents/Resources/`)
-- **macOS CLI:** Similar to Linux (e.g. `/usr/local/share/my_app`)
+- **Windows:** Returns `<executable_directory>\<appname>`
+  (e.g. `C:\\App\\my_app`)
+- **Linux:** Returns `/usr/share/<appname>`
+- **macOS Bundle:** Returns `MyApp.app/Contents/Resources/<appname>`
+- **macOS CLI:** Returns `/usr/local/share/<appname>`
 
 **Return value:** `std::expected<fs::path, error>` - The data directory
 or an error code.
