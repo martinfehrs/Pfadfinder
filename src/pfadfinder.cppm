@@ -39,7 +39,7 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    export const char* error_message(std::expected<fs::path, error_code> const& result)
+    [[nodiscard]] export const char* error_message(std::expected<fs::path, error_code> const& result)
     {
         return !result ? error_message(result.error()) : nullptr;
     }
@@ -74,7 +74,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Der vollständige Pfad zur
          *         ausführbaren Datei oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> executable_path() const
+        [[nodiscard]] std::expected<fs::path, error_code> executable_path() const
         {
             if (!cached_executable_path_.has_value())
             {
@@ -92,7 +92,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Verzeichnis, das
          *         die ausführbare Datei enthält oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> executable_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> executable_directory() const
         {
             if (!cached_executable_directory_.has_value())
             {
@@ -117,7 +117,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Datenverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> data_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> data_directory() const
         {
             if (cached_data_directory_.has_value())
                 return *cached_data_directory_;
@@ -148,7 +148,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Benutzer-Datenverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> user_data_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> user_data_directory() const
         {
             if (!cached_user_data_directory_.has_value())
             {
@@ -181,7 +181,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Konfigurationsverzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> config_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> config_directory() const
         {
             if (!cached_config_directory_.has_value())
             {
@@ -214,7 +214,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Cache-Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> cache_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> cache_directory() const
         {
             if (!cached_cache_directory_.has_value())
             {
@@ -247,7 +247,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Log-Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> log_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> log_directory() const
         {
             if (!cached_log_directory_.has_value())
             {
@@ -279,7 +279,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das temporäre Verzeichnis
          *         der Anwendung oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> temp_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> temp_directory() const
         {
             if (!cached_temp_directory_.has_value())
             {
@@ -301,7 +301,7 @@ namespace pfadfinder
          * @return std::expected<fs::path, error_code> Das Home-Verzeichnis
          *         des Benutzers oder ein Fehlercode.
          */
-        std::expected<fs::path, error_code> user_directory() const
+        [[nodiscard]] std::expected<fs::path, error_code> user_directory() const
         {
             if (!cached_user_directory_.has_value())
             {
