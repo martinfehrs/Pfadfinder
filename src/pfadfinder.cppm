@@ -39,6 +39,10 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
+    export const char* error_message(std::expected<fs::path, error_code> const& result)
+    {
+        return !result ? error_message(result.error()) : nullptr;
+    }
 
     /**
      * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
