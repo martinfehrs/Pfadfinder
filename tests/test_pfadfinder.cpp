@@ -237,9 +237,6 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     SECTION("error_message gibt korrekte Fehlermeldungen zurück")
     {
         REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::platform_not_supported)) ==
-            "Platform not supported");
-        REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::windows_get_module_file_name_failed)) ==
             "GetModuleFileNameW failed");
         REQUIRE(
@@ -256,10 +253,10 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
             "realpath failed");
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::linux_readlink_failed)) ==
-            "readlink /proc/self/exe failed");
+            "readlink failed");
         REQUIRE(
             std::string(pfadfinder::error_message(pfadfinder::error_code::home_not_set)) ==
-            "HOME environment variable not set");
+            "Home directory not set");
     }
 
     SECTION("Mehrere Instanzen mit verschiedenen app_names") {

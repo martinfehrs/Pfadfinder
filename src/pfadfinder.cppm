@@ -13,30 +13,18 @@
  *    - user_data_directory() : Benutzer-spezifisches Datenverzeichnis
  *    - config_directory()    : Konfigurationsverzeichnis
  *    - cache_directory()     : Cache-Verzeichnis
- *    - log_directory()      : Log-Verzeichnis für Anwendungsprotokolle
+ *    - log_directory()       : Log-Verzeichnis für Anwendungsprotokolle
  *    - temp_directory()      : Temporäres Verzeichnis für die Anwendung
  *    - user_directory()      : Home-Verzeichnis des Benutzers
  * 
  * 2. Fehlerbehandlung:
- *    - enum class error_code : Fehlertypen für alle Pfadfunktionen (snake_case)
+ *    - enum class error_code : Fehlertypen für alle Pfadfunktionen (von Backend-Partition bereitgestellt)
  *    - error_message()       : Menschlesbare Fehlermeldungen für error_code-Werte
  * 
  * Alle Pfadfunktionen geben std::expected<fs::path, error_code> zurück.
  */
 
 module;
-
-#include "config.hpp"
-
-#if IS_WINDOWS
-#include <windows.h>
-#elif IS_MACOSX
-#include <mach-o/dyld.h>
-#include <limits.h>
-#elif IS_LINUX
-#include <unistd.h>
-#include <limits.h>
-#endif
 
 #include <cstdlib>
 #include <expected>
@@ -45,62 +33,30 @@ module;
 
 export module pfadfinder;
 
+export import :system_backend;
+
 namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-
     /**
-     * @brief Fehlertypen für Pfadfinder-Operationen.
+     * @brief Gibt eine menschlesbare Fehlermeldung für einen error_code zurück.
+     * @param ec Der Fehlercode
+     * @return Zeiger auf eine statische Zeichenkette mit der Fehlermeldung
      */
-    export enum class error_code
+    export const char* error_message(error_code ec)
     {
-        // Plattform-spezifische Fehler
-        platform_not_supported,
-
-        // Windows-spezifisch
-        windows_get_module_file_name_failed,
-        appdata_not_set,
-        localappdata_not_set,
-
-        // macOS-spezifisch
-        macos_get_executable_path_failed,
-        macos_realpath_failed,
-
-        // Linux-spezifisch
-        linux_readlink_failed,
-
-        // Umgebungsvariablen
-        home_not_set
-    };
-
-    /**
-     * @brief Gibt eine menschenlesbare Fehlermeldung für einen Fehlercode zurück.
-     * @param err Der Fehlercode.
-     * @return const char* Die Fehlermeldung.
-     */
-    export const char* error_message(error_code err) noexcept
-    {
-        switch (err)
+        switch (ec)
         {
-            case error_code::platform_not_supported:
-                return "Platform not supported";
-            case error_code::windows_get_module_file_name_failed:
-                return "GetModuleFileNameW failed";
-            case error_code::appdata_not_set:
-                return "APPDATA environment variable not set";
-            case error_code::localappdata_not_set:
-                return "LOCALAPPDATA environment variable not set";
-            case error_code::macos_get_executable_path_failed:
-                return "_NSGetExecutablePath failed";
-            case error_code::macos_realpath_failed:
-                return "realpath failed";
-            case error_code::linux_readlink_failed:
-                return "readlink /proc/self/exe failed";
-            case error_code::home_not_set:
-                return "HOME environment variable not set";
+            case error_code::home_not_set:                        return "Home directory not set";
+            case error_code::appdata_not_set:                     return "APPDATA environment variable not set";
+            case error_code::localappdata_not_set:                return "LOCALAPPDATA environment variable not set";
+            case error_code::windows_get_module_file_name_failed: return "GetModuleFileNameW failed";
+            case error_code::linux_readlink_failed:               return "readlink failed";
+            case error_code::macos_get_executable_path_failed:    return "_NSGetExecutablePath failed";
+            case error_code::macos_realpath_failed:               return "realpath failed";
+            default:                                              return "Unknown error";
         }
-        return "Unknown error";
     }
 
     /**
@@ -137,46 +93,11 @@ namespace pfadfinder
         {
             if (!cached_executable_path_.has_value())
             {
-#if IS_WINDOWS
-                // Windows-Implementierung
-                wchar_t path[MAX_PATH] = {0};
-                if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
-                    cached_executable_path_ = std::unexpected(error_code::windows_get_module_file_name_failed);
+                auto result = get_executable_path();
+                if (!result)
+                    cached_executable_path_ = std::unexpected(result.error());
                 else
-                    cached_executable_path_ = fs::path(path);
-
-#elif IS_MACOSX
-                // macOS-Implementierung
-                char path[PATH_MAX] = {0};
-                uint32_t size = sizeof(path);
-                if (_NSGetExecutablePath(path, &size) != 0)
-                    cached_executable_path_ = std::unexpected(error_code::macos_get_executable_path_failed);
-                else
-                {
-                    // Symbolische Links auflösen, um den tatsächlichen Pfad zu erhalten
-                    char real_path[PATH_MAX] = {0};
-                    if (realpath(path, real_path) == nullptr)
-                        cached_executable_path_ = std::unexpected(error_code::macos_realpath_failed);
-                    else
-                        cached_executable_path_ = fs::path(real_path);
-                }
-
-#elif IS_LINUX
-                // Linux-Implementierung
-                char path[PATH_MAX] = {0};
-                ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
-                if (len == -1)
-                    cached_executable_path_ = std::unexpected(error_code::linux_readlink_failed);
-                else
-                {
-                    path[len] = '\0';
-                    cached_executable_path_ = fs::path(path);
-                }
-
-#else
-                // Fallback für andere Plattformen
-                cached_executable_path_ = std::unexpected(error_code::platform_not_supported);
-#endif
+                    cached_executable_path_ = result;
             }
             return *cached_executable_path_;
         }
@@ -213,41 +134,21 @@ namespace pfadfinder
          */
         std::expected<fs::path, error_code> data_directory() const
         {
-            if (!cached_data_directory_.has_value())
+            if (cached_data_directory_.has_value())
+                return *cached_data_directory_;
+   
+            if (auto exe_dir = executable_directory(); !exe_dir)
             {
-                auto exe_dir_result = executable_directory();
-                if (!exe_dir_result)
-                {
-                    cached_data_directory_ = std::unexpected(exe_dir_result.error());
-                }
-                else
-                {
-                    auto exe_dir = *exe_dir_result;
-
-#if IS_WINDOWS
-                    // Windows: Datenverzeichnis ist das Binärverzeichnis
-                    cached_data_directory_ = exe_dir;
-
-#elif IS_MACOSX
-                    // macOS: Prüfen, ob wir in einem Bundle sind
-                    std::string exe_dir_str = exe_dir.string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                        // Bundle: von .../Contents/MacOS/ zu .../Contents/Resources/
-                        cached_data_directory_ = exe_dir.parent_path().parent_path() / "Resources" / app_name_;
-                    else
-                        // Nicht gebündelt: ähnlich wie Linux
-                        cached_data_directory_ = exe_dir.parent_path() / "share" / app_name_;
-
-#elif IS_LINUX
-                    // Linux: von /usr/bin/myapp zu /usr/share/myapp
-                    cached_data_directory_ = exe_dir.parent_path() / "share" / app_name_;
-
-#else
-                    // Fallback für andere Plattformen
-                    cached_data_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
-                }
+                cached_data_directory_ = std::unexpected(exe_dir.error());
             }
+            else
+            {   
+                if (auto result = get_data_directory(*exe_dir, app_name_); !result)
+                    cached_data_directory_ = std::unexpected(result.error());
+                else
+                    cached_data_directory_ = result;
+            }
+                
             return *cached_data_directory_;
         }
 
@@ -266,55 +167,20 @@ namespace pfadfinder
         {
             if (!cached_user_data_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %APPDATA%/<appname>
-                const char* appdata = std::getenv("APPDATA");
-                if (!appdata)
-                    cached_user_data_directory_ = std::unexpected(error_code::appdata_not_set);
-                else
-                    cached_user_data_directory_ = fs::path(appdata) / app_name_;
-
-#elif IS_MACOSX
-                // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
+                {
                     cached_user_data_directory_ = std::unexpected(exe_dir_result.error());
+                }
                 else
                 {
-                    std::string exe_dir_str = exe_dir_result->string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                    {
-                        // Bundle: ~/Library/Application Support/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_user_data_directory_ =
-                                fs::path(home) / "Library" / "Application Support" / app_name_;
-                    }
+                    auto exe_dir = *exe_dir_result;
+                    auto result = get_user_data_directory(exe_dir, app_name_);
+                    if (!result)
+                        cached_user_data_directory_ = std::unexpected(result.error());
                     else
-                    {
-                        // Nicht gebündelt: ~/.local/share/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
-                    }
+                        cached_user_data_directory_ = result;
                 }
-
-#elif IS_LINUX
-                // Linux: ~/.local/share/<appname>
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    cached_user_data_directory_ = std::unexpected(error_code::home_not_set);
-                else
-                    cached_user_data_directory_ = fs::path(home) / ".local" / "share" / app_name_;
-
-#else
-                // Fallback für andere Plattformen
-                cached_user_data_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
             }
             return *cached_user_data_directory_;
         }
@@ -334,54 +200,20 @@ namespace pfadfinder
         {
             if (!cached_config_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %APPDATA%/<appname>
-                const char* appdata = std::getenv("APPDATA");
-                if (!appdata)
-                    cached_config_directory_ = std::unexpected(error_code::appdata_not_set);
-                else
-                    cached_config_directory_ = fs::path(appdata) / app_name_;
-
-#elif IS_MACOSX
-                // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
+                {
                     cached_config_directory_ = std::unexpected(exe_dir_result.error());
+                }
                 else
                 {
-                    std::string exe_dir_str = exe_dir_result->string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                    {
-                        // Bundle: ~/Library/Preferences/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_config_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_config_directory_ = fs::path(home) / "Library" / "Preferences" / app_name_;
-                    }
+                    auto exe_dir = *exe_dir_result;
+                    auto result = get_config_directory(exe_dir, app_name_);
+                    if (!result)
+                        cached_config_directory_ = std::unexpected(result.error());
                     else
-                    {
-                        // Nicht gebündelt: ~/.config/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_config_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_config_directory_ = fs::path(home) / ".config" / app_name_;
-                    }
+                        cached_config_directory_ = result;
                 }
-
-#elif IS_LINUX
-                // Linux: ~/.config/<appname> (XDG Base Directory Specification)
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    cached_config_directory_ = std::unexpected(error_code::home_not_set);
-                else
-                    cached_config_directory_ = fs::path(home) / ".config" / app_name_;
-
-#else
-                // Fallback für andere Plattformen
-                cached_config_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
             }
             return *cached_config_directory_;
         }
@@ -401,54 +233,20 @@ namespace pfadfinder
         {
             if (!cached_cache_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %LOCALAPPDATA%/<appname>/Cache
-                const char* localappdata = std::getenv("LOCALAPPDATA");
-                if (!localappdata)
-                    cached_cache_directory_ = std::unexpected(error_code::localappdata_not_set);
-                else
-                    cached_cache_directory_ = fs::path(localappdata) / app_name_ / "Cache";
-
-#elif IS_MACOSX
-                // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
+                {
                     cached_cache_directory_ = std::unexpected(exe_dir_result.error());
+                }
                 else
                 {
-                    std::string exe_dir_str = exe_dir_result->string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                    {
-                        // Bundle: ~/Library/Caches/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_cache_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_cache_directory_ = fs::path(home) / "Library" / "Caches" / app_name_;
-                    }
+                    auto exe_dir = *exe_dir_result;
+                    auto result = get_cache_directory(exe_dir, app_name_);
+                    if (!result)
+                        cached_cache_directory_ = std::unexpected(result.error());
                     else
-                    {
-                        // Nicht gebündelt: ~/.cache/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_cache_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
-                    }
+                        cached_cache_directory_ = result;
                 }
-
-#elif IS_LINUX
-                // Linux: ~/.cache/<appname> (XDG Base Directory Specification)
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    cached_cache_directory_ = std::unexpected(error_code::home_not_set);
-                else
-                    cached_cache_directory_ = fs::path(home) / ".cache" / app_name_;
-
-#else
-                // Fallback für andere Plattformen
-                cached_cache_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
             }
             return *cached_cache_directory_;
         }
@@ -468,54 +266,20 @@ namespace pfadfinder
         {
             if (!cached_log_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %LOCALAPPDATA%/<appname>/Logs
-                const char* localappdata = std::getenv("LOCALAPPDATA");
-                if (!localappdata)
-                    cached_log_directory_ = std::unexpected(error_code::localappdata_not_set);
-                else
-                    cached_log_directory_ = fs::path(localappdata) / app_name_ / "Logs";
-
-#elif IS_MACOSX
-                // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
+                {
                     cached_log_directory_ = std::unexpected(exe_dir_result.error());
+                }
                 else
                 {
-                    std::string exe_dir_str = exe_dir_result->string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                    {
-                        // Bundle: ~/Library/Logs/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_log_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_log_directory_ = fs::path(home) / "Library" / "Logs" / app_name_;
-                    }
+                    auto exe_dir = *exe_dir_result;
+                    auto result = get_log_directory(exe_dir, app_name_);
+                    if (!result)
+                        cached_log_directory_ = std::unexpected(result.error());
                     else
-                    {
-                        // Nicht gebündelt: ~/.local/state/<appname>/log (XDG-konform)
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_log_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_log_directory_ = fs::path(home) / ".local" / "state" / app_name_ / "log";
-                    }
+                        cached_log_directory_ = result;
                 }
-
-#elif IS_LINUX
-                // Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification)
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    cached_log_directory_ = std::unexpected(error_code::home_not_set);
-                else
-                    cached_log_directory_ = fs::path(home) / ".local" / "state" / app_name_ / "log";
-
-#else
-                // Fallback für andere Plattformen
-                cached_log_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
             }
             return *cached_log_directory_;
         }
@@ -534,44 +298,20 @@ namespace pfadfinder
         {
             if (!cached_temp_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %TEMP%/<appname>
-                const char* temp = std::getenv("TEMP");
-                if (!temp)
-                    cached_temp_directory_ = std::unexpected(error_code::home_not_set); // Fallback: Home nicht gesetzt
-                else
-                    cached_temp_directory_ = fs::path(temp) / app_name_;
-
-#elif IS_MACOSX
-                // macOS: Prüfen, ob wir in einem Bundle sind
                 auto exe_dir_result = executable_directory();
                 if (!exe_dir_result)
+                {
                     cached_temp_directory_ = std::unexpected(exe_dir_result.error());
+                }
                 else
                 {
-                    std::string exe_dir_str = exe_dir_result->string();
-                    if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-                    {
-                        // Bundle: ~/Library/Caches/TemporaryItems/<appname>
-                        const char* home = std::getenv("HOME");
-                        if (!home)
-                            cached_temp_directory_ = std::unexpected(error_code::home_not_set);
-                        else
-                            cached_temp_directory_ = fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name_;
-                    }
+                    auto exe_dir = *exe_dir_result;
+                    auto result = get_temp_directory(exe_dir, app_name_);
+                    if (!result)
+                        cached_temp_directory_ = std::unexpected(result.error());
                     else
-                        // Nicht gebündelt: /tmp/<appname>
-                        cached_temp_directory_ = fs::temp_directory_path() / app_name_;
+                        cached_temp_directory_ = result;
                 }
-
-#elif IS_LINUX
-                // Linux: /tmp/<appname> (XDG Base Directory Specification)
-                cached_temp_directory_ = fs::temp_directory_path() / app_name_;
-
-#else
-                // Fallback für andere Plattformen
-                cached_temp_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
             }
             return *cached_temp_directory_;
         }
@@ -589,26 +329,11 @@ namespace pfadfinder
         {
             if (!cached_user_directory_.has_value())
             {
-#if IS_WINDOWS
-                // Windows: %USERPROFILE%
-                const char* userprofile = std::getenv("USERPROFILE");
-                if (!userprofile)
-                    cached_user_directory_ = std::unexpected(error_code::home_not_set);
+                auto result = get_user_directory();
+                if (!result)
+                    cached_user_directory_ = std::unexpected(result.error());
                 else
-                    cached_user_directory_ = fs::path(userprofile);
-
-#elif IS_MACOSX || defined(__linux__)
-                // Linux/macOS: $HOME
-                const char* home = std::getenv("HOME");
-                if (!home)
-                    cached_user_directory_ = std::unexpected(error_code::home_not_set);
-                else
-                    cached_user_directory_ = fs::path(home);
-
-#else
-                // Fallback für andere Plattformen
-                cached_user_directory_ = std::unexpected(error_code::platform_not_supported);
-#endif
+                    cached_user_directory_ = result;
             }
             return *cached_user_directory_;
         }
@@ -628,4 +353,5 @@ namespace pfadfinder
         mutable std::optional<std::expected<fs::path, error_code>> cached_user_directory_;
     };
 
-}
+} // namespace pfadfinder
+

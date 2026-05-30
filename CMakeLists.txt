@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(pfadfinder
     VERSION 1.0.0
-    DESCRIPTION "Projekt zur Bestimmung des Binary-Verzeichnisses der laufenden Anwendung"
+    DESCRIPTION "Projekt zur Bestimmung des Binärverzeichnisses der laufenden Anwendung"
     LANGUAGES CXX
 )
 
@@ -10,16 +10,11 @@ project(pfadfinder
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Plattform-spezifische Makros für config.hpp
-# Korrekt für Cross-Compiling: basierend auf Zielplattform, nicht Host
-# Verwende CMAKE_SYSTEM_NAME für die Zielplattform
-
-# Variablen initialisieren
+# Plattform erkennen
 set(IS_WINDOWS 0)
 set(IS_MACOSX 0)
 set(IS_LINUX 0)
 
-# Plattform erkennen (separate if-Blöcke, da elif mit STREQUAL in dieser CMake-Version Probleme hat)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(IS_WINDOWS 1)
 endif()
@@ -32,18 +27,29 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(IS_LINUX 1)
 endif()
 
-# config.hpp aus Vorlage generieren
-configure_file(config.hpp.in config.hpp)
+# Plattformspezifisches Backend-Modul auswählen
+set(SYSTEM_BACKEND_SOURCE "")
+if(IS_WINDOWS)
+    set(SYSTEM_BACKEND_SOURCE src/system_backend_windows.cppm)
+    set(SELECTED_BACKEND "system_backend_windows")
+elseif(IS_MACOSX)
+    set(SYSTEM_BACKEND_SOURCE src/system_backend_macos.cppm)
+    set(SELECTED_BACKEND "system_backend_macos")
+elseif(IS_LINUX)
+    set(SYSTEM_BACKEND_SOURCE src/system_backend_linux.cppm)
+    set(SELECTED_BACKEND "system_backend_linux")
+else()
+    message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+endif()
 
 # Statische Bibliothek mit Modul-Dateisatz erstellen
 add_library(pfadfinder STATIC)
+# Alle Moduldateien in einem FILE_SET
 target_sources(pfadfinder PUBLIC
     FILE_SET CXX_MODULES
         FILES src/pfadfinder.cppm
+                ${SYSTEM_BACKEND_SOURCE}
 )
-
-# Include-Verzeichnis für config.hpp hinzufügen
-target_include_directories(pfadfinder PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 # Compiler-Features setzen
 target_compile_features(pfadfinder PUBLIC cxx_std_23)
