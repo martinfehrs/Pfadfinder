@@ -39,7 +39,8 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    [[nodiscard]] export const char* error_message(std::expected<fs::path, error_code> const& result)
+
+    export [[nodiscard]] const char* error_message(std::expected<fs::path, error_code> const& result)
     {
         return !result ? error_message(result.error()) : nullptr;
     }
