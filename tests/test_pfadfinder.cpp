@@ -5,8 +5,6 @@
  */
 
 // Standardbibliotheks-Header
-#include <cstdlib>
-#include <expected>
 #include <filesystem>
 #include <string>
 
@@ -24,28 +22,14 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     pfadfinder::application_environment env(test_app_name);
     
     SECTION("executable_path gibt einen gültigen Pfad zurück") {
-        auto path_result = env.executable_path();
-        REQUIRE(path_result.has_value());
-        
-        auto path = path_result.value();
+        auto path = env.executable_path();
         REQUIRE_FALSE(path.empty());
         REQUIRE(path.is_absolute());
         REQUIRE(std::filesystem::exists(path));
     }
     
-    SECTION("executable_path gibt Fehler zurück auf unsupported Plattform") {
-        // Dieser Test kann nur auf nicht unterstützten Plattformen getestet werden
-        // Hier nur als Dokumentation
-        // auto path_result = env.executable_path();
-        // REQUIRE_FALSE(path_result.has_value());
-        // REQUIRE(path_result.error() == pfadfinder::error_code::platform_not_supported);
-    }
-    
     SECTION("executable_directory gibt ein gültiges Verzeichnis zurück") {
-        auto dir_result = env.executable_directory();
-        REQUIRE(dir_result.has_value());
-        
-        auto dir = dir_result.value();
+        auto dir = env.executable_directory();
         REQUIRE_FALSE(dir.empty());
         REQUIRE(dir.is_absolute());
         REQUIRE(std::filesystem::exists(dir));
@@ -53,51 +37,32 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
     
     SECTION("executable_directory ist das Elternverzeichnis von executable_path") {
-        auto exe_path_result = env.executable_path();
-        auto exe_dir_result = env.executable_directory();
-        
-        REQUIRE(exe_path_result.has_value());
-        REQUIRE(exe_dir_result.has_value());
-        
-        auto exe_path = exe_path_result.value();
-        auto exe_dir = exe_dir_result.value();
-        
+        auto exe_path = env.executable_path();
+        auto exe_dir = env.executable_directory();
         REQUIRE(exe_dir == exe_path.parent_path());
     }
 
     SECTION("data_directory gibt einen gültigen Pfad zurück") {
-        auto data_dir_result = env.data_directory();
-        REQUIRE(data_dir_result.has_value());
-        
-        auto data_dir = data_dir_result.value();
+        auto data_dir = env.data_directory();
         REQUIRE_FALSE(data_dir.empty());
         REQUIRE(data_dir.is_absolute());
     }
 
     SECTION("data_directory enthält den app_name") {
 #if defined(__linux__)
-        auto data_dir_result = env.data_directory();
-        REQUIRE(data_dir_result.has_value());
-        auto data_dir = data_dir_result.value();
+        auto data_dir = env.data_directory();
         // Unter Linux: data_dir filename ist app_name
         REQUIRE(data_dir.filename() == test_app_name);
 #elif defined(_WIN32)
-        auto exe_dir_result = env.executable_directory();
-        auto data_dir_result = env.data_directory();
-        REQUIRE(exe_dir_result.has_value());
-        REQUIRE(data_dir_result.has_value());
-        auto exe_dir = exe_dir_result.value();
-        auto data_dir = data_dir_result.value();
-        // Unter Windows: data_dir ist exe_dir/app_name
-        REQUIRE(data_dir == exe_dir / test_app_name);
+        auto exe_dir = env.executable_directory();
+        auto data_dir = env.data_directory();
+        // Unter Windows: data_dir ist exe_dir
+        REQUIRE(data_dir == exe_dir);
 #endif
     }
 
     SECTION("user_data_directory gibt einen gültigen Pfad zurück") {
-        auto user_dir_result = env.user_data_directory();
-        REQUIRE(user_dir_result.has_value());
-        
-        auto user_dir = user_dir_result.value();
+        auto user_dir = env.user_data_directory();
         REQUIRE_FALSE(user_dir.empty());
         REQUIRE(user_dir.is_absolute());
         REQUIRE(user_dir.filename() == test_app_name);
@@ -105,18 +70,14 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 
     SECTION("user_data_directory enthält HOME oder APPDATA im Pfad") {
 #if defined(_WIN32)
-        auto user_dir_result = env.user_data_directory();
-        REQUIRE(user_dir_result.has_value());
-        auto user_dir = user_dir_result.value();
+        auto user_dir = env.user_data_directory();
         std::string user_dir_str = user_dir.string();
         // Unter Windows sollte APPDATA im Pfad enthalten sein
         const char* appdata = std::getenv("APPDATA");
         if (appdata)
             REQUIRE(user_dir_str.find(appdata) != std::string::npos);
 #elif defined(__linux__) || defined(__APPLE__)
-        auto user_dir_result = env.user_data_directory();
-        REQUIRE(user_dir_result.has_value());
-        auto user_dir = user_dir_result.value();
+        auto user_dir = env.user_data_directory();
         std::string user_dir_str = user_dir.string();
         const char* home = std::getenv("HOME");
         if (home)
@@ -125,23 +86,17 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("config_directory gibt einen gültigen Pfad zurück") {
-        auto config_dir_result = env.config_directory();
-        REQUIRE(config_dir_result.has_value());
-        
-        auto config_dir = config_dir_result.value();
+        auto config_dir = env.config_directory();
         REQUIRE_FALSE(config_dir.empty());
         REQUIRE(config_dir.is_absolute());
         REQUIRE(config_dir.filename() == test_app_name);
     }
 
     SECTION("cache_directory gibt einen gültigen Pfad zurück") {
-        auto cache_dir_result = env.cache_directory();
-        REQUIRE(cache_dir_result.has_value());
-        
-        auto cache_dir = cache_dir_result.value();
+        auto cache_dir = env.cache_directory();
         REQUIRE_FALSE(cache_dir.empty());
         REQUIRE(cache_dir.is_absolute());
-        
+
 #if defined(__linux__) || (defined(__APPLE__) && !defined(__BUNDLE__))
         // Unter Linux und macOS CLI: ~/.cache/<name>
         REQUIRE(cache_dir.filename() == test_app_name);
@@ -152,10 +107,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("log_directory gibt einen gültigen Pfad zurück") {
-        auto log_dir_result = env.log_directory();
-        REQUIRE(log_dir_result.has_value());
-        
-        auto log_dir = log_dir_result.value();
+        auto log_dir = env.log_directory();
         REQUIRE_FALSE(log_dir.empty());
         REQUIRE(log_dir.is_absolute());
         
@@ -178,29 +130,20 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("log_directory enthält den app_name") {
-        auto log_dir_result = env.log_directory();
-        REQUIRE(log_dir_result.has_value());
-        
-        auto log_dir = log_dir_result.value();
+        auto log_dir = env.log_directory();
         std::string log_dir_str = log_dir.string();
         REQUIRE(log_dir_str.find(test_app_name) != std::string::npos);
     }
 
     SECTION("temp_directory gibt einen gültigen Pfad zurück") {
-        auto temp_dir_result = env.temp_directory();
-        REQUIRE(temp_dir_result.has_value());
-        
-        auto temp_dir = temp_dir_result.value();
+        auto temp_dir = env.temp_directory();
         REQUIRE_FALSE(temp_dir.empty());
         REQUIRE(temp_dir.is_absolute());
         REQUIRE(temp_dir.filename() == test_app_name);
     }
 
     SECTION("temp_directory liegt im System-Temp-Verzeichnis") {
-        auto temp_dir_result = env.temp_directory();
-        REQUIRE(temp_dir_result.has_value());
-        
-        auto temp_dir = temp_dir_result.value();
+        auto temp_dir = env.temp_directory();
         auto system_temp = std::filesystem::temp_directory_path();
         
         // Der Pfad sollte im System-Temp-Verzeichnis oder einem Unterverzeichnis liegen
@@ -208,10 +151,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("user_directory gibt einen gültigen Pfad zurück") {
-        auto user_dir_result = env.user_directory();
-        REQUIRE(user_dir_result.has_value());
-        
-        auto user_dir = user_dir_result.value();
+        auto user_dir = env.user_directory();
         REQUIRE_FALSE(user_dir.empty());
         REQUIRE(user_dir.is_absolute());
         REQUIRE(std::filesystem::exists(user_dir));
@@ -219,10 +159,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("user_directory entspricht HOME oder USERPROFILE") {
-        auto user_dir_result = env.user_directory();
-        REQUIRE(user_dir_result.has_value());
-        
-        auto user_dir = user_dir_result.value();
+        auto user_dir = env.user_directory();
         
 #if defined(_WIN32)
         const char* expected_home = std::getenv("USERPROFILE");
@@ -234,46 +171,15 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
             REQUIRE(user_dir == std::filesystem::path(expected_home));
     }
 
-    SECTION("error_message gibt korrekte Fehlermeldungen zurück")
-    {
-#if defined(_WIN32)
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::windows_get_module_file_name_failed)) ==
-            "GetModuleFileNameW failed");
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::appdata_not_set)) ==
-            "APPDATA environment variable not set");
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::localappdata_not_set)) ==
-            "LOCALAPPDATA environment variable not set");
-#elif defined(__APPLE__)
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::macos_get_executable_path_failed)) ==
-            "_NSGetExecutablePath failed");
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::macos_realpath_failed)) ==
-            "realpath failed");
-#elif defined(__linux__)
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::linux_readlink_failed)) ==
-            "readlink failed");
-#endif
-        REQUIRE(
-            std::string(pfadfinder::error_message(pfadfinder::error_code::home_not_set)) ==
-            "Home directory not set");
-    }
-
     SECTION("Mehrere Instanzen mit verschiedenen app_names") {
         pfadfinder::application_environment env1("app1");
         pfadfinder::application_environment env2("app2");
         
-        auto dir1_result = env1.data_directory();
-        auto dir2_result = env2.data_directory();
-        REQUIRE(dir1_result.has_value());
-        REQUIRE(dir2_result.has_value());
+        auto dir1 = env1.data_directory();
+        auto dir2 = env2.data_directory();
         
         // Jede Instanz sollte ihren eigenen app_name verwenden
-        REQUIRE(dir1_result.value().filename() == "app1");
-        REQUIRE(dir2_result.value().filename() == "app2");
+        REQUIRE(dir1.filename() == "app1");
+        REQUIRE(dir2.filename() == "app2");
     }
 }

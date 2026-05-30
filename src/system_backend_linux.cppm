@@ -9,8 +9,8 @@ module;
 #include <unistd.h>
 #include <limits.h>
 
-#include <expected>
 #include <filesystem>
+#include <stdexcept>
 #include <string>
 
 export module pfadfinder:system_backend;
@@ -19,82 +19,87 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    // Fehlercodes für Linux
-    export enum class error_code
+    // Ausnahmen für Linux
+    export class pathfinder_error : public std::runtime_error
     {
-        home_not_set,         ///< Home-Verzeichnis nicht gesetzt
-        linux_readlink_failed ///< readlink /proc/self/exe fehlgeschlagen
+    public:
+        explicit pathfinder_error(const char* message) : std::runtime_error(message) {}
     };
 
-    export const char* error_message(error_code ec)
+    export class home_not_set : public pathfinder_error
     {
-        switch (ec)
+    public:
+        home_not_set() : pathfinder_error("Home directory not set") {}
+    };
+
+    export class readlink_failed : public pathfinder_error
+    {
+    public:
+        readlink_failed() : pathfinder_error("readlink failed") {}
+    };
+
+    export struct system_environment
+    {
+        static fs::path executable_path()
         {
-            case error_code::home_not_set:          return "Home directory not set";
-            case error_code::linux_readlink_failed: return "readlink failed";
-            default:                                return "Unknown error";
+            char path[PATH_MAX] = {0};
+            ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+            if (len == -1)
+                throw readlink_failed();
+            path[len] = '\0';
+            return fs::path(path);
         }
-    }
 
-    std::expected<fs::path, error_code> get_executable_path()
-    {
-        char path[PATH_MAX] = {0};
-        ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
-        if (len == -1)
-            return std::unexpected(error_code::linux_readlink_failed);
-        path[len] = '\0';
-        return fs::path(path);
-    }
+        static fs::path data_directory(const fs::path& exe_dir, const std::string& app_name)
+        {
+            // Linux: von /usr/bin/myapp zu /usr/share/myapp
+            return exe_dir.parent_path() / "share" / app_name;
+        }
 
-    std::expected<fs::path, error_code> get_data_directory(const fs::path& exe_dir, const std::string& app_name)
-    {
-        // Linux: von /usr/bin/myapp zu /usr/share/myapp
-        return exe_dir.parent_path() / "share" / app_name;
-    }
+        static fs::path user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            const char* home = std::getenv("HOME");
+            if (!home)
+                throw home_not_set();
+            return fs::path(home) / ".local" / "share" / app_name;
+        }
 
-    std::expected<fs::path, error_code> get_user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
-    {
-        const char* home = std::getenv("HOME");
-        if (!home)
-            return std::unexpected(error_code::home_not_set);
-        return fs::path(home) / ".local" / "share" / app_name;
-    }
+        static fs::path config_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            const char* home = std::getenv("HOME");
+            if (!home)
+                throw home_not_set();
+            return fs::path(home) / ".config" / app_name;
+        }
 
-    std::expected<fs::path, error_code> get_config_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
-    {
-        const char* home = std::getenv("HOME");
-        if (!home)
-            return std::unexpected(error_code::home_not_set);
-        return fs::path(home) / ".config" / app_name;
-    }
+        static fs::path cache_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            const char* home = std::getenv("HOME");
+            if (!home)
+                throw home_not_set();
+            return fs::path(home) / ".cache" / app_name;
+        }
 
-    std::expected<fs::path, error_code> get_cache_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
-    {
-        const char* home = std::getenv("HOME");
-        if (!home)
-            return std::unexpected(error_code::home_not_set);
-        return fs::path(home) / ".cache" / app_name;
-    }
+        static fs::path log_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            const char* home = std::getenv("HOME");
+            if (!home)
+                throw home_not_set();
+            return fs::path(home) / ".local" / "state" / app_name / "log";
+        }
 
-    std::expected<fs::path, error_code> get_log_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
-    {
-        const char* home = std::getenv("HOME");
-        if (!home)
-            return std::unexpected(error_code::home_not_set);
-        return fs::path(home) / ".local" / "state" / app_name / "log";
-    }
+        static fs::path temp_directory(const std::string& app_name)
+        {
+            return fs::temp_directory_path() / app_name;
+        }
 
-    std::expected<fs::path, error_code> get_system_temp_directory()
-    {
-        return fs::temp_directory_path();
-    }
-
-    std::expected<fs::path, error_code> get_user_directory()
-    {
-        const char* home = std::getenv("HOME");
-        if (!home)
-            return std::unexpected(error_code::home_not_set);
-        return fs::path(home);
-    }
+        static fs::path user_directory()
+        {
+            const char* home = std::getenv("HOME");
+            if (!home)
+                throw home_not_set();
+            return fs::path(home);
+        }
+    };
 
 }
