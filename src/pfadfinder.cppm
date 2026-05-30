@@ -104,7 +104,7 @@ namespace pfadfinder
         /**
          * @brief Gibt das Datenverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies dem Binärverzeichnis (ggf. mit Unterverzeichnis).
+         * Unter Windows entspricht dies dem Binärverzeichnis.
          * Unter Linux wird das share-Verzeichnis aus dem Binärverzeichnis abgeleitet
          * (z. B. /usr/bin/myapp → /usr/share/myapp).
          * Unter macOS wird bei gebündelten Anwendungen das Resources-Verzeichnis
@@ -124,10 +124,10 @@ namespace pfadfinder
             }
             else
             {
-                if (auto result = get_data_directory(*exe_dir); !result)
+                if (auto result = get_data_directory(*exe_dir, app_name_); !result)
                     cached_data_directory_ = std::unexpected(result.error());
                 else
-                    cached_data_directory_ = *result / app_name_;
+                    cached_data_directory_ = result;
             }
                 
             return *cached_data_directory_;

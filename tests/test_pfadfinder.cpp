@@ -79,7 +79,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         auto data_dir_result = env.data_directory();
         REQUIRE(data_dir_result.has_value());
         auto data_dir = data_dir_result.value();
-        // Unter Linux: Basis-Pfad ist /usr/share, app_name wird angehängt
+        // Unter Linux: data_dir filename ist app_name
         REQUIRE(data_dir.filename() == test_app_name);
 #elif defined(_WIN32)
         auto exe_dir_result = env.executable_directory();
