@@ -86,9 +86,9 @@ namespace pfadfinder
         return fs::path(home) / ".local" / "state" / app_name / "log";
     }
 
-    std::expected<fs::path, error_code> get_temp_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+    std::expected<fs::path, error_code> get_system_temp_directory()
     {
-        return fs::temp_directory_path() / app_name;
+        return fs::temp_directory_path();
     }
 
     std::expected<fs::path, error_code> get_user_directory()

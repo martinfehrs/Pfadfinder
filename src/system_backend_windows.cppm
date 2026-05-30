@@ -83,12 +83,12 @@ namespace pfadfinder
         return fs::path(localappdata) / app_name / "Logs";
     }
 
-    std::expected<fs::path, error_code> get_temp_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+    std::expected<fs::path, error_code> get_system_temp_directory()
     {
         const char* temp = std::getenv("TEMP");
         if (!temp)
-            return std::unexpected(error_code::home_not_set); // Fallback: Home nicht gesetzt
-        return fs::path(temp) / app_name;
+            return std::unexpected(error_code::home_not_set);
+        return fs::path(temp);
     }
 
     std::expected<fs::path, error_code> get_user_directory()

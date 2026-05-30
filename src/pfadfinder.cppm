@@ -298,20 +298,11 @@ namespace pfadfinder
         {
             if (!cached_temp_directory_.has_value())
             {
-                auto exe_dir_result = executable_directory();
-                if (!exe_dir_result)
-                {
-                    cached_temp_directory_ = std::unexpected(exe_dir_result.error());
-                }
+                auto result = get_system_temp_directory();
+                if (!result)
+                    cached_temp_directory_ = std::unexpected(result.error());
                 else
-                {
-                    auto exe_dir = *exe_dir_result;
-                    auto result = get_temp_directory(exe_dir, app_name_);
-                    if (!result)
-                        cached_temp_directory_ = std::unexpected(result.error());
-                    else
-                        cached_temp_directory_ = result;
-                }
+                    cached_temp_directory_ = *result / app_name_;
             }
             return *cached_temp_directory_;
         }

@@ -153,22 +153,9 @@ namespace pfadfinder
         }
     }
 
-    std::expected<fs::path, error_code> get_temp_directory(const fs::path& exe_dir, const std::string& app_name)
+    std::expected<fs::path, error_code> get_system_temp_directory()
     {
-        std::string exe_dir_str = exe_dir.string();
-        if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
-        {
-            // Bundle: ~/Library/Caches/TemporaryItems/<appname>
-            const char* home = std::getenv("HOME");
-            if (!home)
-                return std::unexpected(error_code::home_not_set);
-            return fs::path(home) / "Library" / "Caches" / "TemporaryItems" / app_name;
-        }
-        else
-        {
-            // Nicht gebündelt: /tmp/<appname>
-            return fs::temp_directory_path() / app_name;
-        }
+        return fs::temp_directory_path();
     }
 
     std::expected<fs::path, error_code> get_user_directory()
