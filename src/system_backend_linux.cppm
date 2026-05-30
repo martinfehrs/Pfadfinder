@@ -22,9 +22,19 @@ namespace pfadfinder
     // Fehlercodes für Linux
     export enum class error_code
     {
-        home_not_set,          ///< Home-Verzeichnis nicht gesetzt
-        linux_readlink_failed   ///< readlink /proc/self/exe fehlgeschlagen
+        home_not_set,         ///< Home-Verzeichnis nicht gesetzt
+        linux_readlink_failed ///< readlink /proc/self/exe fehlgeschlagen
     };
+
+    export const char* error_message(error_code ec)
+    {
+        switch (ec)
+        {
+            case error_code::home_not_set:          return "Home directory not set";
+            case error_code::linux_readlink_failed: return "readlink failed";
+            default:                                return "Unknown error";
+        }
+    }
 
     std::expected<fs::path, error_code> get_executable_path()
     {
@@ -85,16 +95,6 @@ namespace pfadfinder
         if (!home)
             return std::unexpected(error_code::home_not_set);
         return fs::path(home);
-    }
-
-    export const char* error_message(error_code ec)
-    {
-        switch (ec)
-        {
-            case error_code::home_not_set:         return "Home directory not set";
-            case error_code::linux_readlink_failed: return "readlink failed";
-            default:                               return "Unknown error";
-        }
     }
 
 }

@@ -21,11 +21,23 @@ namespace pfadfinder
     // Fehlercodes für Windows
     export enum class error_code
     {
-        home_not_set,                     ///< Home-Verzeichnis nicht gesetzt
-        appdata_not_set,                  ///< APPDATA nicht gesetzt
-        localappdata_not_set,             ///< LOCALAPPDATA nicht gesetzt
-        windows_get_module_file_name_failed  ///< GetModuleFileNameW fehlgeschlagen
+        home_not_set,                       ///< Home-Verzeichnis nicht gesetzt
+        appdata_not_set,                    ///< APPDATA nicht gesetzt
+        localappdata_not_set,               ///< LOCALAPPDATA nicht gesetzt
+        windows_get_module_file_name_failed ///< GetModuleFileNameW fehlgeschlagen
     };
+
+    export const char* error_message(error_code ec)
+    {
+        switch (ec)
+        {
+            case error_code::home_not_set:                        return "Home directory not set";
+            case error_code::appdata_not_set:                     return "APPDATA environment variable not set";
+            case error_code::localappdata_not_set:                return "LOCALAPPDATA environment variable not set";
+            case error_code::windows_get_module_file_name_failed: return "GetModuleFileNameW failed";
+            default:                                              return "Unknown error";
+        }
+    }
 
     std::expected<fs::path, error_code> get_executable_path()
     {
@@ -87,18 +99,6 @@ namespace pfadfinder
         if (!userprofile)
             return std::unexpected(error_code::home_not_set);
         return fs::path(userprofile);
-    }
-
-    export const char* error_message(error_code ec)
-    {
-        switch (ec)
-        {
-            case error_code::home_not_set:                     return "Home directory not set";
-            case error_code::appdata_not_set:                  return "APPDATA environment variable not set";
-            case error_code::localappdata_not_set:             return "LOCALAPPDATA environment variable not set";
-            case error_code::windows_get_module_file_name_failed: return "GetModuleFileNameW failed";
-            default:                                              return "Unknown error";
-        }
     }
 
 }

@@ -39,12 +39,6 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    /**
-     * @brief Gibt eine menschlesbare Fehlermeldung für einen error_code zurück.
-     * @param ec Der Fehlercode
-     * @return Zeiger auf eine statische Zeichenkette mit der Fehlermeldung
-     */
-
 
     /**
      * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
@@ -331,5 +325,5 @@ namespace pfadfinder
         mutable std::optional<std::expected<fs::path, error_code>> cached_user_directory_;
     };
 
-} // namespace pfadfinder
+}
 

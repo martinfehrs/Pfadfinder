@@ -22,10 +22,21 @@ namespace pfadfinder
     // Fehlercodes für macOS
     export enum class error_code
     {
-        home_not_set,                 ///< Home-Verzeichnis nicht gesetzt
-        macos_get_executable_path_failed,  ///< _NSGetExecutablePath fehlgeschlagen
-        macos_realpath_failed         ///< realpath fehlgeschlagen
+        home_not_set,                     ///< Home-Verzeichnis nicht gesetzt
+        macos_get_executable_path_failed, ///< _NSGetExecutablePath fehlgeschlagen
+        macos_realpath_failed             ///< realpath fehlgeschlagen
     };
+
+    export const char* error_message(error_code ec)
+    {
+        switch (ec)
+        {
+            case error_code::home_not_set:                     return "Home directory not set";
+            case error_code::macos_get_executable_path_failed: return "_NSGetExecutablePath failed";
+            case error_code::macos_realpath_failed:            return "realpath failed";
+            default:                                           return "Unknown error";
+        }
+    }
 
     std::expected<fs::path, error_code> get_executable_path()
     {
@@ -153,17 +164,6 @@ namespace pfadfinder
         if (!home)
             return std::unexpected(error_code::home_not_set);
         return fs::path(home);
-    }
-
-    export const char* error_message(error_code ec)
-    {
-        switch (ec)
-        {
-            case error_code::home_not_set:                 return "Home directory not set";
-            case error_code::macos_get_executable_path_failed: return "_NSGetExecutablePath failed";
-            case error_code::macos_realpath_failed:        return "realpath failed";
-            default:                                      return "Unknown error";
-        }
     }
 
 }
