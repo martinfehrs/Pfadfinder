@@ -88,8 +88,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         REQUIRE(data_dir_result.has_value());
         auto exe_dir = exe_dir_result.value();
         auto data_dir = data_dir_result.value();
-        // Unter Windows: data_dir sollte exe_dir/test_app sein
-        REQUIRE(data_dir == exe_dir / test_app_name);
+        // Unter Windows: data_dir ist das Binärverzeichnis
+        REQUIRE(data_dir == exe_dir);
 #endif
     }
 

@@ -55,8 +55,8 @@ ausführbaren Datei oder ein Fehlercode.
 Gibt das systemweite Datenverzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt das Binärverzeichnis mit app_name Unterverzeichnis zurück
-  (z. B. `C:\\App\\meine_app`)
+- **Windows:** Gibt das Binärverzeichnis zurück
+  (z. B. `C:\\App`)
 - **Linux:** Leitet das share-Verzeichnis aus dem Binärverzeichnis ab
   (z. B. `/usr/share/meine_app`)
 - **macOS Bundle:** Gibt das Resources-Verzeichnis zurück

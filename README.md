@@ -58,8 +58,8 @@ executable file or an error code.
 Returns the system-wide data directory of the application.
 
 **Platform-specific behavior:**
-- **Windows:** Returns the binary directory with app_name subdirectory
-  (e.g. `C:\\App\\my_app`)
+- **Windows:** Returns the binary directory
+  (e.g. `C:\\App`)
 - **Linux:** Derives the share directory from the binary directory
   (e.g. `/usr/share/my_app`)
 - **macOS Bundle:** Returns the Resources directory
