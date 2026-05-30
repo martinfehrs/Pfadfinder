@@ -194,7 +194,7 @@ int main()
 
 - C++23
 - CMake 3.28 oder höher
-- Compiler mit C++23 Modul-Unterstützung (GCC 15, Clang 17, MSVC 19.40+)
+- Compiler mit C++23 Modul-Unterstützung (GCC 15, Clang 19, MSVC 19.40+)
 
 ## Build
 
