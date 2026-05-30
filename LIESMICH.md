@@ -219,16 +219,16 @@ cd build
 Pfadfinder/
 ├── .github/
 │   └── workflows/
-│       └── cmake.yml    # GitHub Actions CI-Konfiguration
-├── CMakeLists.txt       # Haupt-CMake-Konfiguration
-├── CMakePresets.json    # CMake Presets (Ninja als Standard)
-├── LIESMICH.md          # Diese Datei
-├── config.hpp.in        # Vorlage für Plattform-Makros
+│       └── cmake.yml       # GitHub Actions CI-Konfiguration
+├── CMakeLists.txt          # Haupt-CMake-Konfiguration
+├── CMakePresets.json       # CMake Presets (Ninja als Standard)
+├── LIESMICH.md             # Diese Datei
+├── config.hpp.in           # Vorlage für Plattform-Makros
 ├── src/
-│   └── pfadfinder.cppm  # C++23 Schnittstellenmodul
+│   └── pfadfinder.cppm     # C++23 Schnittstellenmodul
 └── tests/
-    ├── CMakeLists.txt   # Test-Konfiguration
-    └── test_pfadfinder.cpp  # Testfälle mit CATCH2
+    ├── CMakeLists.txt      # Test-Konfiguration
+    └── test_pfadfinder.cpp # Testfälle mit CATCH2
 ```
 
 ## Autor
