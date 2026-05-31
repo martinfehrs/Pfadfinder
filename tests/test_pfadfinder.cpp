@@ -125,7 +125,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         const char* home = std::getenv("HOME");
         if (home)
             REQUIRE(log_dir_str.find(home) != std::string::npos);
-        REQUIRE(log_dir.filename() == test_app_name || log_dir.parent_path().filename() == "Logs");
+        REQUIRE((log_dir.filename() == test_app_name || log_dir.parent_path().filename() == "Logs"));
 #endif
     }
 
