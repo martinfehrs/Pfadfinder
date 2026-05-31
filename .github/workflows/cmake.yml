@@ -53,7 +53,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y ninja-build ${{ matrix.c_compiler }}
+        sudo apt-get install -y ninja-build clang-19 clang-scan-deps-19 lld-19
 
     - name: Configure CMake
       run: >
