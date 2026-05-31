@@ -18,27 +18,48 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-24.04, windows-2022]
+        os: [ubuntu-24.04, windows-2022, macosx-latest]
         build_type: [Release]
-        c_compiler: [clang-19, cl]
-        generator: [Ninja, "Visual Studio 17 2022"]
+        c_compiler: [clang-19, cl, clang]
+        generator: [Ninja, "Visual Studio 17 2022", Xcode]
         include:
           - os: ubuntu-24.04
             c_compiler: clang-19
             cpp_compiler: clang++-19
+            generator: Ninja
           - os: windows-2022
             c_compiler: cl
             cpp_compiler: cl
+            generator: "Visual Studio 17 2022"
+          - os: macosx-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+            generator: Xcode
         exclude:
           - os: ubuntu-24.04
-            c_compiler: clang-19
+            c_compiler: cl
+          - os: ubuntu-24.04
+            c_compiler: clang
+          - os: ubuntu-24.04
             generator: "Visual Studio 17 2022"
           - os: ubuntu-24.04
-            c_compiler: cl
+            generator: Xcode
           - os: windows-2022
             c_compiler: clang-19
           - os: windows-2022
+            c_compiler: clang
+          - os: windows-2022
             generator: Ninja
+          - os: windows-2022
+            generator: Xcode
+          - os: macosx-latest
+            c_compiler: clang-19
+          - os: macosx-latest
+            c_compiler: cl
+          - os: macosx-latest
+            generator: Ninja
+          - os: macosx-latest
+            generator: "Visual Studio 17 2022"
 
     steps:
     - uses: actions/checkout@v4
