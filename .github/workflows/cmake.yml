@@ -20,20 +20,20 @@ jobs:
       matrix:
         os: [ubuntu-24.04, windows-2022, macos-15]
         build_type: [Release]
-        c_compiler: [clang-19, cl]
+        c_compiler: [clang, cl]
         generator: [Ninja, "Visual Studio 17 2022"]
         include:
           - os: ubuntu-24.04
-            c_compiler: clang-19
-            cpp_compiler: clang++-19
+            c_compiler: clang
+            cpp_compiler: clang++
             generator: Ninja
           - os: windows-2022
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 17 2022"
           - os: macos-15
-            c_compiler: clang-19
-            cpp_compiler: clang++-19
+            c_compiler: clang
+            cpp_compiler: clang++
             generator: Ninja
         exclude:
           - os: ubuntu-24.04
@@ -41,7 +41,7 @@ jobs:
           - os: ubuntu-24.04
             generator: "Visual Studio 17 2022"
           - os: windows-2022
-            c_compiler: clang-19
+            c_compiler: clang
           - os: windows-2022
             generator: Ninja
           - os: macos-15
@@ -55,9 +55,8 @@ jobs:
     - name: Install macOS dependencies
       if: runner.os == 'macOS'
       run: |
-        brew install --overwrite llvm@19
-        ln -s "$(brew --prefix llvm@19)/bin/clang" "$(brew --prefix llvm@19)/bin/clang-19"
-        ln -s "$(brew --prefix llvm@19)/bin/clang++" "$(brew --prefix llvm@19)/bin/clang++-19"
+        brew install llvm@19
+        brew link llvm@19
         echo "$(brew --prefix llvm@19)/bin" >> $GITHUB_PATH
 
     - name: Set reusable strings
@@ -71,6 +70,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y ninja-build clang-19 clang-tools-19
+	sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-19
 
     - name: Configure CMake
       run: >
