@@ -44,9 +44,9 @@ jobs:
             c_compiler: clang
           - os: windows-2022
             generator: Ninja
-          - os: macos-15
+          - os: macos-26
             c_compiler: cl
-          - os: macos-15
+          - os: macos-26
             generator: "Visual Studio 17 2022"
 
     steps:
