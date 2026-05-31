@@ -141,8 +141,8 @@ import pfadfinder;
 
 int main()
 {
-    // Create an environment for the application "MyApp"
-    pfadfinder::application_environment env("MyApp");
+    // Create an environment
+    pfadfinder::application_environment env;
     
     try
     {
