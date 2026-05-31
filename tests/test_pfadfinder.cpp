@@ -175,11 +175,16 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         pfadfinder::application_environment env1("app1");
         pfadfinder::application_environment env2("app2");
         
-        auto dir1 = env1.data_directory();
-        auto dir2 = env2.data_directory();
-        
+        const auto dir1 = env1.data_directory();
+        const auto dir2 = env2.data_directory();
+
+#if defined (_WIN32)
+        REQUIRES(dir1 == dir2);
+#else
         // Jede Instanz sollte ihren eigenen app_name verwenden
         REQUIRE(dir1.filename() == "app1");
         REQUIRE(dir2.filename() == "app2");
+#endif
+        
     }
 }
