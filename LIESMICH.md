@@ -174,6 +174,8 @@ int main()
 
 ## Build
 
+Unter Linux:
+
 ```bash
 cd Pfadfinder
 mkdir -p build
@@ -182,7 +184,7 @@ cmake -G "Ninja Multi-Config" ..
 cmake --build . --config Release
 ```
 
-Für MSVC unter Windows:
+Unter Windows mit Visual Studio 2022:
 
 ```bash
 cd Pfadfinder
