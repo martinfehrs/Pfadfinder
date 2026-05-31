@@ -20,15 +20,25 @@ jobs:
       matrix:
         os: [ubuntu-24.04, windows-latest]
         build_type: [Release]
+        c_compiler: [clang-19, cl]
+        generator: [Ninja, "Visual Studio 17 2022"]
         include:
           - os: ubuntu-24.04
             c_compiler: clang-19
             cpp_compiler: clang++-19
-            generator: Ninja
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+        exclude:
+          - os: ubuntu-24.04
+            c_compiler: clang-19
             generator: "Visual Studio 17 2022"
+          - os: ubuntu-24.04
+            c_compiler: cl
+          - os: windows-latest
+            c_compiler: clang-19
+          - os: windows-latest
+            generator: Ninja
 
     steps:
     - uses: actions/checkout@v4
