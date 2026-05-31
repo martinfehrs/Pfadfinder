@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-24.04, windows-latest]
+        os: [ubuntu-24.04, windows-2022]
         build_type: [Release]
         c_compiler: [clang-19, cl]
         generator: [Ninja, "Visual Studio 17 2022"]
@@ -26,7 +26,7 @@ jobs:
           - os: ubuntu-24.04
             c_compiler: clang-19
             cpp_compiler: clang++-19
-          - os: windows-latest
+          - os: windows-2022
             c_compiler: cl
             cpp_compiler: cl
         exclude:
@@ -35,9 +35,9 @@ jobs:
             generator: "Visual Studio 17 2022"
           - os: ubuntu-24.04
             c_compiler: cl
-          - os: windows-latest
+          - os: windows-2022
             c_compiler: clang-19
-          - os: windows-latest
+          - os: windows-2022
             generator: Ninja
 
     steps:
