@@ -9,7 +9,7 @@ Dieses Projekt stellt die Klasse `pfadfinder::application_environment` bereit,
  auf verschiedenen Plattformen (Windows, Linux, macOS) bereitstellt.
 
 Die Implementierung unterstützt:
-- Windows (mittels `GetModuleFileNameW`, `GetModuleFileName`)
+- Windows (mittels `GetModuleFileNameW`)
 - macOS (mittels `_NSGetExecutablePath` und `realpath`)
 - Linux (mittels `/proc/self/exe`)
 
@@ -20,51 +20,51 @@ Die Hauptklasse des Moduls, die alle Pfadfunktionen als Methoden bereitstellt.
 ### Konstruktor
 
 **Parameter:**
-- `app_name` (erforderlich): Der Name der Anwendung, der für alle
-  Verzeichnispfade verwendet wird.
+- `app_name` (optional): Der Name der Anwendung, der für alle
+  Verzeichnispfade verwendet wird. Wird kein Name angegeben, wird der Dateiname
+  der ausführbaren Datei (ohne Endung) als Anwendungsname verwendet.
 
 ### Fehlerbehandlung
 
-Alle Pfadfunktionen geben `std::expected<fs::path, error>` zurück, wobei `error`
- eine Aufzählung ist, die plattformspezifische Fehlerfälle beschreibt:
+Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
+ ein Fehler auftritt. Die folgenden Ausnahmen können geworfen werden:
 
-- `platform_not_supported` - Plattform wird nicht unterstützt
-- `windows_get_module_file_name_failed` - GetModuleFileNameW scheiterte
-- `appdata_not_set` - Umgebungsvariable APPDATA nicht gesetzt
-- `localappdata_not_set` - Umgebungsvariable LOCALAPPDATA nicht gesetzt
-- `macos_get_executable_path_failed` - _NSGetExecutablePath scheiterte
-- `macos_realpath_failed` - realpath scheiterte
-- `linux_readlink_failed` - readlink /proc/self/exe scheiterte
-- `home_not_set` - Umgebungsvariable HOME nicht gesetzt
+- `home_not_set`                - Umgebungsvariable HOME nicht gesetzt
+- `readlink_failed`             - readlink /proc/self/exe scheiterte (Linux)
+- `appdata_not_set`             - Umgebungsvariable APPDATA nicht gesetzt (Windows)
+- `localappdata_not_set`        - Umgebungsvariable LOCALAPPDATA nicht gesetzt (Windows)
+- `get_module_file_name_failed` - GetModuleFileNameW scheiterte (Windows)
+- `get_executable_path_failed`  - _NSGetExecutablePath scheiterte (macOS)
+- `realpath_failed`             - realpath scheiterte (macOS)
+
+Alle Ausnahmen sind von `pfadfinder::pathfinder_error` abgeleitet, die ihrerseits
+ von `std::runtime_error` abgeleitet ist.
 
 ### Methoden
 
 #### `executable_path()`
 Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Der vollständige Pfad zur
-ausführbaren Datei oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Der vollständige Pfad zur ausführbaren Datei.
+**Ausnahmen:** Plattformspezifische Ausnahmen (siehe Fehlerbehandlung).
 
 #### `executable_directory()`
 Gibt das Verzeichnis zurück, das die ausführbare Datei enthält.
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Verzeichnis der
-ausführbaren Datei oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Verzeichnis der ausführbaren Datei.
 
 #### `data_directory()`
 Gibt das systemweite Datenverzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `<Binärverzeichnis>` zurück
-  (z. B. `C:\\App`)
+- **Windows:** Gibt `<Binärverzeichnis>` zurück (z. B. `C:\\App`)
 - **Linux:** Leitet das share-Verzeichnis aus dem Binärverzeichnis ab
   (z. B. `/usr/share/meine_app`)
 - **macOS Bundle:** Gibt das Resources-Verzeichnis zurück
   (z. B. `MeineApp.app/Contents/Resources/`)
 - **macOS CLI:** Ähnlich wie Linux (z. B. `/usr/local/share/meine_app`)
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Datenverzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Datenverzeichnis.
 
 #### `user_data_directory()`
 Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
@@ -77,8 +77,7 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
 - **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Benutzer-Datenverzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
 
 #### `config_directory()`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
@@ -89,44 +88,40 @@ Gibt das Konfigurationsverzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
 - **macOS CLI:** Gibt `~/.config/<appname>` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Konfigurationsverzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
 
 #### `cache_directory()`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache` zurück
+- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Cache` zurück
 - **Linux:** Gibt `~/.cache/<appname>` zurück (XDG Base Directory Specification)
 - **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
 - **macOS CLI:** Gibt `~/.cache/<appname>` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Cache-Verzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
 
 #### `log_directory()`
 Gibt das Log-Verzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs` zurück
+- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Logs` zurück
 - **Linux:** Gibt `~/.local/state/<appname>/log` zurück (XDG Base Directory Specification)
 - **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
 - **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Log-Verzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
 
 #### `temp_directory()`
 Gibt das temporäre Verzeichnis der Anwendung zurück.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%TEMP%\<appname>` zurück
-- **Linux:** Gibt `/tmp/<appname>` zurück (XDG Base Directory Specification)
+- **Linux:** Gibt `/tmp/<appname>` zurück
 - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
 - **macOS CLI:** Gibt `/tmp/<appname>` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das temporäre Verzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
 
 #### `user_directory()`
 Gibt das Home-Verzeichnis des Benutzers zurück.
@@ -135,8 +130,7 @@ Gibt das Home-Verzeichnis des Benutzers zurück.
 - **Windows:** Gibt `%USERPROFILE%` zurück
 - **Linux und macOS:** Gibt `$HOME` zurück
 
-**Rückgabewert:** `std::expected<fs::path, error>` - Das Home-Verzeichnis
-oder ein Fehlercode.
+**Rückgabewert:** `fs::path` - Das Home-Verzeichnis.
 
 ## Verwendungsbeispiel
 
@@ -149,42 +143,24 @@ int main()
     // Erstelle eine Umgebung für die Anwendung "MeineApp"
     pfadfinder::application_environment env("MeineApp");
     
-    // Ermittle verschiedene Verzeichnisse
-    auto exec_result = env.executable_path();
-    if (exec_result)
-        std::println("Executable: {}", exec_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(exec_result.error()));
-    
-    auto exec_dir_result = env.executable_directory();
-    if (exec_dir_result)
-        std::println("Executable Dir: {}", exec_dir_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(exec_dir_result.error()));
-    
-    auto data_dir_result = env.data_directory();
-    if (data_dir_result)
-        std::println("Data Dir: {}", data_dir_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(data_dir_result.error()));
-    
-    auto user_data_dir_result = env.user_data_directory();
-    if (user_data_dir_result)
-        std::println("User Data Dir: {}", user_data_dir_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(user_data_dir_result.error()));
-    
-    auto config_dir_result = env.config_directory();
-    if (config_dir_result)
-        std::println("Config Dir: {}", config_dir_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(config_dir_result.error()));
-    
-    auto cache_dir_result = env.cache_directory();
-    if (cache_dir_result)
-        std::println("Cache Dir: {}", cache_dir_result->string());
-    else
-        std::println(stderr, "Error: {}", pfadfinder::error_message(cache_dir_result.error()));
+    try
+    {
+        // Ermittle verschiedene Verzeichnisse
+        std::println("Executable: {}", env.executable_path().string());
+        std::println("Executable Dir: {}", env.executable_directory().string());
+        std::println("Data Dir: {}", env.data_directory().string());
+        std::println("User Data Dir: {}", env.user_data_directory().string());
+        std::println("Config Dir: {}", env.config_directory().string());
+        std::println("Cache Dir: {}", env.cache_directory().string());
+        std::println("Log Dir: {}", env.log_directory().string());
+        std::println("Temp Dir: {}", env.temp_directory().string());
+        std::println("User Dir: {}", env.user_directory().string());
+    }
+    catch (const pfadfinder::pathfinder_error& e)
+    {
+        std::println(stderr, "Fehler: {}", e.what());
+        return 1;
+    }
     
     return 0;
 }
@@ -194,7 +170,7 @@ int main()
 
 - C++23
 - CMake 3.28 oder höher
-- Compiler mit C++23 Modul-Unterstützung (GCC 15, Clang 19, MSVC 19.40+)
+- Compiler mit C++-Modul-Unterstützung (GCC 15, Clang 19, MSVC 19.40+)
 
 ## Build
 
@@ -217,18 +193,17 @@ cd build
 
 ```
 Pfadfinder/
-├── .github/
-│   └── workflows/
-│       └── cmake.yml       # GitHub Actions CI-Konfiguration
-├── CMakeLists.txt          # Haupt-CMake-Konfiguration
-├── CMakePresets.json       # CMake Presets (Ninja als Standard)
-├── LIESMICH.md             # Diese Datei
-├── config.hpp.in           # Vorlage für Plattform-Makros
+├── CMakeLists.txt                  # Haupt-CMake-Konfiguration
+├── LIESMICH.md                     # Diese Datei
 ├── src/
-│   └── pfadfinder.cppm     # C++23 Schnittstellenmodul
+│   ├── error.cppm                  # Fehlerbehandlung (Ausnahmeklassen)
+│   ├── pfadfinder.cppm             # Hauptmodul
+│   ├── system_backend_linux.cppm   # Linux-spezifische Implementierung
+│   ├── system_backend_windows.cppm # Windows-spezifische Implementierung
+│   └── system_backend_macos.cppm   # macOS-spezifische Implementierung
 └── tests/
-    ├── CMakeLists.txt      # Test-Konfiguration
-    └── test_pfadfinder.cpp # Testfälle mit CATCH2
+    ├── CMakeLists.txt              # Test-Konfiguration
+    └── test_pfadfinder.cpp         # Testfälle mit CATCH2
 ```
 
 ## Autor

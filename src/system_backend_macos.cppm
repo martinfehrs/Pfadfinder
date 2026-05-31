@@ -10,37 +10,29 @@ module;
 #include <limits.h>
 
 #include <filesystem>
-#include <stdexcept>
 #include <string>
 
 export module pfadfinder:system_backend;
+
+import :error;
 
 namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
     // Ausnahmen für macOS
-    export class pathfinder_error : public std::runtime_error
+    export struct home_not_set : pathfinder_error
     {
-    public:
-        explicit pathfinder_error(const char* message) : std::runtime_error(message) {}
-    };
-
-    export class home_not_set : public pathfinder_error
-    {
-    public:
         home_not_set() : pathfinder_error("Home directory not set") {}
     };
 
-    export class get_executable_path_failed : public pathfinder_error
+    export struct get_executable_path_failed : pathfinder_error
     {
-    public:
         get_executable_path_failed() : pathfinder_error("_NSGetExecutablePath failed") {}
     };
 
-    export class realpath_failed : public pathfinder_error
+    export struct realpath_failed : pathfinder_error
     {
-    public:
         realpath_failed() : pathfinder_error("realpath failed") {}
     };
 

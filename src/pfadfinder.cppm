@@ -7,15 +7,15 @@
  * 
  * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
- *    - executable_path()     : Vollständiger Pfad zur ausführbaren Datei
- *    - executable_directory(): Verzeichnis der ausführbaren Datei
- *    - data_directory()      : Systemweites Datenverzeichnis
- *    - user_data_directory() : Benutzer-spezifisches Datenverzeichnis
- *    - config_directory()    : Konfigurationsverzeichnis
- *    - cache_directory()     : Cache-Verzeichnis
- *    - log_directory()       : Log-Verzeichnis für Anwendungsprotokolle
- *    - temp_directory()      : Temporäres Verzeichnis für die Anwendung
- *    - user_directory()      : Home-Verzeichnis des Benutzers
+ *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
+ *    - executable_directory() : Verzeichnis der ausführbaren Datei
+ *    - data_directory()       : Systemweites Datenverzeichnis
+ *    - user_data_directory()  : Benutzer-spezifisches Datenverzeichnis
+ *    - config_directory()     : Konfigurationsverzeichnis
+ *    - cache_directory()      : Cache-Verzeichnis
+ *    - log_directory()        : Log-Verzeichnis für Anwendungsprotokolle
+ *    - temp_directory()       : Temporäres Verzeichnis für die Anwendung
+ *    - user_directory()       : Home-Verzeichnis des Benutzers
  */
 
 module;
@@ -27,6 +27,7 @@ module;
 export module pfadfinder;
 
 export import :system_backend;
+export import :error;
 
 namespace fs = std::filesystem;
 
@@ -47,7 +48,9 @@ namespace pfadfinder
      */
     export class application_environment
     {
+
     public:
+  
         /**
          * @brief Erstellt eine neue application_environment Instanz mit leerem App-Namen.
          */
@@ -63,7 +66,7 @@ namespace pfadfinder
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-         *        Setzt app_name_ auf den Dateinamen (ohne Extension), falls app_name_ leer ist.
+         *        Setzt app_name_ auf den Dateinamen (ohne Dateierweiterung), falls app_name_ leer ist.
          * @return fs::path Der vollständige Pfad zur ausführbaren Datei.
          * @throws Ausnahmen je nach Plattform (z.B. readlink_failed, get_module_file_name_failed)
          */
@@ -72,13 +75,13 @@ namespace pfadfinder
             if (!cached_executable_path_.has_value())
             {
                 auto path = system_env_.executable_path();
-                // Setze app_name_ auf den Dateinamen ohne Extension, falls noch nicht gesetzt
+                // Setze app_name_ auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
                 if (app_name_.empty())
-                {
                     app_name_ = path.stem().string();
-                }
+
                 cached_executable_path_ = path;
             }
+
             return *cached_executable_path_;
         }
 
@@ -89,9 +92,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path executable_directory() const
         {
             if (!cached_executable_directory_.has_value())
-            {
                 cached_executable_directory_ = executable_path().parent_path();
-            }
+
             return *cached_executable_directory_;
         }
 
@@ -108,10 +110,9 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path data_directory() const
         {
-            if (cached_data_directory_.has_value())
-                return *cached_data_directory_;
-
-            cached_data_directory_ = system_env_.data_directory(executable_directory(), app_name_);
+            if (!cached_data_directory_.has_value())
+                cached_data_directory_ = system_env_.data_directory(executable_directory(), app_name_);
+            
             return *cached_data_directory_;
         }
 
@@ -128,9 +129,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path user_data_directory() const
         {
             if (!cached_user_data_directory_.has_value())
-            {
                 cached_user_data_directory_ = system_env_.user_data_directory(executable_directory(), app_name_);
-            }
+
             return *cached_user_data_directory_;
         }
 
@@ -147,9 +147,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path config_directory() const
         {
             if (!cached_config_directory_.has_value())
-            {
                 cached_config_directory_ = system_env_.config_directory(executable_directory(), app_name_);
-            }
+
             return *cached_config_directory_;
         }
 
@@ -166,9 +165,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path cache_directory() const
         {
             if (!cached_cache_directory_.has_value())
-            {
                 cached_cache_directory_ = system_env_.cache_directory(executable_directory(), app_name_);
-            }
+
             return *cached_cache_directory_;
         }
 
@@ -185,9 +183,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path log_directory() const
         {
             if (!cached_log_directory_.has_value())
-            {
                 cached_log_directory_ = system_env_.log_directory(executable_directory(), app_name_);
-            }
+
             return *cached_log_directory_;
         }
 
@@ -203,9 +200,8 @@ namespace pfadfinder
         [[nodiscard]] fs::path temp_directory() const
         {
             if (!cached_temp_directory_.has_value())
-            {
                 cached_temp_directory_ = system_env_.temp_directory(app_name_);
-            }
+
             return *cached_temp_directory_;
         }
 
@@ -220,13 +216,13 @@ namespace pfadfinder
         [[nodiscard]] fs::path user_directory() const
         {
             if (!cached_user_directory_.has_value())
-            {
                 cached_user_directory_ = system_env_.user_directory();
-            }
+
             return *cached_user_directory_;
         }
 
     private:
+
         mutable std::string app_name_;
         [[no_unique_address]] system_environment system_env_;
 

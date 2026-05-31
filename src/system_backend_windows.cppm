@@ -9,43 +9,34 @@ module;
 #include <windows.h>
 
 #include <filesystem>
-#include <stdexcept>
 #include <string>
 
 export module pfadfinder:system_backend;
+
+import :error;
 
 namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
     // Ausnahmen für Windows
-    export class pathfinder_error : public std::runtime_error
+    export struct home_not_set : pathfinder_error
     {
-    public:
-        explicit pathfinder_error(const char* message) : std::runtime_error(message) {}
-    };
-
-    export class home_not_set : public pathfinder_error
-    {
-    public:
         home_not_set() : pathfinder_error("Home directory not set") {}
     };
 
-    export class appdata_not_set : public pathfinder_error
+    export struct appdata_not_set : pathfinder_error
     {
-    public:
         appdata_not_set() : pathfinder_error("APPDATA environment variable not set") {}
     };
 
-    export class localappdata_not_set : public pathfinder_error
+    export struct localappdata_not_set : pathfinder_error
     {
-    public:
         localappdata_not_set() : pathfinder_error("LOCALAPPDATA environment variable not set") {}
     };
 
-    export class get_module_file_name_failed : public pathfinder_error
+    export struct get_module_file_name_failed : pathfinder_error
     {
-    public:
         get_module_file_name_failed() : pathfinder_error("GetModuleFileNameW failed") {}
     };
 
