@@ -21,7 +21,7 @@ jobs:
         os: [ubuntu-24.04, windows-2022, macos-latest]
         build_type: [Release]
         c_compiler: [clang-19, cl, clang]
-        generator: [Ninja, "Visual Studio 17 2022", Xcode]
+        generator: [Ninja, "Visual Studio 17 2022"]
         include:
           - os: ubuntu-24.04
             c_compiler: clang-19
@@ -34,7 +34,7 @@ jobs:
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
-            generator: Xcode
+            generator: Ninja
         exclude:
           - os: ubuntu-24.04
             c_compiler: cl
@@ -42,22 +42,16 @@ jobs:
             c_compiler: clang
           - os: ubuntu-24.04
             generator: "Visual Studio 17 2022"
-          - os: ubuntu-24.04
-            generator: Xcode
           - os: windows-2022
             c_compiler: clang-19
           - os: windows-2022
             c_compiler: clang
           - os: windows-2022
             generator: Ninja
-          - os: windows-2022
-            generator: Xcode
           - os: macos-latest
             c_compiler: clang-19
           - os: macos-latest
             c_compiler: cl
-          - os: macos-latest
-            generator: Ninja
           - os: macos-latest
             generator: "Visual Studio 17 2022"
 
