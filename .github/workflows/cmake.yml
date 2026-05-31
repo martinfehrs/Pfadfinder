@@ -87,4 +87,9 @@ jobs:
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       shell: bash
-      run: ctest --build-config ${{ matrix.build_type }}
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          ./Release/tests/test_pfadfinder.exe
+        else
+          ./tests/test_pfadfinder
+        fi
