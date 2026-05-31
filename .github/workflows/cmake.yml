@@ -66,6 +66,12 @@ jobs:
         sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
         sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
 
+    - name: Install Macos depencendies
+      if: runer.os == 'Macos'
+      run: |
+        brew install llvm
+        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
+
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
