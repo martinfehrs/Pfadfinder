@@ -178,8 +178,18 @@ int main()
 cd Pfadfinder
 mkdir -p build
 cd build
-cmake -G Ninja ..
-cmake --build .
+cmake -G "Ninja Multi-Config" ..
+cmake --build . --config Release
+```
+
+Für MSVC unter Windows:
+
+```bash
+cd Pfadfinder
+mkdir -p build
+cd build
+cmake -G "Visual Studio 17 2022" -A x64 ..
+cmake --build . --config Release
 ```
 
 ## Tests ausführen
