@@ -34,10 +34,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Find VsDevCmd.bat
+        id: find_vs
+        shell: cmd
+        run: |
+          for /f "delims=" %%i in ('dir /b /s "VsDevCmd.bat" 2^>nul') do (
+            echo "path=%%i" >> $GITHUB_OUTPUT
+            goto found
+          )
+          :found
+
       - name: Configure, Build and Test
         shell: cmd
         run: |
-          call "${{ env.VSINSTALLDIR }}\Common7\Tools\VsDevCmd.bat"
+          call "${{ steps.find_vs.outputs.path }}"
           cmake -S . -B build -G "Visual Studio 17 2022" -A x64
           cmake --build build --config Release
           ./build/Release/tests/test_pfadfinder.exe
