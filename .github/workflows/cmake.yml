@@ -1,47 +1,66 @@
-name: CMake
+# This starter workflow is for a CMake project running on multiple platforms.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake on multiple platforms
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
   pull_request:
-    branches: [main]
+    branches: [ "main" ]
+  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
+        build_type: [Release]
+        c_compiler: [clang-19, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-24.04
+            c_compiler: clang-19
+            cpp_compiler: clang++-19
+        exclude:
+          - os: windows-latest
+            c_compiler: clang-19
+          - os: ubuntu-24.04
+            c_compiler: cl
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install Ninja
-        run: sudo apt-get update && sudo apt-get install -y ninja-build
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-      - name: Install latest Clang
-        run: sudo apt-get install -y clang-19 lld-19 clang-tools-19
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build ${{ matrix.c_compiler }}
 
-      - name: Configure CMake
-        run: cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++-19
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
 
-      - name: Build
-        run: cmake --build build
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-      - name: Run Tests
-        run: ./build/tests/test_pfadfinder
-
-  build-windows:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Configure CMake
-        run: |
-          cmake -S . -B build \
-          -DCMAKE_C_COMPILER=cl \
-          -DCMAKE_CXX_COMPILER=cl
-
-      - name: Build
-        run: cmake --build build --config Release
-
-      - name: Run Tests
-        run: ./build/Release/tests/test_pfadfinder.exe
+    - name: Test
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      shell: bash
+      run: ctest --build-config ${{ matrix.build_type }}
