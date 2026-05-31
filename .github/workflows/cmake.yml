@@ -38,6 +38,8 @@ jobs:
         exclude:
           - os: ubuntu-24.04
             c_compiler: cl
+          - os: ubuntu-24.04
+            generator: "Visual Studio 17 2022"
           - os: windows-2022
             c_compiler: clang-19
           - os: windows-2022
@@ -54,6 +56,9 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install llvm@19 ninja
+        brew link llvm@19
+        ln -s "$(brew --prefix llvm@19)/bin/clang" "$(brew --prefix llvm@19)/bin/clang-19"
+        ln -s "$(brew --prefix llvm@19)/bin/clang++" "$(brew --prefix llvm@19)/bin/clang++-19"
         echo "$(brew --prefix llvm@19)/bin" >> $GITHUB_PATH
 
     - name: Set reusable strings
