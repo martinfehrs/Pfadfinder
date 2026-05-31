@@ -13,9 +13,9 @@ export module pfadfinder:error;
 
 namespace pfadfinder
 {
-    export struct pathfinder_error : std::runtime_error
+    export struct error : std::runtime_error
     {
-        explicit pathfinder_error(const char* message) : std::runtime_error(message) {}
+        explicit error(const char* message) : std::runtime_error(message) {}
     };
 
 }

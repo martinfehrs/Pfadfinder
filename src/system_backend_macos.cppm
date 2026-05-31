@@ -21,19 +21,19 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für macOS
-    export struct home_not_set : pathfinder_error
+    export struct home_not_set : error
     {
-        home_not_set() : pathfinder_error("Home directory not set") {}
+        home_not_set() : error("Home directory not set") {}
     };
 
-    export struct get_executable_path_failed : pathfinder_error
+    export struct get_executable_path_failed : error
     {
-        get_executable_path_failed() : pathfinder_error("_NSGetExecutablePath failed") {}
+        get_executable_path_failed() : error("_NSGetExecutablePath failed") {}
     };
 
-    export struct realpath_failed : pathfinder_error
+    export struct realpath_failed : error
     {
-        realpath_failed() : pathfinder_error("realpath failed") {}
+        realpath_failed() : error("realpath failed") {}
     };
 
     export struct system_environment

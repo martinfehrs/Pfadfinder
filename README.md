@@ -38,7 +38,7 @@ The following exceptions may be thrown:
 - `get_executable_path_failed` - _NSGetExecutablePath failed (macOS)
 - `realpath_failed` - realpath failed (macOS)
 
-All exceptions are derived from `pfadfinder::pathfinder_error`, which in turn is
+All exceptions are derived from `pfadfinder::error`, which in turn is
 derived from `std::runtime_error`.
 
 ### Methods
@@ -157,7 +157,7 @@ int main()
         std::println("Temp Dir: {}", env.temp_directory().string());
         std::println("User Dir: {}", env.user_directory().string());
     }
-    catch (const pfadfinder::pathfinder_error& e)
+    catch (const pfadfinder::error& e)
     {
         std::println(stderr, "Error: {}", e.what());
         return 1;

@@ -37,7 +37,7 @@ Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
 - `get_executable_path_failed`  - _NSGetExecutablePath scheiterte (macOS)
 - `realpath_failed`             - realpath scheiterte (macOS)
 
-Alle Ausnahmen sind von `pfadfinder::pathfinder_error` abgeleitet, die ihrerseits
+Alle Ausnahmen sind von `pfadfinder::error` abgeleitet, die ihrerseits
  von `std::runtime_error` abgeleitet ist.
 
 ### Methoden
@@ -156,7 +156,7 @@ int main()
         std::println("Temp Dir: {}", env.temp_directory().string());
         std::println("User Dir: {}", env.user_directory().string());
     }
-    catch (const pfadfinder::pathfinder_error& e)
+    catch (const pfadfinder::error& e)
     {
         std::println(stderr, "Fehler: {}", e.what());
         return 1;

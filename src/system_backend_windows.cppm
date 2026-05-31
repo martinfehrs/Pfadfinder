@@ -20,24 +20,24 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für Windows
-    export struct home_not_set : pathfinder_error
+    export struct home_not_set : error
     {
-        home_not_set() : pathfinder_error("Home directory not set") {}
+        home_not_set() : error("Home directory not set") {}
     };
 
-    export struct appdata_not_set : pathfinder_error
+    export struct appdata_not_set : error
     {
-        appdata_not_set() : pathfinder_error("APPDATA environment variable not set") {}
+        appdata_not_set() : error("APPDATA environment variable not set") {}
     };
 
-    export struct localappdata_not_set : pathfinder_error
+    export struct localappdata_not_set : error
     {
-        localappdata_not_set() : pathfinder_error("LOCALAPPDATA environment variable not set") {}
+        localappdata_not_set() : error("LOCALAPPDATA environment variable not set") {}
     };
 
-    export struct get_module_file_name_failed : pathfinder_error
+    export struct get_module_file_name_failed : error
     {
-        get_module_file_name_failed() : pathfinder_error("GetModuleFileNameW failed") {}
+        get_module_file_name_failed() : error("GetModuleFileNameW failed") {}
     };
 
     export struct system_environment
