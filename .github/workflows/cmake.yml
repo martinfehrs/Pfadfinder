@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-24.04, windows-2022, macosx-latest]
+        os: [ubuntu-24.04, windows-2022, macos-latest]
         build_type: [Release]
         c_compiler: [clang-19, cl, clang]
         generator: [Ninja, "Visual Studio 17 2022", Xcode]
@@ -31,7 +31,7 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 17 2022"
-          - os: macosx-latest
+          - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
             generator: Xcode
@@ -52,13 +52,13 @@ jobs:
             generator: Ninja
           - os: windows-2022
             generator: Xcode
-          - os: macosx-latest
+          - os: macos-latest
             c_compiler: clang-19
-          - os: macosx-latest
+          - os: macos-latest
             c_compiler: cl
-          - os: macosx-latest
+          - os: macos-latest
             generator: Ninja
-          - os: macosx-latest
+          - os: macos-latest
             generator: "Visual Studio 17 2022"
 
     steps:
