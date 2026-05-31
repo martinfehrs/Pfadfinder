@@ -31,7 +31,7 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 17 2022"
-          - os: macos-15
+          - os: macos-26
             c_compiler: clang
             cpp_compiler: clang++
             generator: Ninja
