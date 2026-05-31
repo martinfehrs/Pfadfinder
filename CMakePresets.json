@@ -24,6 +24,28 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "windows-default",
+            "displayName": "Windows Default (MSBuild)",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug (MSBuild)",
+            "inherits": "windows-default",
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-release",
+            "displayName": "Windows Release (MSBuild)",
+            "inherits": "windows-default",
+            "configuration": "Release"
         }
     ],
     "buildPresets": [
@@ -38,6 +60,18 @@
         {
             "name": "release",
             "configurePreset": "release"
+        },
+        {
+            "name": "windows-default",
+            "configurePreset": "windows-default"
+        },
+        {
+            "name": "windows-debug",
+            "configurePreset": "windows-debug"
+        },
+        {
+            "name": "windows-release",
+            "configurePreset": "windows-release"
         }
     ],
     "testPresets": [
@@ -45,6 +79,31 @@
             "name": "default",
             "configurePreset": "default",
             "output": {"command": "./build/tests/test_pfadfinder"}
+        },
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "output": {"command": "./build/tests/test_pfadfinder"}
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "output": {"command": "./build/tests/test_pfadfinder"}
+        },
+        {
+            "name": "windows-default",
+            "configurePreset": "windows-default",
+            "output": {"command": "./build/Debug/tests/test_pfadfinder.exe"}
+        },
+        {
+            "name": "windows-debug",
+            "configurePreset": "windows-debug",
+            "output": {"command": "./build/Debug/tests/test_pfadfinder.exe"}
+        },
+        {
+            "name": "windows-release",
+            "configurePreset": "windows-release",
+            "output": {"command": "./build/Release/tests/test_pfadfinder.exe"}
         }
     ]
 }
