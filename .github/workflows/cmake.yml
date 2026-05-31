@@ -53,7 +53,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y ninja-build clang-19 clang-scan-deps-19 lld-19
+        sudo apt-get install -y ninja-build clang-19 clang-extra-tools
 
     - name: Configure CMake
       run: >
