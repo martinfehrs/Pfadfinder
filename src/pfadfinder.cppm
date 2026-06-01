@@ -125,12 +125,16 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
+         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path user_data_directory() const
+        [[nodiscard]] fs::path user_data_directory(bool create = true) const
         {
             if (!cached_user_data_directory_.has_value())
                 cached_user_data_directory_ = system_env_.user_data_directory(executable_directory(), app_name_);
+
+            if (create && !cached_user_data_directory_->empty())
+                fs::create_directories(*cached_user_data_directory_);
 
             return *cached_user_data_directory_;
         }
@@ -143,12 +147,16 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
          * 
+         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path config_directory() const
+        [[nodiscard]] fs::path config_directory(bool create = true) const
         {
             if (!cached_config_directory_.has_value())
                 cached_config_directory_ = system_env_.config_directory(executable_directory(), app_name_);
+
+            if (create && !cached_config_directory_->empty())
+                fs::create_directories(*cached_config_directory_);
 
             return *cached_config_directory_;
         }
@@ -161,12 +169,16 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
+         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
          * @return fs::path Das Cache-Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path cache_directory() const
+        [[nodiscard]] fs::path cache_directory(bool create = true) const
         {
             if (!cached_cache_directory_.has_value())
                 cached_cache_directory_ = system_env_.cache_directory(executable_directory(), app_name_);
+
+            if (create && !cached_cache_directory_->empty())
+                fs::create_directories(*cached_cache_directory_);
 
             return *cached_cache_directory_;
         }
@@ -179,12 +191,16 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
+         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
          * @return fs::path Das Log-Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path log_directory() const
+        [[nodiscard]] fs::path log_directory(bool create = true) const
         {
             if (!cached_log_directory_.has_value())
                 cached_log_directory_ = system_env_.log_directory(executable_directory(), app_name_);
+
+            if (create && !cached_log_directory_->empty())
+                fs::create_directories(*cached_log_directory_);
 
             return *cached_log_directory_;
         }
@@ -196,12 +212,16 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
          * 
+         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
          * @return fs::path Das temporäre Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path temp_directory() const
+        [[nodiscard]] fs::path temp_directory(bool create = true) const
         {
             if (!cached_temp_directory_.has_value())
                 cached_temp_directory_ = system_env_.temp_directory(app_name_);
+
+            if (create && !cached_temp_directory_->empty())
+                fs::create_directories(*cached_temp_directory_);
 
             return *cached_temp_directory_;
         }
