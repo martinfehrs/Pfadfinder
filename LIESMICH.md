@@ -153,6 +153,20 @@ zurückgegebenen Verzeichnis.
 **Ausnahmen:**
 - `file_not_found`: Wenn die Datei nicht gefunden wurde.
 
+#### `user_data_file(const fs::path& rel_path)`
+Gibt den absoluten Pfad zu einer Datei im Benutzer-Datenverzeichnis zurück.
+
+Sucht nach der durch `rel_path` angegebenen Datei im durch `user_data_directory()`
+zurückgegebenen Verzeichnis.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zur Datei innerhalb des Benutzer-Datenverzeichnisses.
+
+**Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
+
+**Ausnahmen:**
+- `file_not_found`: Wenn die Datei nicht gefunden wurde.
+
 #### `user_directory()`
 Gibt das Home-Verzeichnis des Benutzers zurück.
 

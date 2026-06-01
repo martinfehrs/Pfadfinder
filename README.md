@@ -153,6 +153,19 @@ Searches for the file specified by `rel_path` in the directory returned by `data
 **Exceptions:**
 - `file_not_found`: If the file was not found.
 
+#### `user_data_file(const fs::path& rel_path)`
+Returns the absolute path to a file in the user data directory.
+
+Searches for the file specified by `rel_path` in the directory returned by `user_data_directory()`.
+
+**Parameters:**
+- `rel_path`: Relative path to the file within the user data directory.
+
+**Return value:** `fs::path` - Absolute path to the file.
+
+**Exceptions:**
+- `file_not_found`: If the file was not found.
+
 #### `user_directory()`
 Returns the user's home directory.
 
