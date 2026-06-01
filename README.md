@@ -37,6 +37,7 @@ The following exceptions may be thrown:
 - `get_module_file_name_failed` - GetModuleFileNameW failed (Windows)
 - `get_executable_path_failed` - _NSGetExecutablePath failed (macOS)
 - `realpath_failed` - realpath failed (macOS)
+- `file_not_found` - File not found
 
 All exceptions are derived from `pfadfinder::error`, which in turn is
 derived from `std::runtime_error`.
@@ -138,6 +139,19 @@ Returns the temporary directory of the application.
 - **macOS CLI:** Returns `/tmp/<appname>`
 
 **Return value:** `fs::path` - The temporary directory.
+
+#### `data_file(const fs::path& rel_path)`
+Returns the absolute path to a file in the data directory.
+
+Searches for the file specified by `rel_path` in the directory returned by `data_directory()`.
+
+**Parameters:**
+- `rel_path`: Relative path to the file within the data directory.
+
+**Return value:** `fs::path` - Absolute path to the file.
+
+**Exceptions:**
+- `file_not_found`: If the file was not found.
 
 #### `user_directory()`
 Returns the user's home directory.

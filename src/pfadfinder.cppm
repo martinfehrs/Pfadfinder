@@ -227,6 +227,24 @@ namespace pfadfinder
         }
 
         /**
+         * @brief Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.
+         * 
+         * Sucht nach der durch rel_path angegebenen Datei im durch data_directory()
+         * zurückgegebenen Verzeichnis.
+         * 
+         * @param rel_path Relativer Pfad zur Datei innerhalb des Datenverzeichnisses.
+         * @return fs::path Absoluter Pfad zur Datei.
+         * @throws file_not_found Wenn die Datei nicht gefunden wurde.
+         */
+        [[nodiscard]] fs::path data_file(const fs::path& rel_path) const
+        {
+            auto file_path = data_directory() / rel_path;
+            if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
+                throw file_not_found(file_path.string());
+            return file_path;
+        }
+
+        /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
          * 
          * Unter Windows entspricht dies %USERPROFILE%.

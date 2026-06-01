@@ -36,6 +36,7 @@ Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
 - `get_module_file_name_failed` - GetModuleFileNameW scheiterte (Windows)
 - `get_executable_path_failed`  - _NSGetExecutablePath scheiterte (macOS)
 - `realpath_failed`             - realpath scheiterte (macOS)
+- `file_not_found`              - Datei nicht gefunden
 
 Alle Ausnahmen sind von `pfadfinder::error` abgeleitet, die ihrerseits
  von `std::runtime_error` abgeleitet ist.
@@ -137,6 +138,20 @@ Gibt das temporäre Verzeichnis der Anwendung zurück.
 - **macOS CLI:** Gibt `/tmp/<appname>` zurück
 
 **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
+
+#### `data_file(const fs::path& rel_path)`
+Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.
+
+Sucht nach der durch `rel_path` angegebenen Datei im durch `data_directory()`
+zurückgegebenen Verzeichnis.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zur Datei innerhalb des Datenverzeichnisses.
+
+**Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
+
+**Ausnahmen:**
+- `file_not_found`: Wenn die Datei nicht gefunden wurde.
 
 #### `user_directory()`
 Gibt das Home-Verzeichnis des Benutzers zurück.
