@@ -67,8 +67,11 @@ Returns the system-wide data directory of the application.
 
 **Return value:** `fs::path` - The data directory.
 
-#### `user_data_directory()`
+#### `user_data_directory(bool create = true)`
 Returns the user-specific data directory of the application.
+
+**Parameters:**
+- `create`: If true, the directory will be created if it does not exist.
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%APPDATA%\<appname>`
@@ -80,8 +83,11 @@ Returns the user-specific data directory of the application.
 
 **Return value:** `fs::path` - The user data directory.
 
-#### `config_directory()`
+#### `config_directory(bool create = true)`
 Returns the configuration directory of the application.
+
+**Parameters:**
+- `create`: If true, the directory will be created if it does not exist.
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%APPDATA%\<appname>`
@@ -91,8 +97,11 @@ Returns the configuration directory of the application.
 
 **Return value:** `fs::path` - The configuration directory.
 
-#### `cache_directory()`
+#### `cache_directory(bool create = true)`
 Returns the cache directory of the application.
+
+**Parameters:**
+- `create`: If true, the directory will be created if it does not exist.
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%LOCALAPPDATA%\<appname>\\Cache`
@@ -102,8 +111,11 @@ Returns the cache directory of the application.
 
 **Return value:** `fs::path` - The cache directory.
 
-#### `log_directory()`
+#### `log_directory(bool create = true)`
 Returns the log directory of the application.
+
+**Parameters:**
+- `create`: If true, the directory will be created if it does not exist.
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%LOCALAPPDATA%\<appname>\\Logs`
@@ -113,8 +125,11 @@ Returns the log directory of the application.
 
 **Return value:** `fs::path` - The log directory.
 
-#### `temp_directory()`
+#### `temp_directory(bool create = true)`
 Returns the temporary directory of the application.
+
+**Parameters:**
+- `create`: If true, the directory will be created if it does not exist.
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%TEMP%\<appname>`

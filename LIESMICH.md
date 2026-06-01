@@ -66,8 +66,11 @@ Gibt das systemweite Datenverzeichnis der Anwendung zurück.
 
 **Rückgabewert:** `fs::path` - Das Datenverzeichnis.
 
-#### `user_data_directory()`
+#### `user_data_directory(bool create = true)`
 Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `create`: Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%APPDATA%\<appname>` zurück
@@ -79,8 +82,11 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 
 **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
 
-#### `config_directory()`
+#### `config_directory(bool create = true)`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `create`: Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%APPDATA%\<appname>` zurück
@@ -90,8 +96,11 @@ Gibt das Konfigurationsverzeichnis der Anwendung zurück.
 
 **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
 
-#### `cache_directory()`
+#### `cache_directory(bool create = true)`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `create`: Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Cache` zurück
@@ -101,8 +110,11 @@ Gibt das Cache-Verzeichnis der Anwendung zurück.
 
 **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
 
-#### `log_directory()`
+#### `log_directory(bool create = true)`
 Gibt das Log-Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `create`: Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Logs` zurück
@@ -112,8 +124,11 @@ Gibt das Log-Verzeichnis der Anwendung zurück.
 
 **Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
 
-#### `temp_directory()`
+#### `temp_directory(bool create = true)`
 Gibt das temporäre Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `create`: Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%TEMP%\<appname>` zurück
