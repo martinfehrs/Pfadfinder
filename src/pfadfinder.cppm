@@ -16,6 +16,11 @@
  *    - log_directory()        : Log-Verzeichnis für Anwendungsprotokolle
  *    - temp_directory()       : Temporäres Verzeichnis für die Anwendung
  *    - user_directory()       : Home-Verzeichnis des Benutzers
+ *    - data_file()            : Absoluter Pfad zu einer Datei im Datenverzeichnis
+ *    - user_data_file()       : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
+ *    - cache_file()           : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
+ *    - log_file()             : Absoluter Pfad zu einer Datei im Log-Verzeichnis
+ *    - temp_file()            : Absoluter Pfad zu einer Datei im temporären Verzeichnis
  */
 
 module;
@@ -257,6 +262,60 @@ namespace pfadfinder
         [[nodiscard]] fs::path user_data_file(const fs::path& rel_path) const
         {
             auto file_path = user_data_directory() / rel_path;
+            if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
+                throw file_not_found(file_path.string());
+            return file_path;
+        }
+
+        /**
+         * @brief Gibt den absoluten Pfad zu einer Datei im Cache-Verzeichnis zurück.
+         * 
+         * Sucht nach der durch rel_path angegebenen Datei im durch cache_directory()
+         * zurückgegebenen Verzeichnis.
+         * 
+         * @param rel_path Relativer Pfad zur Datei innerhalb des Cache-Verzeichnisses.
+         * @return fs::path Absoluter Pfad zur Datei.
+         * @throws file_not_found Wenn die Datei nicht gefunden wurde.
+         */
+        [[nodiscard]] fs::path cache_file(const fs::path& rel_path) const
+        {
+            auto file_path = cache_directory() / rel_path;
+            if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
+                throw file_not_found(file_path.string());
+            return file_path;
+        }
+
+        /**
+         * @brief Gibt den absoluten Pfad zu einer Datei im Log-Verzeichnis zurück.
+         * 
+         * Sucht nach der durch rel_path angegebenen Datei im durch log_directory()
+         * zurückgegebenen Verzeichnis.
+         * 
+         * @param rel_path Relativer Pfad zur Datei innerhalb des Log-Verzeichnisses.
+         * @return fs::path Absoluter Pfad zur Datei.
+         * @throws file_not_found Wenn die Datei nicht gefunden wurde.
+         */
+        [[nodiscard]] fs::path log_file(const fs::path& rel_path) const
+        {
+            auto file_path = log_directory() / rel_path;
+            if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
+                throw file_not_found(file_path.string());
+            return file_path;
+        }
+
+        /**
+         * @brief Gibt den absoluten Pfad zu einer Datei im temporären Verzeichnis zurück.
+         * 
+         * Sucht nach der durch rel_path angegebenen Datei im durch temp_directory()
+         * zurückgegebenen Verzeichnis.
+         * 
+         * @param rel_path Relativer Pfad zur Datei innerhalb des temporären Verzeichnisses.
+         * @return fs::path Absoluter Pfad zur Datei.
+         * @throws file_not_found Wenn die Datei nicht gefunden wurde.
+         */
+        [[nodiscard]] fs::path temp_file(const fs::path& rel_path) const
+        {
+            auto file_path = temp_directory() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;

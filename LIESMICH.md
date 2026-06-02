@@ -167,6 +167,48 @@ zurückgegebenen Verzeichnis.
 **Ausnahmen:**
 - `file_not_found`: Wenn die Datei nicht gefunden wurde.
 
+#### `cache_file(const fs::path& rel_path)`
+Gibt den absoluten Pfad zu einer Datei im Cache-Verzeichnis zurück.
+
+Sucht nach der durch `rel_path` angegebenen Datei im durch `cache_directory()`
+zurückgegebenen Verzeichnis.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zur Datei innerhalb des Cache-Verzeichnisses.
+
+**Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
+
+**Ausnahmen:**
+- `file_not_found`: Wenn die Datei nicht gefunden wurde.
+
+#### `log_file(const fs::path& rel_path)`
+Gibt den absoluten Pfad zu einer Datei im Log-Verzeichnis zurück.
+
+Sucht nach der durch `rel_path` angegebenen Datei im durch `log_directory()`
+zurückgegebenen Verzeichnis.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zur Datei innerhalb des Log-Verzeichnisses.
+
+**Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
+
+**Ausnahmen:**
+- `file_not_found`: Wenn die Datei nicht gefunden wurde.
+
+#### `temp_file(const fs::path& rel_path)`
+Gibt den absoluten Pfad zu einer Datei im temporären Verzeichnis zurück.
+
+Sucht nach der durch `rel_path` angegebenen Datei im durch `temp_directory()`
+zurückgegebenen Verzeichnis.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zur Datei innerhalb des temporären Verzeichnisses.
+
+**Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
+
+**Ausnahmen:**
+- `file_not_found`: Wenn die Datei nicht gefunden wurde.
+
 #### `user_directory()`
 Gibt das Home-Verzeichnis des Benutzers zurück.
 

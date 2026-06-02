@@ -166,6 +166,45 @@ Searches for the file specified by `rel_path` in the directory returned by `user
 **Exceptions:**
 - `file_not_found`: If the file was not found.
 
+#### `cache_file(const fs::path& rel_path)`
+Returns the absolute path to a file in the cache directory.
+
+Searches for the file specified by `rel_path` in the directory returned by `cache_directory()`.
+
+**Parameters:**
+- `rel_path`: Relative path to the file within the cache directory.
+
+**Return value:** `fs::path` - Absolute path to the file.
+
+**Exceptions:**
+- `file_not_found`: If the file was not found.
+
+#### `log_file(const fs::path& rel_path)`
+Returns the absolute path to a file in the log directory.
+
+Searches for the file specified by `rel_path` in the directory returned by `log_directory()`.
+
+**Parameters:**
+- `rel_path`: Relative path to the file within the log directory.
+
+**Return value:** `fs::path` - Absolute path to the file.
+
+**Exceptions:**
+- `file_not_found`: If the file was not found.
+
+#### `temp_file(const fs::path& rel_path)`
+Returns the absolute path to a file in the temporary directory.
+
+Searches for the file specified by `rel_path` in the directory returned by `temp_directory()`.
+
+**Parameters:**
+- `rel_path`: Relative path to the file within the temporary directory.
+
+**Return value:** `fs::path` - Absolute path to the file.
+
+**Exceptions:**
+- `file_not_found`: If the file was not found.
+
 #### `user_directory()`
 Returns the user's home directory.
 
