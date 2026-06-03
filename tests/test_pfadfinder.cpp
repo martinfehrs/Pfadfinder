@@ -240,9 +240,11 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 
 // Tests für Ausnahmen
 TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
-    // Verwende eindeutige Namen, die garantiert nicht existieren
+    // data_directory() wirft nicht unter Windows, da es executable_directory() entspricht
+#if !defined(_WIN32)
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_data_unique_12345").data_directory(), 
                       pfadfinder::directory_not_found);
+#endif
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_user_unique_12345").user_data_directory(), 
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_config_unique_12345").config_directory(), 
