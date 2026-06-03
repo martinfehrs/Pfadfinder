@@ -38,6 +38,7 @@ The following exceptions may be thrown:
 - `get_executable_path_failed` - _NSGetExecutablePath failed (macOS)
 - `realpath_failed` - realpath failed (macOS)
 - `file_not_found` - File not found
+- `directory_not_found` - Directory not found
 
 All exceptions are derived from `pfadfinder::error`, which in turn is
 derived from `std::runtime_error`.
@@ -59,7 +60,7 @@ Returns the directory containing the executable file.
 Returns the system-wide data directory of the application.
 
 **Platform-specific behavior:**
-- **Windows:** Returns `<executable_directory>` (e.g. `C:\\App`)
+- **Windows:** Returns `<executable_directory>\\<appname>` (e.g. `C:\\App\\my_app`)
 - **Linux:** Derives the share directory from the binary directory
   (e.g. `/usr/share/my_app`)
 - **macOS Bundle:** Returns the Resources directory
@@ -67,15 +68,13 @@ Returns the system-wide data directory of the application.
 - **macOS CLI:** Similar to Linux (e.g. `/usr/local/share/my_app`)
 
 **Return value:** `fs::path` - The data directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `user_data_directory(bool create = true)`
+#### `user_data_directory()`
 Returns the user-specific data directory of the application.
 
-**Parameters:**
-- `create`: If true, the directory will be created if it does not exist.
-
 **Platform-specific behavior:**
-- **Windows:** Returns `%APPDATA%\<appname>`
+- **Windows:** Returns `%APPDATA%\\<appname>`
   (e.g. `C:\\Users\\User\\AppData\\Roaming\\my_app`)
 - **Linux:** Returns `~/.local/share/<appname>`
   (e.g. `/home/user/.local/share/my_app`)
@@ -83,60 +82,108 @@ Returns the user-specific data directory of the application.
 - **macOS CLI:** Returns `~/.local/share/<appname>`
 
 **Return value:** `fs::path` - The user data directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `config_directory(bool create = true)`
-Returns the configuration directory of the application.
-
-**Parameters:**
-- `create`: If true, the directory will be created if it does not exist.
+#### `create_user_data_directory()`
+Creates the user-specific data directory if it does not exist and returns it.
 
 **Platform-specific behavior:**
-- **Windows:** Returns `%APPDATA%\<appname>`
+- **Windows:** Creates `%APPDATA%\\<appname>`
+- **Linux:** Creates `~/.local/share/<appname>`
+- **macOS Bundle:** Creates `~/Library/Application Support/<appname>`
+- **macOS CLI:** Creates `~/.local/share/<appname>`
+
+**Return value:** `fs::path` - The user data directory.
+
+#### `config_directory()`
+Returns the configuration directory of the application.
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%APPDATA%\\<appname>`
 - **Linux:** Returns `~/.config/<appname>` (XDG Base Directory Specification)
 - **macOS Bundle:** Returns `~/Library/Preferences/<appname>`
 - **macOS CLI:** Returns `~/.config/<appname>`
 
 **Return value:** `fs::path` - The configuration directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `cache_directory(bool create = true)`
-Returns the cache directory of the application.
-
-**Parameters:**
-- `create`: If true, the directory will be created if it does not exist.
+#### `create_config_directory()`
+Creates the configuration directory if it does not exist and returns it.
 
 **Platform-specific behavior:**
-- **Windows:** Returns `%LOCALAPPDATA%\<appname>\\Cache`
+- **Windows:** Creates `%APPDATA%\\<appname>`
+- **Linux:** Creates `~/.config/<appname>`
+- **macOS Bundle:** Creates `~/Library/Preferences/<appname>`
+- **macOS CLI:** Creates `~/.config/<appname>`
+
+**Return value:** `fs::path` - The configuration directory.
+
+#### `cache_directory()`
+Returns the cache directory of the application.
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%LOCALAPPDATA%\\<appname>\\Cache`
 - **Linux:** Returns `~/.cache/<appname>` (XDG Base Directory Specification)
 - **macOS Bundle:** Returns `~/Library/Caches/<appname>`
 - **macOS CLI:** Returns `~/.cache/<appname>`
 
 **Return value:** `fs::path` - The cache directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `log_directory(bool create = true)`
-Returns the log directory of the application.
-
-**Parameters:**
-- `create`: If true, the directory will be created if it does not exist.
+#### `create_cache_directory()`
+Creates the cache directory if it does not exist and returns it.
 
 **Platform-specific behavior:**
-- **Windows:** Returns `%LOCALAPPDATA%\<appname>\\Logs`
+- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Cache`
+- **Linux:** Creates `~/.cache/<appname>`
+- **macOS Bundle:** Creates `~/Library/Caches/<appname>`
+- **macOS CLI:** Creates `~/.cache/<appname>`
+
+**Return value:** `fs::path` - The cache directory.
+
+#### `log_directory()`
+Returns the log directory of the application.
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%LOCALAPPDATA%\\<appname>\\Logs`
 - **Linux:** Returns `~/.local/state/<appname>/log` (XDG Base Directory Specification)
 - **macOS Bundle:** Returns `~/Library/Logs/<appname>`
 - **macOS CLI:** Returns `~/.local/state/<appname>/log`
 
 **Return value:** `fs::path` - The log directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `temp_directory(bool create = true)`
-Returns the temporary directory of the application.
-
-**Parameters:**
-- `create`: If true, the directory will be created if it does not exist.
+#### `create_log_directory()`
+Creates the log directory if it does not exist and returns it.
 
 **Platform-specific behavior:**
-- **Windows:** Returns `%TEMP%\<appname>`
+- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Logs`
+- **Linux:** Creates `~/.local/state/<appname>/log`
+- **macOS Bundle:** Creates `~/Library/Logs/<appname>`
+- **macOS CLI:** Creates `~/.local/state/<appname>/log`
+
+**Return value:** `fs::path` - The log directory.
+
+#### `temp_directory()`
+Returns the temporary directory of the application.
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%TEMP%\\<appname>`
 - **Linux:** Returns `/tmp/<appname>`
 - **macOS Bundle:** Returns `~/Library/Caches/TemporaryItems/<appname>`
 - **macOS CLI:** Returns `/tmp/<appname>`
+
+**Return value:** `fs::path` - The temporary directory.
+**Exceptions:** `directory_not_found` - If the directory does not exist.
+
+#### `create_temp_directory()`
+Creates the temporary directory if it does not exist and returns it.
+
+**Platform-specific behavior:**
+- **Windows:** Creates `%TEMP%\\<appname>`
+- **Linux:** Creates `/tmp/<appname>`
+- **macOS Bundle:** Creates `~/Library/Caches/TemporaryItems/<appname>`
+- **macOS CLI:** Creates `/tmp/<appname>`
 
 **Return value:** `fs::path` - The temporary directory.
 
@@ -222,21 +269,41 @@ import pfadfinder;
 
 int main()
 {
-    // Create an environment
-    pfadfinder::application_environment env;
+    // Create an environment for the application "MyApp"
+    pfadfinder::application_environment env("MyApp");
     
     try
     {
         // Determine various directories
         std::println("Executable: {}", env.executable_path().string());
         std::println("Executable Dir: {}", env.executable_directory().string());
-        std::println("Data Dir: {}", env.data_directory().string());
-        std::println("User Data Dir: {}", env.user_data_directory().string());
-        std::println("Config Dir: {}", env.config_directory().string());
-        std::println("Cache Dir: {}", env.cache_directory().string());
-        std::println("Log Dir: {}", env.log_directory().string());
-        std::println("Temp Dir: {}", env.temp_directory().string());
         std::println("User Dir: {}", env.user_directory().string());
+        
+        // For directories that may not exist, use create_*_directory()
+        auto user_data_dir = env.create_user_data_directory();
+        std::println("User Data Dir: {}", user_data_dir.string());
+        
+        auto config_dir = env.create_config_directory();
+        std::println("Config Dir: {}", config_dir.string());
+        
+        auto cache_dir = env.create_cache_directory();
+        std::println("Cache Dir: {}", cache_dir.string());
+        
+        auto log_dir = env.create_log_directory();
+        std::println("Log Dir: {}", log_dir.string());
+        
+        auto temp_dir = env.create_temp_directory();
+        std::println("Temp Dir: {}", temp_dir.string());
+        
+        // data_directory() throws if the directory does not exist
+        try
+        {
+            std::println("Data Dir: {}", env.data_directory().string());
+        }
+        catch (const pfadfinder::directory_not_found&)
+        {
+            std::println("Data directory does not exist (read-only location)");
+        }
     }
     catch (const pfadfinder::error& e)
     {
