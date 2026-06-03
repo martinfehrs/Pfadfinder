@@ -23,4 +23,9 @@ namespace pfadfinder
         explicit file_not_found(const std::string& path) : error(("File not found: " + path).c_str()) {}
     };
 
+    export struct directory_not_found : error
+    {
+        explicit directory_not_found(const std::string& path) : error(("Directory not found: " + path).c_str()) {}
+    };
+
 }

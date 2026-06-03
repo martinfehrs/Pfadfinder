@@ -11,10 +11,15 @@
  *    - executable_directory() : Verzeichnis der ausführbaren Datei
  *    - data_directory()       : Systemweites Datenverzeichnis
  *    - user_data_directory()  : Benutzer-spezifisches Datenverzeichnis
+ *    - create_user_data_directory() : Erstellt Benutzer-Datenverzeichnis
  *    - config_directory()     : Konfigurationsverzeichnis
+ *    - create_config_directory() : Erstellt Konfigurationsverzeichnis
  *    - cache_directory()      : Cache-Verzeichnis
+ *    - create_cache_directory() : Erstellt Cache-Verzeichnis
  *    - log_directory()        : Log-Verzeichnis für Anwendungsprotokolle
+ *    - create_log_directory() : Erstellt Log-Verzeichnis
  *    - temp_directory()       : Temporäres Verzeichnis für die Anwendung
+ *    - create_temp_directory() : Erstellt temporäres Verzeichnis
  *    - user_directory()       : Home-Verzeichnis des Benutzers
  *    - data_file()            : Absoluter Pfad zu einer Datei im Datenverzeichnis
  *    - user_data_file()       : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
@@ -113,13 +118,14 @@ namespace pfadfinder
          * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
          * 
          * @return fs::path Das Datenverzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
         [[nodiscard]] fs::path data_directory() const
         {
-            if (!cached_data_directory_.has_value())
-                cached_data_directory_ = system_env_.data_directory(executable_directory(), app_name_);
-            
-            return *cached_data_directory_;
+            auto path = get_data_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
         }
 
         /**
@@ -130,18 +136,27 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
-         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path user_data_directory() const
+        {
+            auto path = get_user_data_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das Benutzer-Datenverzeichnis falls nicht vorhanden und gibt es zurück.
+         * 
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path user_data_directory(bool create = true) const
+        [[nodiscard]] fs::path create_user_data_directory() const
         {
-            if (!cached_user_data_directory_.has_value())
-                cached_user_data_directory_ = system_env_.user_data_directory(executable_directory(), app_name_);
-
-            if (create && !cached_user_data_directory_->empty())
-                fs::create_directories(*cached_user_data_directory_);
-
-            return *cached_user_data_directory_;
+            auto path = get_user_data_path();
+            fs::create_directories(path);
+            return path;
         }
 
         /**
@@ -152,18 +167,27 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
          * 
-         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
+         * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path config_directory() const
+        {
+            auto path = get_config_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das Konfigurationsverzeichnis falls nicht vorhanden und gibt es zurück.
+         * 
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path config_directory(bool create = true) const
+        [[nodiscard]] fs::path create_config_directory() const
         {
-            if (!cached_config_directory_.has_value())
-                cached_config_directory_ = system_env_.config_directory(executable_directory(), app_name_);
-
-            if (create && !cached_config_directory_->empty())
-                fs::create_directories(*cached_config_directory_);
-
-            return *cached_config_directory_;
+            auto path = get_config_path();
+            fs::create_directories(path);
+            return path;
         }
 
         /**
@@ -174,18 +198,27 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
-         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
+         * @return fs::path Das Cache-Verzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path cache_directory() const
+        {
+            auto path = get_cache_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das Cache-Verzeichnis falls nicht vorhanden und gibt es zurück.
+         * 
          * @return fs::path Das Cache-Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path cache_directory(bool create = true) const
+        [[nodiscard]] fs::path create_cache_directory() const
         {
-            if (!cached_cache_directory_.has_value())
-                cached_cache_directory_ = system_env_.cache_directory(executable_directory(), app_name_);
-
-            if (create && !cached_cache_directory_->empty())
-                fs::create_directories(*cached_cache_directory_);
-
-            return *cached_cache_directory_;
+            auto path = get_cache_path();
+            fs::create_directories(path);
+            return path;
         }
 
         /**
@@ -196,18 +229,27 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
-         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
+         * @return fs::path Das Log-Verzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path log_directory() const
+        {
+            auto path = get_log_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das Log-Verzeichnis falls nicht vorhanden und gibt es zurück.
+         * 
          * @return fs::path Das Log-Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path log_directory(bool create = true) const
+        [[nodiscard]] fs::path create_log_directory() const
         {
-            if (!cached_log_directory_.has_value())
-                cached_log_directory_ = system_env_.log_directory(executable_directory(), app_name_);
-
-            if (create && !cached_log_directory_->empty())
-                fs::create_directories(*cached_log_directory_);
-
-            return *cached_log_directory_;
+            auto path = get_log_path();
+            fs::create_directories(path);
+            return path;
         }
 
         /**
@@ -217,18 +259,27 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
          * 
-         * @param create Wenn true, wird das Verzeichnis erstellt, falls es nicht existiert.
+         * @return fs::path Das temporäre Verzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path temp_directory() const
+        {
+            auto path = get_temp_path();
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das temporäre Verzeichnis falls nicht vorhanden und gibt es zurück.
+         * 
          * @return fs::path Das temporäre Verzeichnis der Anwendung.
          */
-        [[nodiscard]] fs::path temp_directory(bool create = true) const
+        [[nodiscard]] fs::path create_temp_directory() const
         {
-            if (!cached_temp_directory_.has_value())
-                cached_temp_directory_ = system_env_.temp_directory(app_name_);
-
-            if (create && !cached_temp_directory_->empty())
-                fs::create_directories(*cached_temp_directory_);
-
-            return *cached_temp_directory_;
+            auto path = get_temp_path();
+            fs::create_directories(path);
+            return path;
         }
 
         /**
@@ -338,6 +389,49 @@ namespace pfadfinder
         }
 
     private:
+
+        // Hilfsmethoden für Path-Caching
+        [[nodiscard]] fs::path get_data_path() const
+        {
+            if (!cached_data_directory_.has_value())
+                cached_data_directory_ = system_env_.data_directory(executable_directory(), app_name_);
+            return *cached_data_directory_;
+        }
+
+        [[nodiscard]] fs::path get_user_data_path() const
+        {
+            if (!cached_user_data_directory_.has_value())
+                cached_user_data_directory_ = system_env_.user_data_directory(executable_directory(), app_name_);
+            return *cached_user_data_directory_;
+        }
+
+        [[nodiscard]] fs::path get_config_path() const
+        {
+            if (!cached_config_directory_.has_value())
+                cached_config_directory_ = system_env_.config_directory(executable_directory(), app_name_);
+            return *cached_config_directory_;
+        }
+
+        [[nodiscard]] fs::path get_cache_path() const
+        {
+            if (!cached_cache_directory_.has_value())
+                cached_cache_directory_ = system_env_.cache_directory(executable_directory(), app_name_);
+            return *cached_cache_directory_;
+        }
+
+        [[nodiscard]] fs::path get_log_path() const
+        {
+            if (!cached_log_directory_.has_value())
+                cached_log_directory_ = system_env_.log_directory(executable_directory(), app_name_);
+            return *cached_log_directory_;
+        }
+
+        [[nodiscard]] fs::path get_temp_path() const
+        {
+            if (!cached_temp_directory_.has_value())
+                cached_temp_directory_ = system_env_.temp_directory(app_name_);
+            return *cached_temp_directory_;
+        }
 
         mutable std::string app_name_;
         [[no_unique_address]] system_environment system_env_;
