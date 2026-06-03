@@ -56,8 +56,11 @@ Returns the directory containing the executable file.
 
 **Return value:** `fs::path` - The directory of the executable file.
 
-#### `data_directory()`
+#### `data_directory(const fs::path& rel_path = "")`
 Returns the system-wide data directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `<executable_directory>\\<appname>` (e.g. `C:\\App\\my_app`)
@@ -67,11 +70,14 @@ Returns the system-wide data directory of the application.
   (e.g. `MyApp.app/Contents/Resources/`)
 - **macOS CLI:** Similar to Linux (e.g. `/usr/local/share/my_app`)
 
-**Return value:** `fs::path` - The data directory.
+**Return value:** `fs::path` - The data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `user_data_directory()`
+#### `user_data_directory(const fs::path& rel_path = "")`
 Returns the user-specific data directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%APPDATA%\\<appname>`
@@ -81,22 +87,28 @@ Returns the user-specific data directory of the application.
 - **macOS Bundle:** Returns `~/Library/Application Support/<appname>`
 - **macOS CLI:** Returns `~/.local/share/<appname>`
 
-**Return value:** `fs::path` - The user data directory.
+**Return value:** `fs::path` - The user data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_user_data_directory()`
-Creates the user-specific data directory if it does not exist and returns it.
+#### `create_user_data_directory(const fs::path& rel_path = "")`
+Creates the user-specific data directory (incl. rel_path) if it does not exist and returns it.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Creates `%APPDATA%\\<appname>`
-- **Linux:** Creates `~/.local/share/<appname>`
-- **macOS Bundle:** Creates `~/Library/Application Support/<appname>`
-- **macOS CLI:** Creates `~/.local/share/<appname>`
+- **Windows:** Creates `%APPDATA%\\<appname>\\<rel_path>`
+- **Linux:** Creates `~/.local/share/<appname>/<rel_path>`
+- **macOS Bundle:** Creates `~/Library/Application Support/<appname>/<rel_path>`
+- **macOS CLI:** Creates `~/.local/share/<appname>/<rel_path>`
 
-**Return value:** `fs::path` - The user data directory.
+**Return value:** `fs::path` - The user data directory (base + rel_path).
 
-#### `config_directory()`
+#### `config_directory(const fs::path& rel_path = "")`
 Returns the configuration directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%APPDATA%\\<appname>`
@@ -104,22 +116,28 @@ Returns the configuration directory of the application.
 - **macOS Bundle:** Returns `~/Library/Preferences/<appname>`
 - **macOS CLI:** Returns `~/.config/<appname>`
 
-**Return value:** `fs::path` - The configuration directory.
+**Return value:** `fs::path` - The configuration directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_config_directory()`
-Creates the configuration directory if it does not exist and returns it.
+#### `create_config_directory(const fs::path& rel_path = "")`
+Creates the configuration directory (incl. rel_path) if it does not exist and returns it.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Creates `%APPDATA%\\<appname>`
-- **Linux:** Creates `~/.config/<appname>`
-- **macOS Bundle:** Creates `~/Library/Preferences/<appname>`
-- **macOS CLI:** Creates `~/.config/<appname>`
+- **Windows:** Creates `%APPDATA%\\<appname>\\<rel_path>`
+- **Linux:** Creates `~/.config/<appname>/<rel_path>`
+- **macOS Bundle:** Creates `~/Library/Preferences/<appname>/<rel_path>`
+- **macOS CLI:** Creates `~/.config/<appname>/<rel_path>`
 
-**Return value:** `fs::path` - The configuration directory.
+**Return value:** `fs::path` - The configuration directory (base + rel_path).
 
-#### `cache_directory()`
+#### `cache_directory(const fs::path& rel_path = "")`
 Returns the cache directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%LOCALAPPDATA%\\<appname>\\Cache`
@@ -127,22 +145,28 @@ Returns the cache directory of the application.
 - **macOS Bundle:** Returns `~/Library/Caches/<appname>`
 - **macOS CLI:** Returns `~/.cache/<appname>`
 
-**Return value:** `fs::path` - The cache directory.
+**Return value:** `fs::path` - The cache directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_cache_directory()`
-Creates the cache directory if it does not exist and returns it.
+#### `create_cache_directory(const fs::path& rel_path = "")`
+Creates the cache directory (incl. rel_path) if it does not exist and returns it.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Cache`
-- **Linux:** Creates `~/.cache/<appname>`
-- **macOS Bundle:** Creates `~/Library/Caches/<appname>`
-- **macOS CLI:** Creates `~/.cache/<appname>`
+- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Cache\\<rel_path>`
+- **Linux:** Creates `~/.cache/<appname>/<rel_path>`
+- **macOS Bundle:** Creates `~/Library/Caches/<appname>/<rel_path>`
+- **macOS CLI:** Creates `~/.cache/<appname>/<rel_path>`
 
-**Return value:** `fs::path` - The cache directory.
+**Return value:** `fs::path` - The cache directory (base + rel_path).
 
-#### `log_directory()`
+#### `log_directory(const fs::path& rel_path = "")`
 Returns the log directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%LOCALAPPDATA%\\<appname>\\Logs`
@@ -150,22 +174,28 @@ Returns the log directory of the application.
 - **macOS Bundle:** Returns `~/Library/Logs/<appname>`
 - **macOS CLI:** Returns `~/.local/state/<appname>/log`
 
-**Return value:** `fs::path` - The log directory.
+**Return value:** `fs::path` - The log directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_log_directory()`
-Creates the log directory if it does not exist and returns it.
+#### `create_log_directory(const fs::path& rel_path = "")`
+Creates the log directory (incl. rel_path) if it does not exist and returns it.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Logs`
-- **Linux:** Creates `~/.local/state/<appname>/log`
-- **macOS Bundle:** Creates `~/Library/Logs/<appname>`
-- **macOS CLI:** Creates `~/.local/state/<appname>/log`
+- **Windows:** Creates `%LOCALAPPDATA%\\<appname>\\Logs\\<rel_path>`
+- **Linux:** Creates `~/.local/state/<appname>/log/<rel_path>`
+- **macOS Bundle:** Creates `~/Library/Logs/<appname>/<rel_path>`
+- **macOS CLI:** Creates `~/.local/state/<appname>/log/<rel_path>`
 
-**Return value:** `fs::path` - The log directory.
+**Return value:** `fs::path` - The log directory (base + rel_path).
 
-#### `temp_directory()`
+#### `temp_directory(const fs::path& rel_path = "")`
 Returns the temporary directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
 - **Windows:** Returns `%TEMP%\\<appname>`
@@ -173,19 +203,22 @@ Returns the temporary directory of the application.
 - **macOS Bundle:** Returns `~/Library/Caches/TemporaryItems/<appname>`
 - **macOS CLI:** Returns `/tmp/<appname>`
 
-**Return value:** `fs::path` - The temporary directory.
+**Return value:** `fs::path` - The temporary directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_temp_directory()`
-Creates the temporary directory if it does not exist and returns it.
+#### `create_temp_directory(const fs::path& rel_path = "")`
+Creates the temporary directory (incl. rel_path) if it does not exist and returns it.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Creates `%TEMP%\\<appname>`
-- **Linux:** Creates `/tmp/<appname>`
-- **macOS Bundle:** Creates `~/Library/Caches/TemporaryItems/<appname>`
-- **macOS CLI:** Creates `/tmp/<appname>`
+- **Windows:** Creates `%TEMP%\\<appname>\\<rel_path>`
+- **Linux:** Creates `/tmp/<appname>/<rel_path>`
+- **macOS Bundle:** Creates `~/Library/Caches/TemporaryItems/<appname>/<rel_path>`
+- **macOS CLI:** Creates `/tmp/<appname>/<rel_path>`
 
-**Return value:** `fs::path` - The temporary directory.
+**Return value:** `fs::path` - The temporary directory (base + rel_path).
 
 #### `data_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the data directory.

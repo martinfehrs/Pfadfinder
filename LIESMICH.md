@@ -69,8 +69,11 @@ Gibt das systemweite Datenverzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das Datenverzeichnis.
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `user_data_directory()`
+#### `user_data_directory(const fs::path& rel_path = "")`
 Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%APPDATA%\<appname>` zurück
@@ -80,19 +83,22 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
 - **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
 
-**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
+**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_user_data_directory()`
-Erstellt das benutzer-spezifische Datenverzeichnis falls nicht vorhanden und gibt es zurück.
+#### `create_user_data_directory(const fs::path& rel_path = "")`
+Erstellt das benutzer-spezifische Datenverzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%APPDATA%\<appname>`
-- **Linux:** Erstellt `~/.local/share/<appname>`
-- **macOS Bundle:** Erstellt `~/Library/Application Support/<appname>`
-- **macOS CLI:** Erstellt `~/.local/share/<appname>`
+- **Windows:** Erstellt `%APPDATA%\<appname>\<rel_path>`
+- **Linux:** Erstellt `~/.local/share/<appname>\<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Application Support/<appname>\<rel_path>`
+- **macOS CLI:** Erstellt `~/.local/share/<appname>\<rel_path>`
 
-**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
+**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
 
 #### `config_directory()`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
@@ -117,8 +123,11 @@ Erstellt das Konfigurationsverzeichnis falls nicht vorhanden und gibt es zurück
 
 **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
 
-#### `cache_directory()`
+#### `cache_directory(const fs::path& rel_path = "")`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Cache` zurück
@@ -126,22 +135,28 @@ Gibt das Cache-Verzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
 - **macOS CLI:** Gibt `~/.cache/<appname>` zurück
 
-**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
+**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_cache_directory()`
-Erstellt das Cache-Verzeichnis falls nicht vorhanden und gibt es zurück.
+#### `create_cache_directory(const fs::path& rel_path = "")`
+Erstellt das Cache-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Cache`
-- **Linux:** Erstellt `~/.cache/<appname>`
-- **macOS Bundle:** Erstellt `~/Library/Caches/<appname>`
-- **macOS CLI:** Erstellt `~/.cache/<appname>`
+- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Cache\<rel_path>`
+- **Linux:** Erstellt `~/.cache/<appname>/<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Caches/<appname>/<rel_path>`
+- **macOS CLI:** Erstellt `~/.cache/<appname>/<rel_path>`
 
-**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
+**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
 
-#### `log_directory()`
+#### `log_directory(const fs::path& rel_path = "")`
 Gibt das Log-Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Logs` zurück
@@ -149,22 +164,28 @@ Gibt das Log-Verzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
 - **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
 
-**Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
+**Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_log_directory()`
-Erstellt das Log-Verzeichnis falls nicht vorhanden und gibt es zurück.
+#### `create_log_directory(const fs::path& rel_path = "")`
+Erstellt das Log-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Logs`
-- **Linux:** Erstellt `~/.local/state/<appname>/log`
-- **macOS Bundle:** Erstellt `~/Library/Logs/<appname>`
-- **macOS CLI:** Erstellt `~/.local/state/<appname>/log`
+- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Logs\<rel_path>`
+- **Linux:** Erstellt `~/.local/state/<appname>/log/<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Logs/<appname>/<rel_path>`
+- **macOS CLI:** Erstellt `~/.local/state/<appname>/log/<rel_path>`
 
-**Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
+**Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
 
-#### `temp_directory()`
+#### `temp_directory(const fs::path& rel_path = "")`
 Gibt das temporäre Verzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%TEMP%\<appname>` zurück
@@ -172,19 +193,22 @@ Gibt das temporäre Verzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
 - **macOS CLI:** Gibt `/tmp/<appname>` zurück
 
-**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
+**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_temp_directory()`
-Erstellt das temporäre Verzeichnis falls nicht vorhanden und gibt es zurück.
+#### `create_temp_directory(const fs::path& rel_path = "")`
+Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%TEMP%\<appname>`
-- **Linux:** Erstellt `/tmp/<appname>`
-- **macOS Bundle:** Erstellt `~/Library/Caches/TemporaryItems/<appname>`
-- **macOS CLI:** Erstellt `/tmp/<appname>`
+- **Windows:** Erstellt `%TEMP%\<appname>\<rel_path>`
+- **Linux:** Erstellt `/tmp/<appname>/<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Caches/TemporaryItems/<appname>/<rel_path>`
+- **macOS CLI:** Erstellt `/tmp/<appname>/<rel_path>`
 
-**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
+**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
 
 #### `data_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.

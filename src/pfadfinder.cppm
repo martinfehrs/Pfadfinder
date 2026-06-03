@@ -117,12 +117,15 @@ namespace pfadfinder
          * Unter macOS wird bei gebündelten Anwendungen das Resources-Verzeichnis
          * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
          * 
-         * @return fs::path Das Datenverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis (optional).
+         * @return fs::path Das Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path data_directory() const
+        [[nodiscard]] fs::path data_directory(const fs::path& rel_path = "") const
         {
             auto path = get_data_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -136,12 +139,15 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path user_data_directory() const
+        [[nodiscard]] fs::path user_data_directory(const fs::path& rel_path = "") const
         {
             auto path = get_user_data_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -150,11 +156,14 @@ namespace pfadfinder
         /**
          * @brief Erstellt das Benutzer-Datenverzeichnis falls nicht vorhanden und gibt es zurück.
          * 
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_user_data_directory() const
+        [[nodiscard]] fs::path create_user_data_directory(const fs::path& rel_path = "") const
         {
             auto path = get_user_data_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             fs::create_directories(path);
             return path;
         }
@@ -167,12 +176,15 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
          * 
-         * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path config_directory() const
+        [[nodiscard]] fs::path config_directory(const fs::path& rel_path = "") const
         {
             auto path = get_config_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -181,11 +193,14 @@ namespace pfadfinder
         /**
          * @brief Erstellt das Konfigurationsverzeichnis falls nicht vorhanden und gibt es zurück.
          * 
-         * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_config_directory() const
+        [[nodiscard]] fs::path create_config_directory(const fs::path& rel_path = "") const
         {
             auto path = get_config_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             fs::create_directories(path);
             return path;
         }
@@ -198,12 +213,15 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
-         * @return fs::path Das Cache-Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path cache_directory() const
+        [[nodiscard]] fs::path cache_directory(const fs::path& rel_path = "") const
         {
             auto path = get_cache_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -212,11 +230,14 @@ namespace pfadfinder
         /**
          * @brief Erstellt das Cache-Verzeichnis falls nicht vorhanden und gibt es zurück.
          * 
-         * @return fs::path Das Cache-Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_cache_directory() const
+        [[nodiscard]] fs::path create_cache_directory(const fs::path& rel_path = "") const
         {
             auto path = get_cache_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             fs::create_directories(path);
             return path;
         }
@@ -229,12 +250,15 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
-         * @return fs::path Das Log-Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path log_directory() const
+        [[nodiscard]] fs::path log_directory(const fs::path& rel_path = "") const
         {
             auto path = get_log_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -243,11 +267,14 @@ namespace pfadfinder
         /**
          * @brief Erstellt das Log-Verzeichnis falls nicht vorhanden und gibt es zurück.
          * 
-         * @return fs::path Das Log-Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_log_directory() const
+        [[nodiscard]] fs::path create_log_directory(const fs::path& rel_path = "") const
         {
             auto path = get_log_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             fs::create_directories(path);
             return path;
         }
@@ -259,12 +286,15 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
          * 
-         * @return fs::path Das temporäre Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path temp_directory() const
+        [[nodiscard]] fs::path temp_directory(const fs::path& rel_path = "") const
         {
             auto path = get_temp_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -273,11 +303,14 @@ namespace pfadfinder
         /**
          * @brief Erstellt das temporäre Verzeichnis falls nicht vorhanden und gibt es zurück.
          * 
-         * @return fs::path Das temporäre Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
+         * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_temp_directory() const
+        [[nodiscard]] fs::path create_temp_directory(const fs::path& rel_path = "") const
         {
             auto path = get_temp_path();
+            if (!rel_path.empty())
+                path /= rel_path;
             fs::create_directories(path);
             return path;
         }
