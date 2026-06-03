@@ -44,10 +44,13 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         REQUIRE(exe_dir == exe_path.parent_path());
     }
 
+#if !defined(_WIN32)
     SECTION("data_directory wirft directory_not_found wenn nicht existiert") {
         // data_directory ist normalerweise schreibgeschützt und existiert nicht
+        // Unter Windows gibt data_directory() executable_directory() zurück, das existiert
         REQUIRE_THROWS_AS(env.data_directory(), pfadfinder::directory_not_found);
     }
+#endif
 
     SECTION("user_data_directory wirft directory_not_found wenn nicht existiert") {
         REQUIRE_THROWS_AS(env.user_data_directory(), pfadfinder::directory_not_found);
