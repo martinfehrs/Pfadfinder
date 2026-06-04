@@ -7,26 +7,26 @@
  * 
  * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
- *    - executable_path()            : Vollständiger Pfad zur ausführbaren Datei
- *    - executable_dir()             : Verzeichnis der ausführbaren Datei
- *    - static_data_dir()            : Systemweites statisches Datenverzeichnis
- *    - shared_data_dir()            : Systemweites geteiltes Datenverzeichnis
- *    - user_data_dir()              : Benutzer-spezifisches Datenverzeichnis
- *    - create_user_data_dir()       : Erstellt Benutzer-Datenverzeichnis
- *    - config_dir()                 : Konfigurationsverzeichnis
- *    - create_config_dir()          : Erstellt Konfigurationsverzeichnis
- *    - cache_dir()                  : Cache-Verzeichnis
- *    - create_cache_dir()           : Erstellt Cache-Verzeichnis
- *    - log_dir()                    : Log-Verzeichnis für Anwendungsprotokolle
- *    - create_log_dir()             : Erstellt Log-Verzeichnis
- *    - temp_dir()                   : Temporäres Verzeichnis für die Anwendung
- *    - create_temp_dir()            : Erstellt temporäres Verzeichnis
- *    - user_dir()                  : Home-Verzeichnis des Benutzers
- *    - data_file()                  : Absoluter Pfad zu einer Datei im statischen Datenverzeichnis
- *    - user_data_file()             : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
- *    - cache_file()                 : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
- *    - log_file()                   : Absoluter Pfad zu einer Datei im Log-Verzeichnis
- *    - temp_file()                  : Absoluter Pfad zu einer Datei im temporären Verzeichnis
+ *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
+ *    - executable_dir()       : Verzeichnis der ausführbaren Datei
+ *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
+ *    - shared_data_dir()      : Systemweites geteiltes Datenverzeichnis
+ *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis
+ *    - create_user_data_dir() : Erstellt Benutzer-Datenverzeichnis
+ *    - config_dir()           : Konfigurationsverzeichnis
+ *    - create_config_dir()    : Erstellt Konfigurationsverzeichnis
+ *    - cache_dir()            : Cache-Verzeichnis
+ *    - create_cache_dir()     : Erstellt Cache-Verzeichnis
+ *    - log_dir()              : Log-Verzeichnis für Anwendungsprotokolle
+ *    - create_log_dir()       : Erstellt Log-Verzeichnis
+ *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
+ *    - create_temp_dir()      : Erstellt temporäres Verzeichnis
+ *    - user_dir()             : Home-Verzeichnis des Benutzers
+ *    - static_data_file()     : Absoluter Pfad zu einer Datei im statischen Datenverzeichnis
+ *    - user_data_file()       : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
+ *    - cache_file()           : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
+ *    - log_file()             : Absoluter Pfad zu einer Datei im Log-Verzeichnis
+ *    - temp_file()            : Absoluter Pfad zu einer Datei im temporären Verzeichnis
  */
 
 module;
@@ -347,7 +347,7 @@ namespace pfadfinder
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
-        [[nodiscard]] fs::path data_file(const fs::path& rel_path) const
+        [[nodiscard]] fs::path static_data_file(const fs::path& rel_path) const
         {
             auto file_path = static_data_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))

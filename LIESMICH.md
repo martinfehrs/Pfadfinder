@@ -234,7 +234,7 @@ Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und g
 
 **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
 
-#### `data_file(const fs::path& rel_path)`
+#### `static_data_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im statischen Datenverzeichnis zurück.
 
 Sucht nach der durch `rel_path` angegebenen Datei im durch `static_data_dir()`

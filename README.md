@@ -235,7 +235,7 @@ Creates the temporary directory (incl. rel_path) if it does not exist and return
 
 **Return value:** `fs::path` - The temporary directory (base + rel_path).
 
-#### `data_file(const fs::path& rel_path)`
+#### `static_data_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the static data directory.
 
 Searches for the file specified by `rel_path` in the directory returned by `static_data_dir()`.
