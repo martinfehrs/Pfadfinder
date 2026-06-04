@@ -307,8 +307,7 @@ int main()
         std::println("Executable Dir: {}", env.executable_directory().string());
         std::println("User Dir: {}", env.user_directory().string());
         
-        // Für Verzeichnisse, die existieren müssen:
-        // Ertselle sie zuerst, dann greife darauf zu
+        // Für Verzeichnisse, die existieren müssen: erst erstellen, dann verwenden
         auto user_data_dir = env.create_user_data_directory();
         std::println("User Data Dir: {}", user_data_dir.string());
         
@@ -325,14 +324,11 @@ int main()
         std::println("Temp Dir: {}", temp_dir.string());
         
         // data_directory() wirft, wenn das Verzeichnis nicht existiert
-        try
-        {
-            std::println("Data Dir: {}", env.data_directory().string());
-        }
-        catch (const pfadfinder::directory_not_found&)
-        {
-            std::println("Data directory does not exist (read-only location)");
-        }
+        std::println("Data Dir: {}", env.data_directory().string());
+    }
+    catch (const pfadfinder::directory_not_found&)
+    {
+        std::println("Data directory does not exist (read-only location)");
     }
     catch (const pfadfinder::error& e)
     {
