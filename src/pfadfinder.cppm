@@ -7,25 +7,25 @@
  * 
  * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
- *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
- *    - executable_directory() : Verzeichnis der ausführbaren Datei
- *    - data_directory()       : Systemweites Datenverzeichnis
- *    - user_data_directory()  : Benutzer-spezifisches Datenverzeichnis
+ *    - executable_path()            : Vollständiger Pfad zur ausführbaren Datei
+ *    - executable_directory()       : Verzeichnis der ausführbaren Datei
+ *    - data_directory()             : Systemweites Datenverzeichnis
+ *    - user_data_directory()        : Benutzer-spezifisches Datenverzeichnis
  *    - create_user_data_directory() : Erstellt Benutzer-Datenverzeichnis
- *    - config_directory()     : Konfigurationsverzeichnis
- *    - create_config_directory() : Erstellt Konfigurationsverzeichnis
- *    - cache_directory()      : Cache-Verzeichnis
- *    - create_cache_directory() : Erstellt Cache-Verzeichnis
- *    - log_directory()        : Log-Verzeichnis für Anwendungsprotokolle
- *    - create_log_directory() : Erstellt Log-Verzeichnis
- *    - temp_directory()       : Temporäres Verzeichnis für die Anwendung
- *    - create_temp_directory() : Erstellt temporäres Verzeichnis
- *    - user_directory()       : Home-Verzeichnis des Benutzers
- *    - data_file()            : Absoluter Pfad zu einer Datei im Datenverzeichnis
- *    - user_data_file()       : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
- *    - cache_file()           : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
- *    - log_file()             : Absoluter Pfad zu einer Datei im Log-Verzeichnis
- *    - temp_file()            : Absoluter Pfad zu einer Datei im temporären Verzeichnis
+ *    - config_directory()           : Konfigurationsverzeichnis
+ *    - create_config_directory()    : Erstellt Konfigurationsverzeichnis
+ *    - cache_directory()            : Cache-Verzeichnis
+ *    - create_cache_directory()     : Erstellt Cache-Verzeichnis
+ *    - log_directory()              : Log-Verzeichnis für Anwendungsprotokolle
+ *    - create_log_directory()       : Erstellt Log-Verzeichnis
+ *    - temp_directory()             : Temporäres Verzeichnis für die Anwendung
+ *    - create_temp_directory()      : Erstellt temporäres Verzeichnis
+ *    - user_directory()             : Home-Verzeichnis des Benutzers
+ *    - data_file()                  : Absoluter Pfad zu einer Datei im Datenverzeichnis
+ *    - user_data_file()             : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
+ *    - cache_file()                 : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
+ *    - log_file()                   : Absoluter Pfad zu einer Datei im Log-Verzeichnis
+ *    - temp_file()                  : Absoluter Pfad zu einer Datei im temporären Verzeichnis
  */
 
 module;
