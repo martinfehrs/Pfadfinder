@@ -326,10 +326,6 @@ int main()
         // data_directory() wirft, wenn das Verzeichnis nicht existiert
         std::println("Data Dir: {}", env.data_directory().string());
     }
-    catch (const pfadfinder::directory_not_found&)
-    {
-        std::println("Data directory does not exist (read-only location)");
-    }
     catch (const pfadfinder::error& e)
     {
         std::println(stderr, "Fehler: {}", e.what());
