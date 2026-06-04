@@ -9,7 +9,8 @@
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
  *    - executable_path()            : Vollständiger Pfad zur ausführbaren Datei
  *    - executable_directory()       : Verzeichnis der ausführbaren Datei
- *    - data_directory()             : Systemweites Datenverzeichnis
+ *    - static_data_directory()       : Systemweites statisches Datenverzeichnis
+ *    - shared_data_directory()       : Systemweites geteiltes Datenverzeichnis
  *    - user_data_directory()        : Benutzer-spezifisches Datenverzeichnis
  *    - create_user_data_directory() : Erstellt Benutzer-Datenverzeichnis
  *    - config_directory()           : Konfigurationsverzeichnis
@@ -21,7 +22,7 @@
  *    - temp_directory()             : Temporäres Verzeichnis für die Anwendung
  *    - create_temp_directory()      : Erstellt temporäres Verzeichnis
  *    - user_directory()             : Home-Verzeichnis des Benutzers
- *    - data_file()                  : Absoluter Pfad zu einer Datei im Datenverzeichnis
+ *    - data_file()                  : Absoluter Pfad zu einer Datei im statischen Datenverzeichnis
  *    - user_data_file()             : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
  *    - cache_file()                 : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
  *    - log_file()                   : Absoluter Pfad zu einer Datei im Log-Verzeichnis
@@ -109,7 +110,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das Datenverzeichnis der Anwendung zurück.
+         * @brief Gibt das statische Datenverzeichnis der Anwendung zurück.
          * 
          * Unter Windows entspricht dies dem Binärverzeichnis.
          * Unter Linux wird das share-Verzeichnis aus dem Binärverzeichnis abgeleitet
@@ -118,12 +119,33 @@ namespace pfadfinder
          * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis (optional).
-         * @return fs::path Das Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
+         * @return fs::path Das statische Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path data_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path static_data_directory(const fs::path& rel_path = "") const
         {
-            auto path = get_data_path();
+            auto path = get_static_data_path();
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Gibt das geteilte Datenverzeichnis der Anwendung zurück.
+         * 
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>.
+         * Unter Linux entspricht dies /var/lib/<appname>.
+         * Unter macOS entspricht dies /Library/Application Support/<appname>.
+         * 
+         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis (optional).
+         * @return fs::path Das geteilte Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         */
+        [[nodiscard]] fs::path shared_data_directory(const fs::path& rel_path = "") const
+        {
+            auto path = get_shared_data_path();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -318,7 +340,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch data_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch static_data_directory()
          * zurückgegebenen Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zur Datei innerhalb des Datenverzeichnisses.
@@ -327,7 +349,7 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path data_file(const fs::path& rel_path) const
         {
-            auto file_path = data_directory() / rel_path;
+            auto file_path = static_data_directory() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -424,11 +446,18 @@ namespace pfadfinder
     private:
 
         // Hilfsmethoden für Path-Caching
-        [[nodiscard]] fs::path get_data_path() const
+        [[nodiscard]] fs::path get_static_data_path() const
         {
-            if (!cached_data_directory_.has_value())
-                cached_data_directory_ = system_env_.data_directory(executable_directory(), app_name_);
-            return *cached_data_directory_;
+            if (!cached_static_data_directory_.has_value())
+                cached_static_data_directory_ = system_env_.static_data_directory(executable_directory(), app_name_);
+            return *cached_static_data_directory_;
+        }
+
+        [[nodiscard]] fs::path get_shared_data_path() const
+        {
+            if (!cached_shared_data_directory_.has_value())
+                cached_shared_data_directory_ = system_env_.shared_data_directory(executable_directory(), app_name_);
+            return *cached_shared_data_directory_;
         }
 
         [[nodiscard]] fs::path get_user_data_path() const
@@ -472,7 +501,8 @@ namespace pfadfinder
         // Cache für die berechneten Pfade (Lazy Initialization)
         mutable std::optional<fs::path> cached_executable_path_;
         mutable std::optional<fs::path> cached_executable_directory_;
-        mutable std::optional<fs::path> cached_data_directory_;
+        mutable std::optional<fs::path> cached_static_data_directory_;
+        mutable std::optional<fs::path> cached_shared_data_directory_;
         mutable std::optional<fs::path> cached_user_data_directory_;
         mutable std::optional<fs::path> cached_config_directory_;
         mutable std::optional<fs::path> cached_cache_directory_;

@@ -35,6 +35,11 @@ namespace pfadfinder
         localappdata_not_set() : error("LOCALAPPDATA environment variable not set") {}
     };
 
+    export struct allusersappdata_not_set : error
+    {
+        allusersappdata_not_set() : error("ALLUSERSAPPDATA environment variable not set") {}
+    };
+
     export struct get_module_file_name_failed : error
     {
         get_module_file_name_failed() : error("GetModuleFileNameW failed") {}
@@ -50,10 +55,19 @@ namespace pfadfinder
             return fs::path(path);
         }
 
-        static fs::path data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
         {
             // Windows: Datenverzeichnis ist das Binärverzeichnis
             return exe_dir;
+        }
+
+        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            // Windows: %ALLUSERSAPPDATA%/<appname>
+            const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
+            if (!allusersappdata)
+                throw allusersappdata_not_set();
+            return fs::path(allusersappdata) / app_name;
         }
 
         static fs::path user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)

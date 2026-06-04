@@ -55,8 +55,11 @@ Gibt das Verzeichnis zurück, das die ausführbare Datei enthält.
 
 **Rückgabewert:** `fs::path` - Das Verzeichnis der ausführbaren Datei.
 
-#### `data_directory()`
-Gibt das systemweite Datenverzeichnis der Anwendung zurück.
+#### `static_data_directory(const fs::path& rel_path = "")`
+Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `<Binärverzeichnis>\\<appname>` zurück (z. B. `C:\\App\\meine_app`)
@@ -66,7 +69,21 @@ Gibt das systemweite Datenverzeichnis der Anwendung zurück.
   (z. B. `MeineApp.app/Contents/Resources/`)
 - **macOS CLI:** Ähnlich wie Linux (z. B. `/usr/local/share/meine_app`)
 
-**Rückgabewert:** `fs::path` - Das Datenverzeichnis.
+**Rückgabewert:** `fs::path` - Das statische Datenverzeichnis (Basis oder Basis + rel_path).
+**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+
+#### `shared_data_directory(const fs::path& rel_path = "")`
+Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%ALLUSERSAPPDATA%\\<appname>` zurück
+- **Linux:** Gibt `/var/lib/<appname>` zurück
+- **macOS:** Gibt `/Library/Application Support/<appname>` zurück
+
+**Rückgabewert:** `fs::path` - Das geteilte Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
 #### `user_data_directory(const fs::path& rel_path = "")`
@@ -211,13 +228,13 @@ Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und g
 **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
 
 #### `data_file(const fs::path& rel_path)`
-Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.
+Gibt den absoluten Pfad zu einer Datei im statischen Datenverzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `data_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `static_data_directory()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
-- `rel_path`: Relativer Pfad zur Datei innerhalb des Datenverzeichnisses.
+- `rel_path`: Relativer Pfad zur Datei innerhalb des statischen Datenverzeichnisses.
 
 **Rückgabewert:** `fs::path` - Absoluter Pfad zur Datei.
 
@@ -323,8 +340,8 @@ int main()
         auto temp_dir = env.create_temp_directory();
         std::println("Temp Dir: {}", temp_dir.string());
         
-        // data_directory() wirft, wenn das Verzeichnis nicht existiert
-        std::println("Data Dir: {}", env.data_directory().string());
+        // static_data_directory() wirft, wenn das Verzeichnis nicht existiert
+        std::println("Data Dir: {}", env.static_data_directory().string());
     }
     catch (const pfadfinder::error& e)
     {

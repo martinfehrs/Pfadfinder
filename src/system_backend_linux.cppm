@@ -43,10 +43,16 @@ namespace pfadfinder
             return fs::path(path);
         }
 
-        static fs::path data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
         {
             // Linux: von /usr/bin/myapp zu /usr/share/myapp
             return exe_dir.parent_path() / "share" / app_name;
+        }
+
+        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            // Linux: /var/lib/<appname>
+            return fs::path("/var/lib") / app_name;
         }
 
         static fs::path user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)

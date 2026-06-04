@@ -53,7 +53,7 @@ namespace pfadfinder
             return fs::path(real_path);
         }
 
-        static fs::path data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
         {
             // macOS: Prüfen, ob wir in einem Bundle sind
             std::string exe_dir_str = exe_dir.string();
@@ -67,6 +67,12 @@ namespace pfadfinder
                 // Nicht gebündelt: ähnlich wie Linux
                 return exe_dir.parent_path() / "share" / app_name;
             }
+        }
+
+        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        {
+            // macOS: /Library/Application Support/<appname>
+            return fs::path("/Library/Application Support") / app_name;
         }
 
         static fs::path user_data_directory(const fs::path& exe_dir, const std::string& app_name)
