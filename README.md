@@ -30,15 +30,15 @@ The main class of the module that provides all path functions as methods.
 All path functions return `fs::path` and may throw exceptions if an error occurs.
 The following exceptions may be thrown:
 
-- `home_not_set` - HOME environment variable not set
-- `readlink_failed` - readlink /proc/self/exe failed (Linux)
-- `appdata_not_set` - APPDATA environment variable not set (Windows)
-- `localappdata_not_set` - LOCALAPPDATA environment variable not set (Windows)
+- `home_not_set`                - HOME environment variable not set
+- `readlink_failed`             - readlink /proc/self/exe failed (Linux)
+- `appdata_not_set`             - APPDATA environment variable not set (Windows)
+- `localappdata_not_set`        - LOCALAPPDATA environment variable not set (Windows)
 - `get_module_file_name_failed` - GetModuleFileNameW failed (Windows)
-- `get_executable_path_failed` - _NSGetExecutablePath failed (macOS)
-- `realpath_failed` - realpath failed (macOS)
-- `file_not_found` - File not found
-- `directory_not_found` - Directory not found
+- `get_executable_path_failed`  - _NSGetExecutablePath failed (macOS)
+- `realpath_failed`             - realpath failed (macOS)
+- `file_not_found`              - File not found
+- `directory_not_found`         - Directory not found
 
 All exceptions are derived from `pfadfinder::error`, which in turn is
 derived from `std::runtime_error`.
@@ -56,8 +56,8 @@ Returns the directory containing the executable file.
 
 **Return value:** `fs::path` - The directory of the executable file.
 
-#### `static_data_directory(const fs::path& rel_path = "")`
-Returns the system-wide static data directory of the application.
+#### `data_directory(const fs::path& rel_path = "")`
+Returns the system-wide data directory of the application.
 
 **Parameters:**
 - `rel_path`: Relative path to the base directory (optional).
@@ -70,21 +70,7 @@ Returns the system-wide static data directory of the application.
   (e.g. `MyApp.app/Contents/Resources/`)
 - **macOS CLI:** Similar to Linux (e.g. `/usr/local/share/my_app`)
 
-**Return value:** `fs::path` - The static data directory (base or base + rel_path).
-**Exceptions:** `directory_not_found` - If the directory does not exist.
-
-#### `shared_data_directory(const fs::path& rel_path = "")`
-Returns the system-wide shared data directory of the application.
-
-**Parameters:**
-- `rel_path`: Relative path to the base directory (optional).
-
-**Platform-specific behavior:**
-- **Windows:** Returns `%ALLUSERSAPPDATA%\\<appname>`
-- **Linux:** Returns `/var/lib/<appname>`
-- **macOS:** Returns `/Library/Application Support/<appname>`
-
-**Return value:** `fs::path` - The shared data directory (base or base + rel_path).
+**Return value:** `fs::path` - The data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
 #### `user_data_directory(const fs::path& rel_path = "")`
@@ -235,12 +221,12 @@ Creates the temporary directory (incl. rel_path) if it does not exist and return
 **Return value:** `fs::path` - The temporary directory (base + rel_path).
 
 #### `data_file(const fs::path& rel_path)`
-Returns the absolute path to a file in the static data directory.
+Returns the absolute path to a file in the data directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `static_data_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `data_directory()`.
 
 **Parameters:**
-- `rel_path`: Relative path to the file within the static data directory.
+- `rel_path`: Relative path to the file within the data directory.
 
 **Return value:** `fs::path` - Absolute path to the file.
 
@@ -342,8 +328,12 @@ int main()
         auto temp_dir = env.create_temp_directory();
         std::println("Temp Dir: {}", temp_dir.string());
         
-        // static_data_directory() throws if the directory does not exist
-        std::println("Data Dir: {}", env.static_data_directory().string());
+        // data_directory() throws if the directory does not exist
+        std::println("Data Dir: {}", env.data_directory().string());
+    }
+    catch (const pfadfinder::directory_not_found&)
+    {
+        std::println("Data directory does not exist (read-only location)");
     }
     catch (const pfadfinder::error& e)
     {

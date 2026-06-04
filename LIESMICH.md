@@ -33,6 +33,7 @@ Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
 - `readlink_failed`             - readlink /proc/self/exe scheiterte (Linux)
 - `appdata_not_set`             - Umgebungsvariable APPDATA nicht gesetzt (Windows)
 - `localappdata_not_set`        - Umgebungsvariable LOCALAPPDATA nicht gesetzt (Windows)
+- `allusersappdata_not_set`     - Umgebungsvariable ALLUSERSAPPDATA nicht gesetzt (Windows)
 - `get_module_file_name_failed` - GetModuleFileNameW scheiterte (Windows)
 - `get_executable_path_failed`  - _NSGetExecutablePath scheiterte (macOS)
 - `realpath_failed`             - realpath scheiterte (macOS)
