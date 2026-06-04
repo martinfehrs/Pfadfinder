@@ -55,13 +55,13 @@ namespace pfadfinder
             return fs::path(path);
         }
 
-        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             // Windows: Datenverzeichnis ist das Binärverzeichnis
             return exe_dir;
         }
 
-        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             // Windows: %ALLUSERSAPPDATA%/<appname>
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
@@ -70,7 +70,7 @@ namespace pfadfinder
             return fs::path(allusersappdata) / app_name;
         }
 
-        static fs::path user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* appdata = std::getenv("APPDATA");
             if (!appdata)
@@ -78,7 +78,7 @@ namespace pfadfinder
             return fs::path(appdata) / app_name;
         }
 
-        static fs::path config_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* appdata = std::getenv("APPDATA");
             if (!appdata)
@@ -86,7 +86,7 @@ namespace pfadfinder
             return fs::path(appdata) / app_name;
         }
 
-        static fs::path cache_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
             if (!localappdata)
@@ -94,7 +94,7 @@ namespace pfadfinder
             return fs::path(localappdata) / app_name / "Cache";
         }
 
-        static fs::path log_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
             if (!localappdata)
@@ -102,7 +102,7 @@ namespace pfadfinder
             return fs::path(localappdata) / app_name / "Logs";
         }
 
-        static fs::path temp_directory(const std::string& app_name)
+        static fs::path temp_dir(const std::string& app_name)
         {
             const char* temp = std::getenv("TEMP");
             if (!temp)
@@ -110,7 +110,7 @@ namespace pfadfinder
             return fs::path(temp) / app_name;
         }
 
-        static fs::path user_directory()
+        static fs::path user_dir()
         {
             const char* userprofile = std::getenv("USERPROFILE");
             if (!userprofile)

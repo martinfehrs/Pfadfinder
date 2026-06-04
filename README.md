@@ -34,6 +34,7 @@ The following exceptions may be thrown:
 - `readlink_failed`             - readlink /proc/self/exe failed (Linux)
 - `appdata_not_set`             - APPDATA environment variable not set (Windows)
 - `localappdata_not_set`        - LOCALAPPDATA environment variable not set (Windows)
+- `allusersappdata_not_set`     - ALLUSERSAPPDATA environment variable not set (Windows)
 - `get_module_file_name_failed` - GetModuleFileNameW failed (Windows)
 - `get_executable_path_failed`  - _NSGetExecutablePath failed (macOS)
 - `realpath_failed`             - realpath failed (macOS)
@@ -51,29 +52,43 @@ Returns the full path to the executable file.
 **Return value:** `fs::path` - The full path to the executable file.
 **Exceptions:** Platform-specific exceptions (see Error Handling).
 
-#### `executable_directory()`
+#### `executable_dir()`
 Returns the directory containing the executable file.
 
 **Return value:** `fs::path` - The directory of the executable file.
 
-#### `data_directory(const fs::path& rel_path = "")`
-Returns the system-wide data directory of the application.
+#### `static_data_dir(const fs::path& rel_path = "")`
+Returns the system-wide static data directory of the application.
 
 **Parameters:**
 - `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Returns `<executable_directory>\\<appname>` (e.g. `C:\\App\\my_app`)
+- **Windows:** Returns `<executable_dir>\\<appname>` (e.g. `C:\\App\\my_app`)
 - **Linux:** Derives the share directory from the binary directory
   (e.g. `/usr/share/my_app`)
 - **macOS Bundle:** Returns the Resources directory
   (e.g. `MyApp.app/Contents/Resources/`)
 - **macOS CLI:** Similar to Linux (e.g. `/usr/local/share/my_app`)
 
-**Return value:** `fs::path` - The data directory (base or base + rel_path).
+**Return value:** `fs::path` - The static data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `user_data_directory(const fs::path& rel_path = "")`
+#### `shared_data_dir(const fs::path& rel_path = "")`
+Returns the system-wide shared data directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%ALLUSERSAPPDATA%\\<appname>`
+- **Linux:** Returns `/var/lib/<appname>`
+- **macOS:** Returns `/Library/Application Support/<appname>`
+
+**Return value:** `fs::path` - The shared data directory (base or base + rel_path).
+**Exceptions:** `directory_not_found` - If the directory does not exist.
+
+#### `user_data_dir(const fs::path& rel_path = "")`
 Returns the user-specific data directory of the application.
 
 **Parameters:**
@@ -90,7 +105,7 @@ Returns the user-specific data directory of the application.
 **Return value:** `fs::path` - The user data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_user_data_directory(const fs::path& rel_path = "")`
+#### `create_user_data_dir(const fs::path& rel_path = "")`
 Creates the user-specific data directory (incl. rel_path) if it does not exist and returns it.
 
 **Parameters:**
@@ -104,7 +119,7 @@ Creates the user-specific data directory (incl. rel_path) if it does not exist a
 
 **Return value:** `fs::path` - The user data directory (base + rel_path).
 
-#### `config_directory(const fs::path& rel_path = "")`
+#### `config_dir(const fs::path& rel_path = "")`
 Returns the configuration directory of the application.
 
 **Parameters:**
@@ -119,7 +134,7 @@ Returns the configuration directory of the application.
 **Return value:** `fs::path` - The configuration directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_config_directory(const fs::path& rel_path = "")`
+#### `create_config_dir(const fs::path& rel_path = "")`
 Creates the configuration directory (incl. rel_path) if it does not exist and returns it.
 
 **Parameters:**
@@ -133,7 +148,7 @@ Creates the configuration directory (incl. rel_path) if it does not exist and re
 
 **Return value:** `fs::path` - The configuration directory (base + rel_path).
 
-#### `cache_directory(const fs::path& rel_path = "")`
+#### `cache_dir(const fs::path& rel_path = "")`
 Returns the cache directory of the application.
 
 **Parameters:**
@@ -148,7 +163,7 @@ Returns the cache directory of the application.
 **Return value:** `fs::path` - The cache directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_cache_directory(const fs::path& rel_path = "")`
+#### `create_cache_dir(const fs::path& rel_path = "")`
 Creates the cache directory (incl. rel_path) if it does not exist and returns it.
 
 **Parameters:**
@@ -162,7 +177,7 @@ Creates the cache directory (incl. rel_path) if it does not exist and returns it
 
 **Return value:** `fs::path` - The cache directory (base + rel_path).
 
-#### `log_directory(const fs::path& rel_path = "")`
+#### `log_dir(const fs::path& rel_path = "")`
 Returns the log directory of the application.
 
 **Parameters:**
@@ -177,7 +192,7 @@ Returns the log directory of the application.
 **Return value:** `fs::path` - The log directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_log_directory(const fs::path& rel_path = "")`
+#### `create_log_dir(const fs::path& rel_path = "")`
 Creates the log directory (incl. rel_path) if it does not exist and returns it.
 
 **Parameters:**
@@ -191,7 +206,7 @@ Creates the log directory (incl. rel_path) if it does not exist and returns it.
 
 **Return value:** `fs::path` - The log directory (base + rel_path).
 
-#### `temp_directory(const fs::path& rel_path = "")`
+#### `temp_dir(const fs::path& rel_path = "")`
 Returns the temporary directory of the application.
 
 **Parameters:**
@@ -206,7 +221,7 @@ Returns the temporary directory of the application.
 **Return value:** `fs::path` - The temporary directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `create_temp_directory(const fs::path& rel_path = "")`
+#### `create_temp_dir(const fs::path& rel_path = "")`
 Creates the temporary directory (incl. rel_path) if it does not exist and returns it.
 
 **Parameters:**
@@ -221,12 +236,12 @@ Creates the temporary directory (incl. rel_path) if it does not exist and return
 **Return value:** `fs::path` - The temporary directory (base + rel_path).
 
 #### `data_file(const fs::path& rel_path)`
-Returns the absolute path to a file in the data directory.
+Returns the absolute path to a file in the static data directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `data_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `static_data_dir()`.
 
 **Parameters:**
-- `rel_path`: Relative path to the file within the data directory.
+- `rel_path`: Relative path to the file within the static data directory.
 
 **Return value:** `fs::path` - Absolute path to the file.
 
@@ -236,7 +251,7 @@ Searches for the file specified by `rel_path` in the directory returned by `data
 #### `user_data_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the user data directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `user_data_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `user_data_dir()`.
 
 **Parameters:**
 - `rel_path`: Relative path to the file within the user data directory.
@@ -249,7 +264,7 @@ Searches for the file specified by `rel_path` in the directory returned by `user
 #### `cache_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the cache directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `cache_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `cache_dir()`.
 
 **Parameters:**
 - `rel_path`: Relative path to the file within the cache directory.
@@ -262,7 +277,7 @@ Searches for the file specified by `rel_path` in the directory returned by `cach
 #### `log_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the log directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `log_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `log_dir()`.
 
 **Parameters:**
 - `rel_path`: Relative path to the file within the log directory.
@@ -275,7 +290,7 @@ Searches for the file specified by `rel_path` in the directory returned by `log_
 #### `temp_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the temporary directory.
 
-Searches for the file specified by `rel_path` in the directory returned by `temp_directory()`.
+Searches for the file specified by `rel_path` in the directory returned by `temp_dir()`.
 
 **Parameters:**
 - `rel_path`: Relative path to the file within the temporary directory.
@@ -285,7 +300,7 @@ Searches for the file specified by `rel_path` in the directory returned by `temp
 **Exceptions:**
 - `file_not_found`: If the file was not found.
 
-#### `user_directory()`
+#### `user_dir()`
 Returns the user's home directory.
 
 **Platform-specific behavior:**
@@ -309,27 +324,27 @@ int main()
     {
         // Determine various directories
         std::println("Executable: {}", env.executable_path().string());
-        std::println("Executable Dir: {}", env.executable_directory().string());
-        std::println("User Dir: {}", env.user_directory().string());
+        std::println("Executable Dir: {}", env.executable_dir().string());
+        std::println("User Dir: {}", env.user_dir().string());
         
-        // For directories that may not exist, use create_*_directory()
-        auto user_data_dir = env.create_user_data_directory();
+        // For directories that may not exist, use create_*_dir()
+        auto user_data_dir = env.create_user_data_dir();
         std::println("User Data Dir: {}", user_data_dir.string());
         
-        auto config_dir = env.create_config_directory();
+        auto config_dir = env.create_config_dir();
         std::println("Config Dir: {}", config_dir.string());
         
-        auto cache_dir = env.create_cache_directory();
+        auto cache_dir = env.create_cache_dir();
         std::println("Cache Dir: {}", cache_dir.string());
         
-        auto log_dir = env.create_log_directory();
+        auto log_dir = env.create_log_dir();
         std::println("Log Dir: {}", log_dir.string());
         
-        auto temp_dir = env.create_temp_directory();
+        auto temp_dir = env.create_temp_dir();
         std::println("Temp Dir: {}", temp_dir.string());
         
-        // data_directory() throws if the directory does not exist
-        std::println("Data Dir: {}", env.data_directory().string());
+        // static_data_dir() throws if the directory does not exist
+        std::println("Data Dir: {}", env.static_data_dir().string());
     }
     catch (const pfadfinder::directory_not_found&)
     {

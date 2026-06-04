@@ -8,20 +8,20 @@
  * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
  *    - executable_path()            : Vollständiger Pfad zur ausführbaren Datei
- *    - executable_directory()       : Verzeichnis der ausführbaren Datei
- *    - static_data_directory()       : Systemweites statisches Datenverzeichnis
- *    - shared_data_directory()       : Systemweites geteiltes Datenverzeichnis
- *    - user_data_directory()        : Benutzer-spezifisches Datenverzeichnis
- *    - create_user_data_directory() : Erstellt Benutzer-Datenverzeichnis
- *    - config_directory()           : Konfigurationsverzeichnis
- *    - create_config_directory()    : Erstellt Konfigurationsverzeichnis
- *    - cache_directory()            : Cache-Verzeichnis
- *    - create_cache_directory()     : Erstellt Cache-Verzeichnis
- *    - log_directory()              : Log-Verzeichnis für Anwendungsprotokolle
- *    - create_log_directory()       : Erstellt Log-Verzeichnis
- *    - temp_directory()             : Temporäres Verzeichnis für die Anwendung
- *    - create_temp_directory()      : Erstellt temporäres Verzeichnis
- *    - user_directory()             : Home-Verzeichnis des Benutzers
+ *    - executable_dir()             : Verzeichnis der ausführbaren Datei
+ *    - static_data_dir()            : Systemweites statisches Datenverzeichnis
+ *    - shared_data_dir()            : Systemweites geteiltes Datenverzeichnis
+ *    - user_data_dir()              : Benutzer-spezifisches Datenverzeichnis
+ *    - create_user_data_dir()       : Erstellt Benutzer-Datenverzeichnis
+ *    - config_dir()                 : Konfigurationsverzeichnis
+ *    - create_config_dir()          : Erstellt Konfigurationsverzeichnis
+ *    - cache_dir()                  : Cache-Verzeichnis
+ *    - create_cache_dir()           : Erstellt Cache-Verzeichnis
+ *    - log_dir()                    : Log-Verzeichnis für Anwendungsprotokolle
+ *    - create_log_dir()             : Erstellt Log-Verzeichnis
+ *    - temp_dir()                   : Temporäres Verzeichnis für die Anwendung
+ *    - create_temp_dir()            : Erstellt temporäres Verzeichnis
+ *    - user_dir()                  : Home-Verzeichnis des Benutzers
  *    - data_file()                  : Absoluter Pfad zu einer Datei im statischen Datenverzeichnis
  *    - user_data_file()             : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
  *    - cache_file()                 : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
@@ -101,12 +101,12 @@ namespace pfadfinder
          * @brief Gibt das Verzeichnis der ausführbaren Datei zurück.
          * @return fs::path Das Verzeichnis, das die ausführbare Datei enthält.
          */
-        [[nodiscard]] fs::path executable_directory() const
+        [[nodiscard]] fs::path executable_dir() const
         {
-            if (!cached_executable_directory_.has_value())
-                cached_executable_directory_ = executable_path().parent_path();
+            if (!cached_executable_dir_.has_value())
+                cached_executable_dir_ = executable_path().parent_path();
 
-            return *cached_executable_directory_;
+            return *cached_executable_dir_;
         }
 
         /**
@@ -122,9 +122,9 @@ namespace pfadfinder
          * @return fs::path Das statische Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path static_data_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path static_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_static_data_path();
+            auto path = get_static_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -143,9 +143,9 @@ namespace pfadfinder
          * @return fs::path Das geteilte Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path shared_data_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path shared_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_shared_data_path();
+            auto path = get_shared_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -165,9 +165,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path user_data_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path user_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_user_data_path();
+            auto path = get_user_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -181,9 +181,9 @@ namespace pfadfinder
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_user_data_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path create_user_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_user_data_path();
+            auto path = get_user_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -202,9 +202,9 @@ namespace pfadfinder
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path config_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_config_path();
+            auto path = get_config_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -218,9 +218,9 @@ namespace pfadfinder
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_config_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path create_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_config_path();
+            auto path = get_config_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -239,9 +239,9 @@ namespace pfadfinder
          * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path cache_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path cache_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_cache_path();
+            auto path = get_cache_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -255,9 +255,9 @@ namespace pfadfinder
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
          * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_cache_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path create_cache_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_cache_path();
+            auto path = get_cache_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -276,9 +276,9 @@ namespace pfadfinder
          * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path log_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path log_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_log_path();
+            auto path = get_log_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -292,9 +292,9 @@ namespace pfadfinder
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
          * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_log_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path create_log_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_log_path();
+            auto path = get_log_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -312,9 +312,9 @@ namespace pfadfinder
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path temp_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path temp_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_temp_path();
+            auto path = get_temp_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -328,9 +328,9 @@ namespace pfadfinder
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis oder Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_temp_directory(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path create_temp_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_temp_path();
+            auto path = get_temp_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -338,18 +338,18 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt den absoluten Pfad zu einer Datei im Datenverzeichnis zurück.
+         * @brief Gibt den absoluten Pfad zu einer Datei im statischen Datenverzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch static_data_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch static_data_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des Datenverzeichnisses.
+         * @param rel_path Relativer Pfad zur Datei innerhalb des statischen Datenverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
         [[nodiscard]] fs::path data_file(const fs::path& rel_path) const
         {
-            auto file_path = static_data_directory() / rel_path;
+            auto file_path = static_data_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -358,7 +358,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den absoluten Pfad zu einer Datei im Benutzer-Datenverzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch user_data_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch user_data_dir()
          * zurückgegebenen Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zur Datei innerhalb des Benutzer-Datenverzeichnisses.
@@ -367,7 +367,7 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path user_data_file(const fs::path& rel_path) const
         {
-            auto file_path = user_data_directory() / rel_path;
+            auto file_path = user_data_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -376,7 +376,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den absoluten Pfad zu einer Datei im Cache-Verzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch cache_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch cache_dir()
          * zurückgegebenen Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zur Datei innerhalb des Cache-Verzeichnisses.
@@ -385,7 +385,7 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path cache_file(const fs::path& rel_path) const
         {
-            auto file_path = cache_directory() / rel_path;
+            auto file_path = cache_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -394,7 +394,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den absoluten Pfad zu einer Datei im Log-Verzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch log_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch log_dir()
          * zurückgegebenen Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zur Datei innerhalb des Log-Verzeichnisses.
@@ -403,7 +403,7 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path log_file(const fs::path& rel_path) const
         {
-            auto file_path = log_directory() / rel_path;
+            auto file_path = log_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -412,7 +412,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den absoluten Pfad zu einer Datei im temporären Verzeichnis zurück.
          * 
-         * Sucht nach der durch rel_path angegebenen Datei im durch temp_directory()
+         * Sucht nach der durch rel_path angegebenen Datei im durch temp_dir()
          * zurückgegebenen Verzeichnis.
          * 
          * @param rel_path Relativer Pfad zur Datei innerhalb des temporären Verzeichnisses.
@@ -421,7 +421,7 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path temp_file(const fs::path& rel_path) const
         {
-            auto file_path = temp_directory() / rel_path;
+            auto file_path = temp_dir() / rel_path;
             if (!fs::exists(file_path) || !fs::is_regular_file(file_path))
                 throw file_not_found(file_path.string());
             return file_path;
@@ -435,64 +435,64 @@ namespace pfadfinder
          * 
          * @return fs::path Das Home-Verzeichnis des Benutzers.
          */
-        [[nodiscard]] fs::path user_directory() const
+        [[nodiscard]] fs::path user_dir() const
         {
-            if (!cached_user_directory_.has_value())
-                cached_user_directory_ = system_env_.user_directory();
+            if (!cached_user_dir_.has_value())
+                cached_user_dir_ = system_env_.user_dir();
 
-            return *cached_user_directory_;
+            return *cached_user_dir_;
         }
 
     private:
 
         // Hilfsmethoden für Path-Caching
-        [[nodiscard]] fs::path get_static_data_path() const
+        [[nodiscard]] fs::path get_static_data_dir() const
         {
-            if (!cached_static_data_directory_.has_value())
-                cached_static_data_directory_ = system_env_.static_data_directory(executable_directory(), app_name_);
-            return *cached_static_data_directory_;
+            if (!cached_static_data_dir_.has_value())
+                cached_static_data_dir_ = system_env_.static_data_dir(executable_dir(), app_name_);
+            return *cached_static_data_dir_;
         }
 
-        [[nodiscard]] fs::path get_shared_data_path() const
+        [[nodiscard]] fs::path get_shared_data_dir() const
         {
-            if (!cached_shared_data_directory_.has_value())
-                cached_shared_data_directory_ = system_env_.shared_data_directory(executable_directory(), app_name_);
-            return *cached_shared_data_directory_;
+            if (!cached_shared_data_dir_.has_value())
+                cached_shared_data_dir_ = system_env_.shared_data_dir(executable_dir(), app_name_);
+            return *cached_shared_data_dir_;
         }
 
-        [[nodiscard]] fs::path get_user_data_path() const
+        [[nodiscard]] fs::path get_user_data_dir() const
         {
-            if (!cached_user_data_directory_.has_value())
-                cached_user_data_directory_ = system_env_.user_data_directory(executable_directory(), app_name_);
-            return *cached_user_data_directory_;
+            if (!cached_user_data_dir_.has_value())
+                cached_user_data_dir_ = system_env_.user_data_dir(executable_dir(), app_name_);
+            return *cached_user_data_dir_;
         }
 
-        [[nodiscard]] fs::path get_config_path() const
+        [[nodiscard]] fs::path get_config_dir() const
         {
-            if (!cached_config_directory_.has_value())
-                cached_config_directory_ = system_env_.config_directory(executable_directory(), app_name_);
-            return *cached_config_directory_;
+            if (!cached_config_dir_.has_value())
+                cached_config_dir_ = system_env_.config_dir(executable_dir(), app_name_);
+            return *cached_config_dir_;
         }
 
-        [[nodiscard]] fs::path get_cache_path() const
+        [[nodiscard]] fs::path get_cache_dir() const
         {
-            if (!cached_cache_directory_.has_value())
-                cached_cache_directory_ = system_env_.cache_directory(executable_directory(), app_name_);
-            return *cached_cache_directory_;
+            if (!cached_cache_dir_.has_value())
+                cached_cache_dir_ = system_env_.cache_dir(executable_dir(), app_name_);
+            return *cached_cache_dir_;
         }
 
-        [[nodiscard]] fs::path get_log_path() const
+        [[nodiscard]] fs::path get_log_dir() const
         {
-            if (!cached_log_directory_.has_value())
-                cached_log_directory_ = system_env_.log_directory(executable_directory(), app_name_);
-            return *cached_log_directory_;
+            if (!cached_log_dir_.has_value())
+                cached_log_dir_ = system_env_.log_dir(executable_dir(), app_name_);
+            return *cached_log_dir_;
         }
 
-        [[nodiscard]] fs::path get_temp_path() const
+        [[nodiscard]] fs::path get_temp_dir() const
         {
-            if (!cached_temp_directory_.has_value())
-                cached_temp_directory_ = system_env_.temp_directory(app_name_);
-            return *cached_temp_directory_;
+            if (!cached_temp_dir_.has_value())
+                cached_temp_dir_ = system_env_.temp_dir(app_name_);
+            return *cached_temp_dir_;
         }
 
         mutable std::string app_name_;
@@ -500,15 +500,15 @@ namespace pfadfinder
 
         // Cache für die berechneten Pfade (Lazy Initialization)
         mutable std::optional<fs::path> cached_executable_path_;
-        mutable std::optional<fs::path> cached_executable_directory_;
-        mutable std::optional<fs::path> cached_static_data_directory_;
-        mutable std::optional<fs::path> cached_shared_data_directory_;
-        mutable std::optional<fs::path> cached_user_data_directory_;
-        mutable std::optional<fs::path> cached_config_directory_;
-        mutable std::optional<fs::path> cached_cache_directory_;
-        mutable std::optional<fs::path> cached_log_directory_;
-        mutable std::optional<fs::path> cached_temp_directory_;
-        mutable std::optional<fs::path> cached_user_directory_;
+        mutable std::optional<fs::path> cached_executable_dir_;
+        mutable std::optional<fs::path> cached_static_data_dir_;
+        mutable std::optional<fs::path> cached_shared_data_dir_;
+        mutable std::optional<fs::path> cached_user_data_dir_;
+        mutable std::optional<fs::path> cached_config_dir_;
+        mutable std::optional<fs::path> cached_cache_dir_;
+        mutable std::optional<fs::path> cached_log_dir_;
+        mutable std::optional<fs::path> cached_temp_dir_;
+        mutable std::optional<fs::path> cached_user_dir_;
     };
 
 }

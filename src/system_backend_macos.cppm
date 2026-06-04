@@ -53,7 +53,7 @@ namespace pfadfinder
             return fs::path(real_path);
         }
 
-        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             // macOS: Prüfen, ob wir in einem Bundle sind
             std::string exe_dir_str = exe_dir.string();
@@ -69,13 +69,13 @@ namespace pfadfinder
             }
         }
 
-        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             // macOS: /Library/Application Support/<appname>
             return fs::path("/Library/Application Support") / app_name;
         }
 
-        static fs::path user_data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path user_data_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             std::string exe_dir_str = exe_dir.string();
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
@@ -96,7 +96,7 @@ namespace pfadfinder
             }
         }
 
-        static fs::path config_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path config_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             std::string exe_dir_str = exe_dir.string();
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
@@ -117,7 +117,7 @@ namespace pfadfinder
             }
         }
 
-        static fs::path cache_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path cache_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             std::string exe_dir_str = exe_dir.string();
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
@@ -138,7 +138,7 @@ namespace pfadfinder
             }
         }
 
-        static fs::path log_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path log_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             std::string exe_dir_str = exe_dir.string();
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
@@ -159,12 +159,12 @@ namespace pfadfinder
             }
         }
 
-        static fs::path temp_directory(const std::string& app_name)
+        static fs::path temp_dir(const std::string& app_name)
         {
             return fs::temp_directory_path() / app_name;
         }
 
-        static fs::path user_directory()
+        static fs::path user_dir()
         {
             const char* home = std::getenv("HOME");
             if (!home)

@@ -43,19 +43,19 @@ namespace pfadfinder
             return fs::path(path);
         }
 
-        static fs::path static_data_directory(const fs::path& exe_dir, const std::string& app_name)
+        static fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             // Linux: von /usr/bin/myapp zu /usr/share/myapp
             return exe_dir.parent_path() / "share" / app_name;
         }
 
-        static fs::path shared_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             // Linux: /var/lib/<appname>
             return fs::path("/var/lib") / app_name;
         }
 
-        static fs::path user_data_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* home = std::getenv("HOME");
             if (!home)
@@ -63,7 +63,7 @@ namespace pfadfinder
             return fs::path(home) / ".local" / "share" / app_name;
         }
 
-        static fs::path config_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* home = std::getenv("HOME");
             if (!home)
@@ -71,7 +71,7 @@ namespace pfadfinder
             return fs::path(home) / ".config" / app_name;
         }
 
-        static fs::path cache_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* home = std::getenv("HOME");
             if (!home)
@@ -79,7 +79,7 @@ namespace pfadfinder
             return fs::path(home) / ".cache" / app_name;
         }
 
-        static fs::path log_directory(const fs::path& /*exe_dir*/, const std::string& app_name)
+        static fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* home = std::getenv("HOME");
             if (!home)
@@ -87,12 +87,12 @@ namespace pfadfinder
             return fs::path(home) / ".local" / "state" / app_name / "log";
         }
 
-        static fs::path temp_directory(const std::string& app_name)
+        static fs::path temp_dir(const std::string& app_name)
         {
             return fs::temp_directory_path() / app_name;
         }
 
-        static fs::path user_directory()
+        static fs::path user_dir()
         {
             const char* home = std::getenv("HOME");
             if (!home)

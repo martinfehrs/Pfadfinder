@@ -51,12 +51,12 @@ Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
 **Rückgabewert:** `fs::path` - Der vollständige Pfad zur ausführbaren Datei.
 **Ausnahmen:** Plattformspezifische Ausnahmen (siehe Fehlerbehandlung).
 
-#### `executable_directory()`
-Gibt das Verzeichnis zurück, das die ausführbare Datei enthält.
+#### `executable_dir()`
+Gibt das Verzeichnis der ausführbaren Datei zurück.
 
 **Rückgabewert:** `fs::path` - Das Verzeichnis der ausführbaren Datei.
 
-#### `static_data_directory(const fs::path& rel_path = "")`
+#### `static_data_dir(const fs::path& rel_path = "")`
 Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -73,7 +73,7 @@ Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das statische Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `shared_data_directory(const fs::path& rel_path = "")`
+#### `shared_data_dir(const fs::path& rel_path = "")`
 Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -87,7 +87,7 @@ Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das geteilte Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `user_data_directory(const fs::path& rel_path = "")`
+#### `user_data_dir(const fs::path& rel_path = "")`
 Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -104,7 +104,7 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_user_data_directory(const fs::path& rel_path = "")`
+#### `create_user_data_dir(const fs::path& rel_path = "")`
 Erstellt das benutzer-spezifische Datenverzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
 
 **Parameter:**
@@ -112,14 +112,17 @@ Erstellt das benutzer-spezifische Datenverzeichnis (inkl. rel_path) falls nicht 
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Erstellt `%APPDATA%\<appname>\<rel_path>`
-- **Linux:** Erstellt `~/.local/share/<appname>\<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Application Support/<appname>\<rel_path>`
-- **macOS CLI:** Erstellt `~/.local/share/<appname>\<rel_path>`
+- **Linux:** Erstellt `~/.local/share/<appname>/<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Application Support/<appname>/<rel_path>`
+- **macOS CLI:** Erstellt `~/.local/share/<appname>/<rel_path>`
 
 **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
 
-#### `config_directory()`
+#### `config_dir(const fs::path& rel_path = "")`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%APPDATA%\<appname>` zurück
@@ -127,21 +130,24 @@ Gibt das Konfigurationsverzeichnis der Anwendung zurück.
 - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
 - **macOS CLI:** Gibt `~/.config/<appname>` zurück
 
-**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
+**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_config_directory()`
-Erstellt das Konfigurationsverzeichnis falls nicht vorhanden und gibt es zurück.
+#### `create_config_dir(const fs::path& rel_path = "")`
+Erstellt das Konfigurationsverzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%APPDATA%\<appname>`
-- **Linux:** Erstellt `~/.config/<appname>`
-- **macOS Bundle:** Erstellt `~/Library/Preferences/<appname>`
-- **macOS CLI:** Erstellt `~/.config/<appname>`
+- **Windows:** Erstellt `%APPDATA%\<appname>\<rel_path>`
+- **Linux:** Erstellt `~/.config/<appname>/<rel_path>`
+- **macOS Bundle:** Erstellt `~/Library/Preferences/<appname>/<rel_path>`
+- **macOS CLI:** Erstellt `~/.config/<appname>/<rel_path>`
 
-**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
+**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis + rel_path).
 
-#### `cache_directory(const fs::path& rel_path = "")`
+#### `cache_dir(const fs::path& rel_path = "")`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -156,7 +162,7 @@ Gibt das Cache-Verzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_cache_directory(const fs::path& rel_path = "")`
+#### `create_cache_dir(const fs::path& rel_path = "")`
 Erstellt das Cache-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
 
 **Parameter:**
@@ -170,7 +176,7 @@ Erstellt das Cache-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt e
 
 **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
 
-#### `log_directory(const fs::path& rel_path = "")`
+#### `log_dir(const fs::path& rel_path = "")`
 Gibt das Log-Verzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -185,7 +191,7 @@ Gibt das Log-Verzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_log_directory(const fs::path& rel_path = "")`
+#### `create_log_dir(const fs::path& rel_path = "")`
 Erstellt das Log-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
 
 **Parameter:**
@@ -199,7 +205,7 @@ Erstellt das Log-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es 
 
 **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
 
-#### `temp_directory(const fs::path& rel_path = "")`
+#### `temp_dir(const fs::path& rel_path = "")`
 Gibt das temporäre Verzeichnis der Anwendung zurück.
 
 **Parameter:**
@@ -214,7 +220,7 @@ Gibt das temporäre Verzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `create_temp_directory(const fs::path& rel_path = "")`
+#### `create_temp_dir(const fs::path& rel_path = "")`
 Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
 
 **Parameter:**
@@ -231,7 +237,7 @@ Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und g
 #### `data_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im statischen Datenverzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `static_data_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `static_data_dir()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
@@ -245,7 +251,7 @@ zurückgegebenen Verzeichnis.
 #### `user_data_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im Benutzer-Datenverzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `user_data_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `user_data_dir()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
@@ -259,7 +265,7 @@ zurückgegebenen Verzeichnis.
 #### `cache_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im Cache-Verzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `cache_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `cache_dir()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
@@ -273,7 +279,7 @@ zurückgegebenen Verzeichnis.
 #### `log_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im Log-Verzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `log_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `log_dir()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
@@ -287,7 +293,7 @@ zurückgegebenen Verzeichnis.
 #### `temp_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im temporären Verzeichnis zurück.
 
-Sucht nach der durch `rel_path` angegebenen Datei im durch `temp_directory()`
+Sucht nach der durch `rel_path` angegebenen Datei im durch `temp_dir()`
 zurückgegebenen Verzeichnis.
 
 **Parameter:**
@@ -298,7 +304,7 @@ zurückgegebenen Verzeichnis.
 **Ausnahmen:**
 - `file_not_found`: Wenn die Datei nicht gefunden wurde.
 
-#### `user_directory()`
+#### `user_dir()`
 Gibt das Home-Verzeichnis des Benutzers zurück.
 
 **Plattform-spezifisches Verhalten:**
@@ -322,27 +328,27 @@ int main()
     {
         // Ermittle verschiedene Verzeichnisse
         std::println("Executable: {}", env.executable_path().string());
-        std::println("Executable Dir: {}", env.executable_directory().string());
-        std::println("User Dir: {}", env.user_directory().string());
+        std::println("Executable Dir: {}", env.executable_dir().string());
+        std::println("User Dir: {}", env.user_dir().string());
         
         // Für Verzeichnisse, die existieren müssen: erst erstellen, dann verwenden
-        auto user_data_dir = env.create_user_data_directory();
+        auto user_data_dir = env.create_user_data_dir();
         std::println("User Data Dir: {}", user_data_dir.string());
         
-        auto config_dir = env.create_config_directory();
+        auto config_dir = env.create_config_dir();
         std::println("Config Dir: {}", config_dir.string());
         
-        auto cache_dir = env.create_cache_directory();
+        auto cache_dir = env.create_cache_dir();
         std::println("Cache Dir: {}", cache_dir.string());
         
-        auto log_dir = env.create_log_directory();
+        auto log_dir = env.create_log_dir();
         std::println("Log Dir: {}", log_dir.string());
         
-        auto temp_dir = env.create_temp_directory();
+        auto temp_dir = env.create_temp_dir();
         std::println("Temp Dir: {}", temp_dir.string());
         
-        // static_data_directory() wirft, wenn das Verzeichnis nicht existiert
-        std::println("Data Dir: {}", env.static_data_directory().string());
+        // static_data_dir() wirft, wenn das Verzeichnis nicht existiert
+        std::println("Data Dir: {}", env.static_data_dir().string());
     }
     catch (const pfadfinder::error& e)
     {
