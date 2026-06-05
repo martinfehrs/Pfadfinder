@@ -106,12 +106,12 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         fs::remove_all(config_dir);
     }
 
-    SECTION("cache_dir wirft directory_not_found wenn nicht existiert") {
-        REQUIRE_THROWS_AS(env.cache_dir(), pfadfinder::directory_not_found);
+    SECTION("cache_dir wirft directory_not_found wenn nicht existiert und create_dir=false") {
+        REQUIRE_THROWS_AS(env.cache_dir(false), pfadfinder::directory_not_found);
     }
 
-    SECTION("create_cache_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto cache_dir = env.create_cache_dir();
+    SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück wenn create_dir=true") {
+        auto cache_dir = env.cache_dir(true);
         REQUIRE_FALSE(cache_dir.empty());
         REQUIRE(cache_dir.is_absolute());
         
@@ -252,7 +252,7 @@ TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_config_unique_12345").config_dir(false), 
                       pfadfinder::directory_not_found);
-    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_cache_unique_12345").cache_dir(), 
+    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_cache_unique_12345").cache_dir(false), 
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_log_unique_12345").log_dir(false), 
                       pfadfinder::directory_not_found);

@@ -13,8 +13,7 @@
  *    - shared_data_dir()      : Systemweites geteiltes Datenverzeichnis
  *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
  *    - config_dir()           : Konfigurationsverzeichnis (mit create_dir Parameter)
- *    - cache_dir()            : Cache-Verzeichnis
- *    - create_cache_dir()     : Erstellt Cache-Verzeichnis
+ *    - cache_dir()            : Cache-Verzeichnis (mit create_dir Parameter)
  *    - log_dir()              : Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
  *    - create_temp_dir()      : Erstellt temporäres Verzeichnis
@@ -252,32 +251,42 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Cache-Verzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path cache_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path cache_dir(bool create_dir = true) const
         {
             auto path = get_cache_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
         }
 
         /**
-         * @brief Erstellt das Cache-Verzeichnis falls nicht vorhanden und gibt es zurück.
+         * @brief Gibt das Cache-Verzeichnis mit optionalem Unterpfad zurück.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Cache/<rel_path>.
+         * Unter Linux entspricht dies ~/.cache/<appname>/<rel_path> (XDG-Standard).
+         * Unter macOS entspricht dies bei gebündelten Anwendungen
+         * ~/Library/Caches/<appname>/<rel_path>, ansonsten ~/.cache/<appname>/<rel_path>.
+         * 
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis + rel_path).
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path create_cache_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path cache_dir(const fs::path& rel_path, bool create_dir = true) const
         {
             auto path = get_cache_dir();
             if (!rel_path.empty())
                 path /= rel_path;
-            fs::create_directories(path);
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
             return path;
         }
 

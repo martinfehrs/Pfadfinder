@@ -165,37 +165,45 @@ Gibt das Konfigurationsverzeichnis der Anwendung zurück. Erstellt das Verzeichn
    **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis + rel_path).
    **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-#### `cache_dir(const fs::path& rel_path = "")`
-Gibt das Cache-Verzeichnis der Anwendung zurück.
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+#### `cache_dir` (überladen)
+Gibt das Cache-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Cache` zurück
-- **Linux:** Gibt `~/.cache/<appname>` zurück (XDG Base Directory Specification)
-- **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
-- **macOS CLI:** Gibt `~/.cache/<appname>` zurück
+**Überladungen:**
 
-**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+1. **`cache_dir(bool create_dir = true)`**
+   
+   Gibt das Basis-Cache-Verzeichnis zurück.
 
-#### `create_cache_dir(const fs::path& rel_path = "")`
-Erstellt das Cache-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+   **Parameter:**
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache` zurück
+   - **Linux:** Gibt `~/.cache/<appname>` zurück (XDG Base Directory Specification)
+   - **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
+   - **macOS CLI:** Gibt `~/.cache/<appname>` zurück
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Cache\<rel_path>`
-- **Linux:** Erstellt `~/.cache/<appname>/<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Caches/<appname>/<rel_path>`
-- **macOS CLI:** Erstellt `~/.cache/<appname>/<rel_path>`
+   **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-**Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
+2. **`cache_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Gibt das Cache-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
+   **Parameter:**
+   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-#### `log_dir` (überladen)
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache\<rel_path>` zurück
+   - **Linux:** Gibt `~/.cache/<appname>/<rel_path>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Caches/<appname>/<rel_path>` zurück
+   - **macOS CLI:** Gibt `~/.cache/<appname>/<rel_path>` zurück
+
+   **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
+
 Gibt das Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
 **Überladungen:**
@@ -368,7 +376,7 @@ int main()
         auto config_dir = env.config_dir();
         std::println("Config Dir: {}", config_dir.string());
         
-        auto cache_dir = env.create_cache_dir();
+        auto cache_dir = env.cache_dir();
         std::println("Cache Dir: {}", cache_dir.string());
         
         auto log_dir = env.log_dir();
