@@ -88,36 +88,46 @@ Returns the system-wide shared data directory of the application.
 **Return value:** `fs::path` - The shared data directory (base or base + rel_path).
 **Exceptions:** `directory_not_found` - If the directory does not exist.
 
-#### `user_data_dir(const fs::path& rel_path = "")`
-Returns the user-specific data directory of the application.
 
-**Parameters:**
-- `rel_path`: Relative path to the base directory (optional).
+#### `user_data_dir` (overloaded)
+Returns the user-specific data directory of the application. Optionally creates the directory if it does not exist.
 
-**Platform-specific behavior:**
-- **Windows:** Returns `%APPDATA%\\<appname>`
-  (e.g. `C:\\Users\\User\\AppData\\Roaming\\my_app`)
-- **Linux:** Returns `~/.local/share/<appname>`
-  (e.g. `/home/user/.local/share/my_app`)
-- **macOS Bundle:** Returns `~/Library/Application Support/<appname>`
-- **macOS CLI:** Returns `~/.local/share/<appname>`
+**Overloads:**
 
-**Return value:** `fs::path` - The user data directory (base or base + rel_path).
-**Exceptions:** `directory_not_found` - If the directory does not exist.
+1. **`user_data_dir(bool create_dir = true)`**
+   
+   Returns the base user data directory.
 
-#### `create_user_data_dir(const fs::path& rel_path = "")`
-Creates the user-specific data directory (incl. rel_path) if it does not exist and returns it.
+   **Parameters:**
+   - `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
 
-**Parameters:**
-- `rel_path`: Relative path to the base directory (optional).
+   **Platform-specific behavior:**
+   - **Windows:** Returns `%APPDATA%\<appname>`
+     (e.g. `C:\\Users\\User\\AppData\\Roaming\\my_app`)
+   - **Linux:** Returns `~/.local/share/<appname>`
+     (e.g. `/home/user/.local/share/my_app`)
+   - **macOS Bundle:** Returns `~/Library/Application Support/<appname>`
+   - **macOS CLI:** Returns `~/.local/share/<appname>`
 
-**Platform-specific behavior:**
-- **Windows:** Creates `%APPDATA%\\<appname>\\<rel_path>`
-- **Linux:** Creates `~/.local/share/<appname>/<rel_path>`
-- **macOS Bundle:** Creates `~/Library/Application Support/<appname>/<rel_path>`
-- **macOS CLI:** Creates `~/.local/share/<appname>/<rel_path>`
+   **Return value:** `fs::path` - The user data directory.
+   **Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
 
-**Return value:** `fs::path` - The user data directory (base + rel_path).
+2. **`user_data_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Returns the user data directory including subpath. Optionally creates the directory if it does not exist.
+
+   **Parameters:**
+   - `rel_path`: Relative path to the base directory.
+   - `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
+
+   **Platform-specific behavior:**
+   - **Windows:** Returns `%APPDATA%\<appname>\<rel_path>`
+   - **Linux:** Returns `~/.local/share/<appname>/<rel_path>`
+   - **macOS Bundle:** Returns `~/Library/Application Support/<appname>/<rel_path>`
+   - **macOS CLI:** Returns `~/.local/share/<appname>/<rel_path>`
+
+   **Return value:** `fs::path` - The user data directory (base + rel_path).
+   **Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
 
 #### `config_dir(const fs::path& rel_path = "")`
 Returns the configuration directory of the application.
@@ -327,8 +337,8 @@ int main()
         std::println("Executable Dir: {}", env.executable_dir().string());
         std::println("User Dir: {}", env.user_dir().string());
         
-        // For directories that may not exist, use create_*_dir()
-        auto user_data_dir = env.create_user_data_dir();
+        // For directories that may not exist, use create_dir=true (default)
+        auto user_data_dir = env.user_data_dir();
         std::println("User Data Dir: {}", user_data_dir.string());
         
         auto config_dir = env.create_config_dir();

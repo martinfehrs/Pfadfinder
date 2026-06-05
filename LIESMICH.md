@@ -87,36 +87,45 @@ Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
 **Rückgabewert:** `fs::path` - Das geteilte Datenverzeichnis (Basis oder Basis + rel_path).
 **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
 
-#### `user_data_dir(const fs::path& rel_path = "")`
-Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
+#### `user_data_dir` (überladen)
+Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+**Überladungen:**
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%APPDATA%\<appname>` zurück
-  (z. B. `C:\\Users\\Benutzer\\AppData\\Roaming\\meine_app`)
-- **Linux:** Gibt `~/.local/share/<appname>` zurück
-  (z. B. `/home/benutzer/.local/share/meine_app`)
-- **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
-- **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
+1. **`user_data_dir(bool create_dir = true)`**
+   
+   Gibt das Basis-Benutzer-Datenverzeichnis zurück.
 
-**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+   **Parameter:**
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-#### `create_user_data_dir(const fs::path& rel_path = "")`
-Erstellt das benutzer-spezifische Datenverzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%APPDATA%\<appname>` zurück
+     (z. B. `C:\\Users\\Benutzer\\AppData\\Roaming\\meine_app`)
+   - **Linux:** Gibt `~/.local/share/<appname>` zurück
+     (z. B. `/home/benutzer/.local/share/meine_app`)
+   - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
+   - **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+   **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%APPDATA%\<appname>\<rel_path>`
-- **Linux:** Erstellt `~/.local/share/<appname>/<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Application Support/<appname>/<rel_path>`
-- **macOS CLI:** Erstellt `~/.local/share/<appname>/<rel_path>`
+2. **`user_data_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Gibt das Benutzer-Datenverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
+   **Parameter:**
+   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%APPDATA%\<appname>\<rel_path>` zurück
+   - **Linux:** Gibt `~/.local/share/<appname>/<rel_path>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>/<rel_path>` zurück
+   - **macOS CLI:** Gibt `~/.local/share/<appname>/<rel_path>` zurück
+
+   **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
 #### `config_dir(const fs::path& rel_path = "")`
 Gibt das Konfigurationsverzeichnis der Anwendung zurück.
@@ -332,7 +341,7 @@ int main()
         std::println("User Dir: {}", env.user_dir().string());
         
         // Für Verzeichnisse, die existieren müssen: erst erstellen, dann verwenden
-        auto user_data_dir = env.create_user_data_dir();
+        auto user_data_dir = env.user_data_dir();
         std::println("User Data Dir: {}", user_data_dir.string());
         
         auto config_dir = env.create_config_dir();

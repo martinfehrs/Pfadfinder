@@ -52,12 +52,12 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 #endif
 
-    SECTION("user_data_dir wirft directory_not_found wenn nicht existiert") {
-        REQUIRE_THROWS_AS(env.user_data_dir(), pfadfinder::directory_not_found);
+    SECTION("user_data_dir wirft directory_not_found wenn nicht existiert und create_dir=false") {
+        REQUIRE_THROWS_AS(env.user_data_dir(false), pfadfinder::directory_not_found);
     }
 
-    SECTION("create_user_data_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto user_dir = env.create_user_data_dir();
+    SECTION("user_data_dir erstellt Verzeichnis und gibt Pfad zurück wenn create_dir=true") {
+        auto user_dir = env.user_data_dir(true);
         REQUIRE_FALSE(user_dir.empty());
         REQUIRE(user_dir.is_absolute());
         REQUIRE(user_dir.filename() == test_app_name);
@@ -71,7 +71,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("user_data_dir enthält HOME oder APPDATA im Pfad") {
-        auto user_dir = env.create_user_data_dir();
+        auto user_dir = env.user_data_dir();
         std::string user_dir_str = user_dir.string();
         
         // Aufräumen nach dem Test
@@ -227,8 +227,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         pfadfinder::application_environment env1("app1");
         pfadfinder::application_environment env2("app2");
         
-        auto dir1 = env1.create_user_data_dir();
-        auto dir2 = env2.create_user_data_dir();
+        auto dir1 = env1.user_data_dir();
+        auto dir2 = env2.user_data_dir();
         
         // Die Verzeichnisse sollten unterschiedlich sein
         REQUIRE(dir1 != dir2);
@@ -248,7 +248,7 @@ TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_data_unique_12345").static_data_dir(), 
                       pfadfinder::directory_not_found);
 #endif
-    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_user_unique_12345").user_data_dir(), 
+    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_user_unique_12345").user_data_dir(false), 
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_config_unique_12345").config_dir(), 
                       pfadfinder::directory_not_found);

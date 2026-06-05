@@ -11,8 +11,7 @@
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
  *    - shared_data_dir()      : Systemweites geteiltes Datenverzeichnis
- *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis
- *    - create_user_data_dir() : Erstellt Benutzer-Datenverzeichnis
+ *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
  *    - config_dir()           : Konfigurationsverzeichnis
  *    - create_config_dir()    : Erstellt Konfigurationsverzeichnis
  *    - cache_dir()            : Cache-Verzeichnis
@@ -161,32 +160,42 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_data_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path user_data_dir(bool create_dir = true) const
         {
             auto path = get_user_data_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
         }
 
         /**
-         * @brief Erstellt das Benutzer-Datenverzeichnis falls nicht vorhanden und gibt es zurück.
+         * @brief Gibt das benutzerspezifische Datenverzeichnis mit optionalem Unterpfad zurück.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
+         * Unter Windows entspricht dies %APPDATA%/<appname>/<rel_path>.
+         * Unter Linux entspricht dies ~/.local/share/<appname>/<rel_path>.
+         * Unter macOS entspricht dies bei gebündelten Anwendungen
+         * ~/Library/Application Support/<appname>/<rel_path>, ansonsten ~/.local/share/<appname>/<rel_path>.
+         * 
+         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path create_user_data_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path user_data_dir(const fs::path& rel_path, bool create_dir = true) const
         {
             auto path = get_user_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
-            fs::create_directories(path);
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
             return path;
         }
 
