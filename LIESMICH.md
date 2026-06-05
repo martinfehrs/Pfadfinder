@@ -127,34 +127,43 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück. Erstellt d
    **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
    **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-#### `config_dir(const fs::path& rel_path = "")`
-Gibt das Konfigurationsverzeichnis der Anwendung zurück.
+#### `config_dir` (überladen)
+Gibt das Konfigurationsverzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+**Überladungen:**
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%APPDATA%\<appname>` zurück
-- **Linux:** Gibt `~/.config/<appname>` zurück (XDG Base Directory Specification)
-- **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
-- **macOS CLI:** Gibt `~/.config/<appname>` zurück
+1. **`config_dir(bool create_dir = true)`**
+   
+   Gibt das Basis-Konfigurationsverzeichnis zurück.
 
-**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+   **Parameter:**
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-#### `create_config_dir(const fs::path& rel_path = "")`
-Erstellt das Konfigurationsverzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%APPDATA%\<appname>` zurück
+   - **Linux:** Gibt `~/.config/<appname>` zurück (XDG Base Directory Specification)
+   - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
+   - **macOS CLI:** Gibt `~/.config/<appname>` zurück
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+   **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%APPDATA%\<appname>\<rel_path>`
-- **Linux:** Erstellt `~/.config/<appname>/<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Preferences/<appname>/<rel_path>`
-- **macOS CLI:** Erstellt `~/.config/<appname>/<rel_path>`
+2. **`config_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Gibt das Konfigurationsverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis + rel_path).
+   **Parameter:**
+   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%APPDATA%\<appname>\<rel_path>` zurück
+   - **Linux:** Gibt `~/.config/<appname>/<rel_path>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>/<rel_path>` zurück
+   - **macOS CLI:** Gibt `~/.config/<appname>/<rel_path>` zurück
+
+   **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis + rel_path).
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
 #### `cache_dir(const fs::path& rel_path = "")`
 Gibt das Cache-Verzeichnis der Anwendung zurück.
@@ -344,7 +353,7 @@ int main()
         auto user_data_dir = env.user_data_dir();
         std::println("User Data Dir: {}", user_data_dir.string());
         
-        auto config_dir = env.create_config_dir();
+        auto config_dir = env.config_dir();
         std::println("Config Dir: {}", config_dir.string());
         
         auto cache_dir = env.create_cache_dir();

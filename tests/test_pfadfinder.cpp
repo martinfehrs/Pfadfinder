@@ -88,12 +88,12 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 #endif
     }
 
-    SECTION("config_dir wirft directory_not_found wenn nicht existiert") {
-        REQUIRE_THROWS_AS(env.config_dir(), pfadfinder::directory_not_found);
+    SECTION("config_dir wirft directory_not_found wenn nicht existiert und create_dir=false") {
+        REQUIRE_THROWS_AS(env.config_dir(false), pfadfinder::directory_not_found);
     }
 
-    SECTION("create_config_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto config_dir = env.create_config_dir();
+    SECTION("config_dir erstellt Verzeichnis und gibt Pfad zurück wenn create_dir=true") {
+        auto config_dir = env.config_dir(true);
         REQUIRE_FALSE(config_dir.empty());
         REQUIRE(config_dir.is_absolute());
         REQUIRE(config_dir.filename() == test_app_name);
@@ -250,7 +250,7 @@ TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
 #endif
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_user_unique_12345").user_data_dir(false), 
                       pfadfinder::directory_not_found);
-    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_config_unique_12345").config_dir(), 
+    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_config_unique_12345").config_dir(false), 
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_cache_unique_12345").cache_dir(), 
                       pfadfinder::directory_not_found);
