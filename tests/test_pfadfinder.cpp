@@ -132,14 +132,14 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         fs::remove_all(cache_dir);
     }
 
-    SECTION("log_dir wirft directory_not_found wenn nicht existiert") {
+    SECTION("log_dir wirft directory_not_found wenn nicht existiert und create_dir=false") {
         // Verwende einen eindeutigen Namen, der garantiert nicht existiert
         pfadfinder::application_environment env_unique("test_app_log_unique_12345");
-        REQUIRE_THROWS_AS(env_unique.log_dir(), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.log_dir(false), pfadfinder::directory_not_found);
     }
 
-    SECTION("create_log_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto log_dir = env.create_log_dir();
+    SECTION("log_dir erstellt Verzeichnis und gibt Pfad zurück wenn create_dir=true") {
+        auto log_dir = env.log_dir(true);
         REQUIRE_FALSE(log_dir.empty());
         REQUIRE(log_dir.is_absolute());
         
@@ -165,7 +165,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("log_dir enthält den app_name") {
-        auto log_dir = env.create_log_dir();
+        auto log_dir = env.log_dir();
         std::string log_dir_str = log_dir.string();
         REQUIRE(log_dir_str.find(test_app_name) != std::string::npos);
         // Aufräumen
@@ -254,7 +254,7 @@ TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_cache_unique_12345").cache_dir(), 
                       pfadfinder::directory_not_found);
-    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_log_unique_12345").log_dir(), 
+    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_log_unique_12345").log_dir(false), 
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_temp_unique_12345").temp_dir(), 
                       pfadfinder::directory_not_found);

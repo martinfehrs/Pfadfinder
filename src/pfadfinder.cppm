@@ -15,8 +15,7 @@
  *    - config_dir()           : Konfigurationsverzeichnis (mit create_dir Parameter)
  *    - cache_dir()            : Cache-Verzeichnis
  *    - create_cache_dir()     : Erstellt Cache-Verzeichnis
- *    - log_dir()              : Log-Verzeichnis für Anwendungsprotokolle
- *    - create_log_dir()       : Erstellt Log-Verzeichnis
+ *    - log_dir()              : Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
  *    - create_temp_dir()      : Erstellt temporäres Verzeichnis
  *    - user_dir()             : Home-Verzeichnis des Benutzers
@@ -290,32 +289,42 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Log-Verzeichnis der Anwendung.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path log_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path log_dir(bool create_dir = true) const
         {
             auto path = get_log_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
         }
 
         /**
-         * @brief Erstellt das Log-Verzeichnis falls nicht vorhanden und gibt es zurück.
+         * @brief Gibt das Log-Verzeichnis mit optionalem Unterpfad zurück.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis (optional).
-         * @return fs::path Das Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Logs/<rel_path>.
+         * Unter Linux entspricht dies ~/.local/state/<appname>/log/<rel_path> (XDG Base Directory Specification).
+         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>/<rel_path>.
+         * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log/<rel_path>.
+         * 
+         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @return fs::path Das Log-Verzeichnis der Anwendung (Basis + rel_path).
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path create_log_dir(const fs::path& rel_path = "") const
+        [[nodiscard]] fs::path log_dir(const fs::path& rel_path, bool create_dir = true) const
         {
             auto path = get_log_dir();
             if (!rel_path.empty())
                 path /= rel_path;
-            fs::create_directories(path);
+            if (create_dir)
+                fs::create_directories(path);
+            else if (!fs::exists(path) || !fs::is_directory(path))
+                throw directory_not_found(path.string());
             return path;
         }
 

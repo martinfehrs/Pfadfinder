@@ -194,32 +194,44 @@ Erstellt das Cache-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt e
 
 **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
 
-#### `log_dir(const fs::path& rel_path = "")`
-Gibt das Log-Verzeichnis der Anwendung zurück.
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+#### `log_dir` (überladen)
+Gibt das Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%LOCALAPPDATA%\<appname>\\Logs` zurück
-- **Linux:** Gibt `~/.local/state/<appname>/log` zurück (XDG Base Directory Specification)
-- **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
-- **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
+**Überladungen:**
 
-**Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+1. **`log_dir(bool create_dir = true)`**
+   
+   Gibt das Basis-Log-Verzeichnis zurück.
 
-#### `create_log_dir(const fs::path& rel_path = "")`
-Erstellt das Log-Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+   **Parameter:**
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs` zurück
+   - **Linux:** Gibt `~/.local/state/<appname>/log` zurück (XDG Base Directory Specification)
+   - **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
+   - **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%LOCALAPPDATA%\<appname>\\Logs\<rel_path>`
-- **Linux:** Erstellt `~/.local/state/<appname>/log/<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Logs/<appname>/<rel_path>`
-- **macOS CLI:** Erstellt `~/.local/state/<appname>/log/<rel_path>`
+   **Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
+
+2. **`log_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Gibt das Log-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
+
+   **Parameter:**
+   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs\<rel_path>` zurück
+   - **Linux:** Gibt `~/.local/state/<appname>/log/<rel_path>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Logs/<appname>/<rel_path>` zurück
+   - **macOS CLI:** Gibt `~/.local/state/<appname>/log/<rel_path>` zurück
+
+   **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
 **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
 
@@ -359,7 +371,7 @@ int main()
         auto cache_dir = env.create_cache_dir();
         std::println("Cache Dir: {}", cache_dir.string());
         
-        auto log_dir = env.create_log_dir();
+        auto log_dir = env.log_dir();
         std::println("Log Dir: {}", log_dir.string());
         
         auto temp_dir = env.create_temp_dir();
