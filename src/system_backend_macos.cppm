@@ -21,11 +21,6 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für macOS
-    export struct home_not_set : error
-    {
-        home_not_set() : error("Home directory not set") {}
-    };
-
     export struct get_executable_path_failed : error
     {
         get_executable_path_failed() : error("_NSGetExecutablePath failed") {}

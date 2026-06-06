@@ -21,11 +21,6 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für Windows
-    export struct home_not_set : error
-    {
-        home_not_set() : error("Home directory not set") {}
-    };
-
     export struct appdata_not_set : error
     {
         appdata_not_set() : error("APPDATA environment variable not set") {}

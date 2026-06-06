@@ -28,4 +28,9 @@ namespace pfadfinder
         explicit directory_not_found(const std::string& path) : error(("Directory not found: " + path).c_str()) {}
     };
 
+    export struct home_not_set : error
+    {
+        home_not_set() : error("Home directory not set") {}
+    };
+
 }

@@ -21,11 +21,6 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für Linux
-    export struct home_not_set : error
-    {
-        home_not_set() : error("Home directory not set") {}
-    };
-
     export struct readlink_failed : error
     {
         readlink_failed() : error("readlink failed") {}
