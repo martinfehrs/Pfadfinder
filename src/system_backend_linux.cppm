@@ -7,9 +7,9 @@
 module;
 
 #include <unistd.h>
-#include <limits.h>
 
 #include <filesystem>
+#include <climits>
 #include <string>
 
 export module pfadfinder:system_backend;

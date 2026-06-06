@@ -7,9 +7,9 @@
 module;
 
 #include <mach-o/dyld.h>
-#include <limits.h>
 
 #include <filesystem>
+#include <climits>
 #include <string>
 
 export module pfadfinder:system_backend;
