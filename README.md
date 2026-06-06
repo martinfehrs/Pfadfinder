@@ -392,10 +392,6 @@ int main()
         // static_data_dir() throws if the directory does not exist
         std::println("Data Dir: {}", env.static_data_dir().string());
     }
-    catch (const pfadfinder::directory_not_found&)
-    {
-        std::println("Data directory does not exist (read-only location)");
-    }
     catch (const pfadfinder::error& e)
     {
         std::println(stderr, "Error: {}", e.what());
