@@ -243,34 +243,43 @@ Gibt das Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optiona
 
 **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
 
-#### `temp_dir(const fs::path& rel_path = "")`
-Gibt das temporäre Verzeichnis der Anwendung zurück.
+#### `temp_dir` (überladen)
+Gibt das temporäre Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+**Überladungen:**
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%TEMP%\<appname>` zurück
-- **Linux:** Gibt `/tmp/<appname>` zurück
-- **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
-- **macOS CLI:** Gibt `/tmp/<appname>` zurück
+1. **`temp_dir(bool create_dir = true)`**
+   
+   Gibt das Basis-temporäre Verzeichnis zurück.
 
-**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+   **Parameter:**
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
-#### `create_temp_dir(const fs::path& rel_path = "")`
-Erstellt das temporäre Verzeichnis (inkl. rel_path) falls nicht vorhanden und gibt es zurück.
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%TEMP%\<appname>` zurück
+   - **Linux:** Gibt `/tmp/<appname>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
+   - **macOS CLI:** Gibt `/tmp/<appname>` zurück
 
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+   **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Erstellt `%TEMP%\<appname>\<rel_path>`
-- **Linux:** Erstellt `/tmp/<appname>/<rel_path>`
-- **macOS Bundle:** Erstellt `~/Library/Caches/TemporaryItems/<appname>/<rel_path>`
-- **macOS CLI:** Erstellt `/tmp/<appname>/<rel_path>`
+2. **`temp_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Gibt das temporäre Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
-**Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
+   **Parameter:**
+   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+   **Plattform-spezifisches Verhalten:**
+   - **Windows:** Gibt `%TEMP%\<appname>\<rel_path>` zurück
+   - **Linux:** Gibt `/tmp/<appname>/<rel_path>` zurück
+   - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>/<rel_path>` zurück
+   - **macOS CLI:** Gibt `/tmp/<appname>/<rel_path>` zurück
+
+   **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
+   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
 
 #### `static_data_file(const fs::path& rel_path)`
 Gibt den absoluten Pfad zu einer Datei im statischen Datenverzeichnis zurück.
@@ -382,7 +391,7 @@ int main()
         auto log_dir = env.log_dir();
         std::println("Log Dir: {}", log_dir.string());
         
-        auto temp_dir = env.create_temp_dir();
+        auto temp_dir = env.temp_dir();
         std::println("Temp Dir: {}", temp_dir.string());
         
         // static_data_dir() wirft, wenn das Verzeichnis nicht existiert

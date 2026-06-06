@@ -172,14 +172,14 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
         fs::remove_all(log_dir);
     }
 
-    SECTION("temp_dir wirft directory_not_found wenn nicht existiert") {
+    SECTION("temp_dir wirft directory_not_found wenn nicht existiert und create_dir=false") {
         // Verwende einen eindeutigen Namen, der garantiert nicht existiert
         pfadfinder::application_environment env_unique("test_app_temp_unique_12345");
-        REQUIRE_THROWS_AS(env_unique.temp_dir(), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.temp_dir(false), pfadfinder::directory_not_found);
     }
 
-    SECTION("create_temp_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto temp_dir = env.create_temp_dir();
+    SECTION("temp_dir erstellt Verzeichnis und gibt Pfad zurück wenn create_dir=true") {
+        auto temp_dir = env.temp_dir();
         REQUIRE_FALSE(temp_dir.empty());
         REQUIRE(temp_dir.is_absolute());
         REQUIRE(temp_dir.filename() == test_app_name);
@@ -193,7 +193,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
     }
 
     SECTION("temp_dir liegt im System-Temp-Verzeichnis") {
-        auto temp_dir = env.create_temp_dir();
+        auto temp_dir = env.temp_dir();
         auto system_temp = fs::temp_directory_path();
         
         // Der Pfad sollte im System-Temp-Verzeichnis oder einem Unterverzeichnis liegen
@@ -256,7 +256,7 @@ TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
                       pfadfinder::directory_not_found);
     REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_log_unique_12345").log_dir(false), 
                       pfadfinder::directory_not_found);
-    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_temp_unique_12345").temp_dir(), 
+    REQUIRE_THROWS_AS(pfadfinder::application_environment("test_app_temp_unique_12345").temp_dir(false), 
                       pfadfinder::directory_not_found);
 }
 

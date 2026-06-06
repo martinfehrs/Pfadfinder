@@ -252,34 +252,43 @@ Returns the log directory of the application. Optionally creates the directory i
 
 **Return value:** `fs::path` - The log directory (base + rel_path).
 
-#### `temp_dir(const fs::path& rel_path = "")`
-Returns the temporary directory of the application.
+#### `temp_dir` (overloaded)
+Returns the temporary directory of the application. Optionally creates the directory if it does not exist.
 
-**Parameters:**
-- `rel_path`: Relative path to the base directory (optional).
+**Overloads:**
 
-**Platform-specific behavior:**
-- **Windows:** Returns `%TEMP%\\<appname>`
-- **Linux:** Returns `/tmp/<appname>`
-- **macOS Bundle:** Returns `~/Library/Caches/TemporaryItems/<appname>`
-- **macOS CLI:** Returns `/tmp/<appname>`
+1. **`temp_dir(bool create_dir = true)`**
+   
+   Returns the base temporary directory.
 
-**Return value:** `fs::path` - The temporary directory (base or base + rel_path).
-**Exceptions:** `directory_not_found` - If the directory does not exist.
+   **Parameters:**
+   - `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
 
-#### `create_temp_dir(const fs::path& rel_path = "")`
-Creates the temporary directory (incl. rel_path) if it does not exist and returns it.
+   **Platform-specific behavior:**
+   - **Windows:** Returns `%TEMP%\\<appname>`
+   - **Linux:** Returns `/tmp/<appname>`
+   - **macOS Bundle:** Returns `~/Library/Caches/TemporaryItems/<appname>`
+   - **macOS CLI:** Returns `/tmp/<appname>`
 
-**Parameters:**
-- `rel_path`: Relative path to the base directory (optional).
+   **Return value:** `fs::path` - The temporary directory.
+   **Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
 
-**Platform-specific behavior:**
-- **Windows:** Creates `%TEMP%\\<appname>\\<rel_path>`
-- **Linux:** Creates `/tmp/<appname>/<rel_path>`
-- **macOS Bundle:** Creates `~/Library/Caches/TemporaryItems/<appname>/<rel_path>`
-- **macOS CLI:** Creates `/tmp/<appname>/<rel_path>`
+2. **`temp_dir(const fs::path& rel_path, bool create_dir = true)`**
+   
+   Returns the temporary directory including subpath. Optionally creates the directory if it does not exist.
 
-**Return value:** `fs::path` - The temporary directory (base + rel_path).
+   **Parameters:**
+   - `rel_path`: Relative path to the base directory.
+   - `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
+
+   **Platform-specific behavior:**
+   - **Windows:** Returns `%TEMP%\\<appname>\\<rel_path>`
+   - **Linux:** Returns `/tmp/<appname>/<rel_path>`
+   - **macOS Bundle:** Returns `~/Library/Caches/TemporaryItems/<appname>/<rel_path>`
+   - **macOS CLI:** Returns `/tmp/<appname>/<rel_path>`
+
+   **Return value:** `fs::path` - The temporary directory (base + rel_path).
+   **Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
 
 #### `static_data_file(const fs::path& rel_path)`
 Returns the absolute path to a file in the static data directory.
@@ -386,7 +395,7 @@ int main()
         auto log_dir = env.log_dir();
         std::println("Log Dir: {}", log_dir.string());
         
-        auto temp_dir = env.create_temp_dir();
+        auto temp_dir = env.temp_dir();
         std::println("Temp Dir: {}", temp_dir.string());
         
         // static_data_dir() throws if the directory does not exist
