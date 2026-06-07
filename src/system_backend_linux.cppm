@@ -35,7 +35,7 @@ namespace pfadfinder
      * Diese Klasse implementiert alle statischen Methoden zur Bestimmung
      * von Systempfaden spezifisch für das Linux-Betriebssystem.
      */
-    export struct system_environment
+    export struct default_system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

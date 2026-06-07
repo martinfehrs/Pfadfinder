@@ -53,11 +53,11 @@ namespace pfadfinder
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
      * 
-     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::system_environment.
+     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::default_system_environment.
      * 
      * @note Wenn kein app_name angegeben wird, wird der Dateiname der ausführbaren Datei verwendet.
      */
-    export template <typename SystemEnvironment = system_environment>
+    export template <typename SystemEnvironment = default_system_environment>
     class application_environment
     {
 
@@ -65,9 +65,9 @@ namespace pfadfinder
   
         /**
          * @brief Erstellt eine neue application_environment Instanz.
-         * @param app_name Der Name der Anwendung (optional, Standard: leerer String).
+         * @param app_name Der Name der Anwendung (optional).
          *                 Wenn nicht angegeben, wird der Dateiname der ausführbaren Datei verwendet.
-         * @param system_env Backend-Implementierung für Pfadermittlung (Standardkonstruiert).
+         * @param system_env Backend-Implementierung für Pfadermittlung.
          */
         explicit application_environment(std::string app_name = "", SystemEnvironment system_env = SystemEnvironment{})
             : app_name_(std::move(app_name)), system_env_(std::move_if_noexcept(system_env))
@@ -75,7 +75,6 @@ namespace pfadfinder
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-         *        Setzt app_name_ auf den Dateinamen (ohne Dateierweiterung), falls app_name_ leer ist.
          * @return fs::path Der vollständige Pfad zur ausführbaren Datei.
          * @throws Ausnahmen je nach Plattform (z.B. readlink_failed, get_module_file_name_failed)
          */

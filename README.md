@@ -23,7 +23,7 @@ The main class of the module that provides all path functions as methods.
 
 The class is a template and accepts an optional template parameter:
 - `SystemEnvironment`: Type of the backend implementation for platform-specific path determination.
-  By default, `pfadfinder::system_environment` is used.
+  By default, `pfadfinder::default_system_environment` is used.
 
 ### Constructor
 
@@ -389,7 +389,7 @@ int main()
     pfadfinder::application_environment env_with_name("MyApp");
     
     // Or with custom backend (rarely needed)
-    pfadfinder::system_environment custom_backend;
+    pfadfinder::default_system_environment custom_backend;
     pfadfinder::application_environment<> env_custom("", custom_backend);
     
     try

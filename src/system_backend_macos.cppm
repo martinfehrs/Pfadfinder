@@ -45,7 +45,7 @@ namespace pfadfinder
      * Sie unterstützt sowohl gebündelte Anwendungen (Bundle) als auch
      * Kommandozeilen-Tools (CLI).
      */
-    export struct system_environment
+    export struct default_system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

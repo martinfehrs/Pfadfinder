@@ -21,7 +21,7 @@ Die Hauptklasse des Moduls, die alle Pfadfunktionen als Methoden bereitstellt.
 
 Die Klasse ist eine Vorlage und akzeptiert einen optionalen Vorlagenparameter:
 - `SystemEnvironment`: Typ der Backend-Implementierung für plattformspezifische Pfadermittlung.
-  Standardmäßig wird `pfadfinder::system_environment` verwendet.
+  Standardmäßig wird `pfadfinder::default_system_environment` verwendet.
 
 ### Konstruktor
 
@@ -385,7 +385,7 @@ int main()
     pfadfinder::application_environment env_with_name("MeineApp");
     
     // Oder mit benutzerdefiniertem Backend (selten benötigt)
-    pfadfinder::system_environment custom_backend;
+    pfadfinder::default_system_environment custom_backend;
     pfadfinder::application_environment<> env_custom("", custom_backend);
     
     try
