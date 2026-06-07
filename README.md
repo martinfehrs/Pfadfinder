@@ -11,9 +11,9 @@ methods to determine various path directories for an application across differen
 platforms (Windows, Linux, macOS).
 
 The implementation supports:
-- Windows (using `GetModuleFileNameW`)
-- macOS (using `_NSGetExecutablePath` and `realpath`)
-- Linux (using `/proc/self/exe`)
+- Windows
+- macOS
+- Linux
 
 ## Class: `application_environment`
 

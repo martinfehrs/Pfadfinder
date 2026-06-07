@@ -9,9 +9,9 @@ Dieses Projekt stellt die Klasse `pfadfinder::application_environment` bereit,
  auf verschiedenen Plattformen (Windows, Linux, macOS) bereitstellt.
 
 Die Implementierung unterstützt:
-- Windows (mittels `GetModuleFileNameW`)
-- macOS (mittels `_NSGetExecutablePath` und `realpath`)
-- Linux (mittels `/proc/self/exe`)
+- Windows
+- macOS
+- Linux
 
 ## Klasse: `application_environment`
 
