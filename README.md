@@ -326,14 +326,14 @@ int main()
     // Create an environment with default backend
     // The app_name is automatically derived from the executable file
     // if not specified
-    pfadfinder::application_environment<> env;
+    pfadfinder::application_environment env;
     
     // Or with explicit application name
     pfadfinder::application_environment env_with_name("MyApp");
     
     // Or with custom backend (rarely needed)
     pfadfinder::default_system_environment custom_backend;
-    pfadfinder::application_environment<> env_custom("", custom_backend);
+    pfadfinder::application_environment env_custom("", custom_backend);
     
     try
     {
