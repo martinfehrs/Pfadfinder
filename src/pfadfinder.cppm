@@ -29,6 +29,7 @@ module;
 #include <filesystem>
 #include <string>
 #include <optional>
+#include <utility>
 
 export module pfadfinder;
 
@@ -51,23 +52,22 @@ namespace pfadfinder
      * 
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
+     * 
+     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::system_environment.
      */
-    export class application_environment
+    export template <typename SystemEnvironment = system_environment>
+    class application_environment
     {
 
     public:
   
         /**
-         * @brief Erstellt eine neue application_environment Instanz mit leerem App-Namen.
+         * @brief Erstellt eine neue application_environment Instanz mit leerem App-Namen und Standard-Backend.
+         * @param app_name Der Name der Anwendung (optional, Standard: leerer String).
+         * @param system_env Backend-Implementierung für Pfadermittlung (Standardkonstruiert).
          */
-        application_environment() = default;
-
-        /**
-         * @brief Erstellt eine neue application_environment Instanz.
-         * @param app_name Der Name der Anwendung, der für Verzeichnispfade verwendet wird.
-         */
-        explicit application_environment(std::string app_name)
-            : app_name_(std::move(app_name))
+        explicit application_environment(std::string app_name = "", SystemEnvironment system_env = SystemEnvironment{})
+            : app_name_(std::move(app_name)), system_env_(std::move_if_noexcept(system_env))
         {}
 
         /**
@@ -567,8 +567,9 @@ namespace pfadfinder
 
         /** @brief Der Name der Anwendung. */
         mutable std::string app_name_;
+
         /** @brief Plattformspezifische Implementierung für Pfadermittlung. */
-        [[no_unique_address]] system_environment system_env_;
+        [[no_unique_address]] SystemEnvironment system_env_;
 
         // Cache für die berechneten Pfade (Lazy Initialization)
         /** @brief Gecachter Pfad zur ausführbaren Datei. */
