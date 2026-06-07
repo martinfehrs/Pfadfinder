@@ -47,9 +47,7 @@ namespace pfadfinder
      * Diese Klasse kapselt die Logik zur Ermittlung von Pfaden wie dem Executable-Pfad,
      * Datenverzeichnis, Konfigurationsverzeichnis und Cache-Verzeichnis für verschiedene
      * Plattformen (Windows, Linux, macOS).
-     * 
-     * Alle Methoden geben fs::path zurück und können Ausnahmen werfen.
-     * 
+     *
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
      * 
