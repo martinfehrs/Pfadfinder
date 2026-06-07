@@ -17,11 +17,6 @@
  *    - log_dir()              : Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
  *    - user_dir()             : Home-Verzeichnis des Benutzers
- *    - static_data_file()     : Absoluter Pfad zu einer Datei im statischen Datenverzeichnis
- *    - user_data_file()       : Absoluter Pfad zu einer Datei im Benutzer-Datenverzeichnis
- *    - cache_file()           : Absoluter Pfad zu einer Datei im Cache-Verzeichnis
- *    - log_file()             : Absoluter Pfad zu einer Datei im Log-Verzeichnis
- *    - temp_file()            : Absoluter Pfad zu einer Datei im temporären Verzeichnis
  */
 
 module;
