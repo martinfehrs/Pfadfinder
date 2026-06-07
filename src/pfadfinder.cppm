@@ -156,7 +156,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -179,7 +179,7 @@ namespace pfadfinder
          * ~/Library/Application Support/<appname>/<rel_path>, ansonsten ~/.local/share/<appname>/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -203,7 +203,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -226,7 +226,7 @@ namespace pfadfinder
          * ~/Library/Preferences/<appname>/<rel_path>, ansonsten ~/.config/<appname>/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -250,7 +250,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Cache-Verzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -273,7 +273,7 @@ namespace pfadfinder
          * ~/Library/Caches/<appname>/<rel_path>, ansonsten ~/.cache/<appname>/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -297,7 +297,7 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Log-Verzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -320,7 +320,7 @@ namespace pfadfinder
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Log-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -343,7 +343,7 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -365,7 +365,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies /tmp/<appname>/<rel_path> oder ~/Library/Caches/TemporaryItems/<appname>/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert.
+         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
@@ -489,7 +489,10 @@ namespace pfadfinder
 
     private:
 
-        // Hilfsmethoden für Path-Caching
+        /**
+         * @brief Gibt das statische Datenverzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte statische Datenverzeichnis.
+         */
         [[nodiscard]] fs::path get_static_data_dir() const
         {
             if (!cached_static_data_dir_.has_value())
@@ -497,6 +500,10 @@ namespace pfadfinder
             return *cached_static_data_dir_;
         }
 
+        /**
+         * @brief Gibt das geteilte Datenverzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte geteilte Datenverzeichnis.
+         */
         [[nodiscard]] fs::path get_shared_data_dir() const
         {
             if (!cached_shared_data_dir_.has_value())
@@ -504,6 +511,10 @@ namespace pfadfinder
             return *cached_shared_data_dir_;
         }
 
+        /**
+         * @brief Gibt das Benutzer-Datenverzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte Benutzer-Datenverzeichnis.
+         */
         [[nodiscard]] fs::path get_user_data_dir() const
         {
             if (!cached_user_data_dir_.has_value())
@@ -511,6 +522,10 @@ namespace pfadfinder
             return *cached_user_data_dir_;
         }
 
+        /**
+         * @brief Gibt das Konfigurationsverzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte Konfigurationsverzeichnis.
+         */
         [[nodiscard]] fs::path get_config_dir() const
         {
             if (!cached_config_dir_.has_value())
@@ -518,6 +533,10 @@ namespace pfadfinder
             return *cached_config_dir_;
         }
 
+        /**
+         * @brief Gibt das Cache-Verzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte Cache-Verzeichnis.
+         */
         [[nodiscard]] fs::path get_cache_dir() const
         {
             if (!cached_cache_dir_.has_value())
@@ -525,6 +544,10 @@ namespace pfadfinder
             return *cached_cache_dir_;
         }
 
+        /**
+         * @brief Gibt das Log-Verzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte Log-Verzeichnis.
+         */
         [[nodiscard]] fs::path get_log_dir() const
         {
             if (!cached_log_dir_.has_value())
@@ -532,6 +555,10 @@ namespace pfadfinder
             return *cached_log_dir_;
         }
 
+        /**
+         * @brief Gibt das temporäre Verzeichnis zurück (mit Caching).
+         * @return fs::path Das gecachte temporäre Verzeichnis.
+         */
         [[nodiscard]] fs::path get_temp_dir() const
         {
             if (!cached_temp_dir_.has_value())
@@ -539,19 +566,31 @@ namespace pfadfinder
             return *cached_temp_dir_;
         }
 
+        /** @brief Der Name der Anwendung. */
         mutable std::string app_name_;
+        /** @brief Plattformspezifische Implementierung für Pfadermittlung. */
         [[no_unique_address]] system_environment system_env_;
 
         // Cache für die berechneten Pfade (Lazy Initialization)
+        /** @brief Gecachter Pfad zur ausführbaren Datei. */
         mutable std::optional<fs::path> cached_executable_path_;
+        /** @brief Gecachtes Verzeichnis der ausführbaren Datei. */
         mutable std::optional<fs::path> cached_executable_dir_;
+        /** @brief Gecachtes statisches Datenverzeichnis. */
         mutable std::optional<fs::path> cached_static_data_dir_;
+        /** @brief Gecachtes geteiltes Datenverzeichnis. */
         mutable std::optional<fs::path> cached_shared_data_dir_;
+        /** @brief Gecachtes Benutzer-Datenverzeichnis. */
         mutable std::optional<fs::path> cached_user_data_dir_;
+        /** @brief Gecachtes Konfigurationsverzeichnis. */
         mutable std::optional<fs::path> cached_config_dir_;
+        /** @brief Gecachtes Cache-Verzeichnis. */
         mutable std::optional<fs::path> cached_cache_dir_;
+        /** @brief Gecachtes Log-Verzeichnis. */
         mutable std::optional<fs::path> cached_log_dir_;
+        /** @brief Gecachtes temporäres Verzeichnis. */
         mutable std::optional<fs::path> cached_temp_dir_;
+        /** @brief Gecachtes Benutzerverzeichnis (Home). */
         mutable std::optional<fs::path> cached_user_dir_;
     };
 

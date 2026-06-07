@@ -21,28 +21,51 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     // Ausnahmen für Windows
+    /**
+     * @brief Ausnahme, die geworfen wird, wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
+     */
     export struct appdata_not_set : error
     {
         appdata_not_set() : error("APPDATA environment variable not set") {}
     };
 
+    /**
+     * @brief Ausnahme, die geworfen wird, wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
+     */
     export struct localappdata_not_set : error
     {
         localappdata_not_set() : error("LOCALAPPDATA environment variable not set") {}
     };
 
+    /**
+     * @brief Ausnahme, die geworfen wird, wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+     */
     export struct allusersappdata_not_set : error
     {
         allusersappdata_not_set() : error("ALLUSERSAPPDATA environment variable not set") {}
     };
 
+    /**
+     * @brief Ausnahme, die geworfen wird, wenn GetModuleFileNameW() fehlschlägt.
+     */
     export struct get_module_file_name_failed : error
     {
         get_module_file_name_failed() : error("GetModuleFileNameW failed") {}
     };
 
+    /**
+     * @brief Enthält plattformspezifische Methoden für Windows zur Pfadermittlung.
+     * 
+     * Diese Klasse implementiert alle statischen Methoden zur Bestimmung
+     * von Systempfaden spezifisch für das Windows-Betriebssystem.
+     */
     export struct system_environment
     {
+        /**
+         * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
+         * @return fs::path Der absolute Pfad zur ausführbaren Datei.
+         * @throws get_module_file_name_failed Wenn GetModuleFileNameW fehlschlägt.
+         */
         static fs::path executable_path()
         {
             wchar_t path[MAX_PATH] = {0};
@@ -51,12 +74,25 @@ namespace pfadfinder
             return fs::path(path);
         }
 
+        /**
+         * @brief Gibt das statische Datenverzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das statische Datenverzeichnis (gleich dem Binärverzeichnis unter Windows).
+         */
         static fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name)
         {
             // Windows: Datenverzeichnis ist das Binärverzeichnis
             return exe_dir;
         }
 
+        /**
+         * @brief Gibt das geteilte Datenverzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Datenverzeichnis (%ALLUSERSAPPDATA%/<appname>).
+         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             // Windows: %ALLUSERSAPPDATA%/<appname>
@@ -66,6 +102,13 @@ namespace pfadfinder
             return fs::path(allusersappdata) / app_name;
         }
 
+        /**
+         * @brief Gibt das Benutzer-Datenverzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das Benutzer-Datenverzeichnis (%APPDATA%/<appname>).
+         * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* appdata = std::getenv("APPDATA");
@@ -74,6 +117,13 @@ namespace pfadfinder
             return fs::path(appdata) / app_name;
         }
 
+        /**
+         * @brief Gibt das Konfigurationsverzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das Konfigurationsverzeichnis (%APPDATA%/<appname>).
+         * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* appdata = std::getenv("APPDATA");
@@ -82,6 +132,13 @@ namespace pfadfinder
             return fs::path(appdata) / app_name;
         }
 
+        /**
+         * @brief Gibt das Cache-Verzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das Cache-Verzeichnis (%LOCALAPPDATA%/<appname>/Cache).
+         * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
@@ -90,6 +147,13 @@ namespace pfadfinder
             return fs::path(localappdata) / app_name / "Cache";
         }
 
+        /**
+         * @brief Gibt das Log-Verzeichnis zurück.
+         * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das Log-Verzeichnis (%LOCALAPPDATA%/<appname>/Logs).
+         * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
@@ -98,6 +162,12 @@ namespace pfadfinder
             return fs::path(localappdata) / app_name / "Logs";
         }
 
+        /**
+         * @brief Gibt das temporäre Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das temporäre Verzeichnis (%TEMP%/<appname>).
+         * @throws home_not_set Wenn die TEMP-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path temp_dir(const std::string& app_name)
         {
             const char* temp = std::getenv("TEMP");
@@ -106,6 +176,11 @@ namespace pfadfinder
             return fs::path(temp) / app_name;
         }
 
+        /**
+         * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
+         * @return fs::path Das Home-Verzeichnis des Benutzers (%USERPROFILE%).
+         * @throws home_not_set Wenn die USERPROFILE-Umgebungsvariable nicht gesetzt ist.
+         */
         static fs::path user_dir()
         {
             const char* userprofile = std::getenv("USERPROFILE");

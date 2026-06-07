@@ -18,6 +18,11 @@ import pfadfinder;
 namespace fs = std::filesystem;
 
 // Tests für das pfadfinder-Modul
+/**
+ * @brief Testfall für alle Pfadfunktionen der application_environment-Klasse.
+ * 
+ * Dieser Testfall prüft alle öffentlichen Methoden zur Pfadermittlung.
+ */
 TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]") {
     // Erstelle eine application_environment Instanz mit Test-App-Name
     const std::string test_app_name = "test_app";
@@ -242,6 +247,12 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[pfadfinder]")
 }
 
 // Tests für Ausnahmen
+/**
+ * @brief Testfall für Ausnahmebehandlung.
+ * 
+ * Dieser Testfall prüft, dass die richtigen Ausnahmen unter den richtigen
+ * Bedingungen geworfen werden.
+ */
 TEST_CASE("pfadfinder: Ausnahmen", "[pfadfinder][exceptions]") {
     // static_data_dir() wirft nicht unter Windows, da es executable_dir() entspricht
 #if !defined(_WIN32)
