@@ -76,7 +76,7 @@ Gibt das Verzeichnis der ausführbaren Datei zurück.
 Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
 
 **Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `<Binärverzeichnis>\\<appname>` zurück (z. B. `C:\\Program Files\\meine_app`)
@@ -93,7 +93,7 @@ Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
 Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
 
 **Parameter:**
-- `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
+- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
 - **Windows:** Gibt `%ALLUSERSAPPDATA%\\<appname>` zurück
@@ -131,7 +131,7 @@ Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück. Erstellt d
    Gibt das Benutzer-Datenverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
    **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
    - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
    **Plattform-spezifisches Verhalten:**
@@ -169,7 +169,7 @@ Gibt das Konfigurationsverzeichnis der Anwendung zurück. Erstellt das Verzeichn
    Gibt das Konfigurationsverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
    **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
    - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
    **Plattform-spezifisches Verhalten:**
@@ -208,7 +208,7 @@ Gibt das Cache-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optio
    Gibt das Cache-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
    **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
    - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
    **Plattform-spezifisches Verhalten:**
@@ -245,7 +245,7 @@ Gibt das Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optiona
    Gibt das Log-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
    **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
    - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
    **Plattform-spezifisches Verhalten:**
@@ -285,7 +285,7 @@ Gibt das temporäre Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis 
    Gibt das temporäre Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
 
    **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basis-Verzeichnis.
+   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
    - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
 
    **Plattform-spezifisches Verhalten:**
