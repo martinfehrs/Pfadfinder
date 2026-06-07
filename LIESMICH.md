@@ -17,12 +17,20 @@ Die Implementierung unterstützt:
 
 Die Hauptklasse des Moduls, die alle Pfadfunktionen als Methoden bereitstellt.
 
+### Vorlagenparameter
+
+Die Klasse ist eine Vorlage und akzeptiert einen optionalen Vorlagenparameter:
+- `SystemEnvironment`: Typ der Backend-Implementierung für plattformspezifische Pfadermittlung.
+  Standardmäßig wird `pfadfinder::system_environment` verwendet.
+
 ### Konstruktor
 
 **Parameter:**
-- `app_name` (optional): Der Name der Anwendung, der für alle
-  Verzeichnispfade verwendet wird. Wird kein Name angegeben, wird der Dateiname
-  der ausführbaren Datei (ohne Endung) als Anwendungsname verwendet.
+- `app_name` (optional, Standard: leerer String): Der Name der Anwendung, der für alle
+  Verzeichnispfade verwendet wird. Wird kein Name angegeben, wird der Dateiname der
+  ausführbaren Datei verwendet.
+- `system_env` (optional, Standard: `SystemEnvironment{}`): Backend-Implementierung für
+  die Pfadermittlung. Ermöglicht die Verwendung einer benutzerdefinierten Backend-Klasse.
 
 ### Fehlerbehandlung
 
@@ -368,8 +376,17 @@ import pfadfinder;
 
 int main()
 {
-    // Erstelle eine Umgebung
-    pfadfinder::application_environment env("MeineApp");
+    // Erstelle eine Umgebung mit Standard-Backend
+    // Der app_name wird automatisch aus der ausführbaren Datei abgeleitet,
+    // wenn er nicht angegeben wird
+    pfadfinder::application_environment<> env;
+    
+    // Oder mit explizitem Anwendungsnamen
+    pfadfinder::application_environment env_with_name("MeineApp");
+    
+    // Oder mit benutzerdefiniertem Backend (selten benötigt)
+    pfadfinder::system_environment custom_backend;
+    pfadfinder::application_environment<> env_custom("", custom_backend);
     
     try
     {

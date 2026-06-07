@@ -19,11 +19,19 @@ The implementation supports:
 
 The main class of the module that provides all path functions as methods.
 
+### Template Parameter
+
+The class is a template and accepts an optional template parameter:
+- `SystemEnvironment`: Type of the backend implementation for platform-specific path determination.
+  By default, `pfadfinder::system_environment` is used.
+
 ### Constructor
 
-**Parameter:**
-- `app_name` (optional): The name of the application, used for all directory paths.
-  If not provided, the filename of the executable (without extension) is used.
+**Parameters:**
+- `app_name` (optional, default: empty string): The name of the application, used for all directory paths.
+  If not provided, the filename of the executable is used.
+- `system_env` (optional, default: `SystemEnvironment{}`): Backend implementation for path determination.
+  Allows the use of a custom backend class.
 
 ### Error Handling
 
@@ -372,8 +380,17 @@ import pfadfinder;
 
 int main()
 {
-    // Create an environment for the application "MyApp"
-    pfadfinder::application_environment env("MyApp");
+    // Create an environment with default backend
+    // The app_name is automatically derived from the executable file
+    // if not specified
+    pfadfinder::application_environment<> env;
+    
+    // Or with explicit application name
+    pfadfinder::application_environment env_with_name("MyApp");
+    
+    // Or with custom backend (rarely needed)
+    pfadfinder::system_environment custom_backend;
+    pfadfinder::application_environment<> env_custom("", custom_backend);
     
     try
     {

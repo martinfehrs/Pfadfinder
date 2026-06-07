@@ -54,6 +54,8 @@ namespace pfadfinder
      * Berechnungen zu vermeiden.
      * 
      * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::system_environment.
+     * 
+     * @note Wenn kein app_name angegeben wird, wird der Dateiname der ausführbaren Datei verwendet.
      */
     export template <typename SystemEnvironment = system_environment>
     class application_environment
@@ -62,8 +64,9 @@ namespace pfadfinder
     public:
   
         /**
-         * @brief Erstellt eine neue application_environment Instanz mit leerem App-Namen und Standard-Backend.
+         * @brief Erstellt eine neue application_environment Instanz.
          * @param app_name Der Name der Anwendung (optional, Standard: leerer String).
+         *                 Wenn nicht angegeben, wird der Dateiname der ausführbaren Datei verwendet.
          * @param system_env Backend-Implementierung für Pfadermittlung (Standardkonstruiert).
          */
         explicit application_environment(std::string app_name = "", SystemEnvironment system_env = SystemEnvironment{})
