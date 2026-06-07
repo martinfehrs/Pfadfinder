@@ -33,6 +33,14 @@ The class is a template and accepts an optional template parameter:
 - `system_env` (optional, default: `SystemEnvironment{}`): Backend implementation for path determination.
   Allows the use of a custom backend class.
 
+### Backend Classes
+
+Each platform-specific module exports a `default_system_environment` class:
+
+- **`pfadfinder::default_system_environment`** (from `pfadfinder:system_backend`):
+  Platform-specific implementation for Linux, macOS, or Windows (depending on the compiled platform).
+  This class implements static methods for determining system paths for the respective platform.
+
 ### Error Handling
 
 All path functions return `fs::path` and may throw exceptions if an error occurs.

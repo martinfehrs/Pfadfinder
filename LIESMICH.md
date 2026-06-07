@@ -32,6 +32,14 @@ Die Klasse ist eine Vorlage und akzeptiert einen optionalen Vorlagenparameter:
 - `system_env` (optional, Standard: `SystemEnvironment{}`): Backend-Implementierung für
   die Pfadermittlung. Ermöglicht die Verwendung einer benutzerdefinierten Backend-Klasse.
 
+### Backend-Klassen
+
+Jedes plattformspezifische Modul exportiert eine `default_system_environment`-Klasse:
+
+- **`pfadfinder::default_system_environment`** (aus `pfadfinder:system_backend`):
+  Plattformspezifische Implementierung für Linux, macOS oder Windows (je nach kompilierter Plattform).
+  Diese Klasse implementiert statische Methoden zur Ermittlung von Systempfaden für die respective Plattform.
+
 ### Fehlerbehandlung
 
 Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
