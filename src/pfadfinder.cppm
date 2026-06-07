@@ -112,7 +112,7 @@ namespace pfadfinder
          * Unter macOS wird bei gebündelten Anwendungen das Resources-Verzeichnis
          * zurückgegeben, ansonsten ähnlich wie Linux das share-Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis (optional).
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das statische Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
@@ -133,7 +133,7 @@ namespace pfadfinder
          * Unter Linux entspricht dies /var/lib/<appname>.
          * Unter macOS entspricht dies /Library/Application Support/<appname>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis (optional).
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das geteilte Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
@@ -177,7 +177,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/<appname>/<rel_path>, ansonsten ~/.local/share/<appname>/<rel_path>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Datenverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
@@ -224,7 +224,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/<appname>/<rel_path>, ansonsten ~/.config/<appname>/<rel_path>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
@@ -271,7 +271,7 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/<appname>/<rel_path>, ansonsten ~/.cache/<appname>/<rel_path>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Cache-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
@@ -318,7 +318,7 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>/<rel_path>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log/<rel_path>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Log-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
@@ -363,7 +363,7 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/<appname>/<rel_path> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/<appname>/<rel_path> oder ~/Library/Caches/TemporaryItems/<appname>/<rel_path>.
          * 
-         * @param rel_path Relativer Pfad zum Basis-Verzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
@@ -386,7 +386,7 @@ namespace pfadfinder
          * Sucht nach der durch rel_path angegebenen Datei im durch static_data_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des statischen Datenverzeichnisses.
+         * @param rel_path Relativer Dateipfad innerhalb des Basisverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
@@ -404,7 +404,7 @@ namespace pfadfinder
          * Sucht nach der durch rel_path angegebenen Datei im durch user_data_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des Benutzer-Datenverzeichnisses.
+         * @param rel_path Relativer Dateipfad innerhalb des Basisverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
@@ -422,7 +422,7 @@ namespace pfadfinder
          * Sucht nach der durch rel_path angegebenen Datei im durch cache_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des Cache-Verzeichnisses.
+         * @param rel_path Relativer Dateipfad innerhalb des Basisverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
@@ -440,7 +440,7 @@ namespace pfadfinder
          * Sucht nach der durch rel_path angegebenen Datei im durch log_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des Log-Verzeichnisses.
+         * @param rel_path Relativer Dateipfad innerhalb des Basisverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
@@ -458,7 +458,7 @@ namespace pfadfinder
          * Sucht nach der durch rel_path angegebenen Datei im durch temp_dir()
          * zurückgegebenen Verzeichnis.
          * 
-         * @param rel_path Relativer Pfad zur Datei innerhalb des temporären Verzeichnisses.
+         * @param rel_path Relativer Dateipfad innerhalb des Basisverzeichnisses.
          * @return fs::path Absoluter Pfad zur Datei.
          * @throws file_not_found Wenn die Datei nicht gefunden wurde.
          */
@@ -489,7 +489,7 @@ namespace pfadfinder
     private:
 
         /**
-         * @brief Gibt das statische Datenverzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte statische Datenverzeichnis zurück.
          * @return fs::path Das gecachte statische Datenverzeichnis.
          */
         [[nodiscard]] fs::path get_static_data_dir() const
@@ -500,7 +500,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das geteilte Datenverzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte geteilte Datenverzeichnis zurück.
          * @return fs::path Das gecachte geteilte Datenverzeichnis.
          */
         [[nodiscard]] fs::path get_shared_data_dir() const
@@ -511,7 +511,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das Benutzer-Datenverzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte Benutzer-Datenverzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-Datenverzeichnis.
          */
         [[nodiscard]] fs::path get_user_data_dir() const
@@ -522,7 +522,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das Konfigurationsverzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte Konfigurationsverzeichnis zurück.
          * @return fs::path Das gecachte Konfigurationsverzeichnis.
          */
         [[nodiscard]] fs::path get_config_dir() const
@@ -533,7 +533,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das Cache-Verzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte Cache-Verzeichnis zurück.
          * @return fs::path Das gecachte Cache-Verzeichnis.
          */
         [[nodiscard]] fs::path get_cache_dir() const
@@ -544,7 +544,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das Log-Verzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte Log-Verzeichnis zurück.
          * @return fs::path Das gecachte Log-Verzeichnis.
          */
         [[nodiscard]] fs::path get_log_dir() const
@@ -555,7 +555,7 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das temporäre Verzeichnis zurück (mit Caching).
+         * @brief Gibt das gecachte temporäre Verzeichnis zurück.
          * @return fs::path Das gecachte temporäre Verzeichnis.
          */
         [[nodiscard]] fs::path get_temp_dir() const
