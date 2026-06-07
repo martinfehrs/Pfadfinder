@@ -349,7 +349,6 @@ int main()
         auto temp_dir = env.temp_dir();
         std::println("Temp Dir: {}", temp_dir.string());
         
-        // static_data_dir() wirft, wenn das Verzeichnis nicht existiert
         std::println("Data Dir: {}", env.static_data_dir().string());
     }
     catch (const pfadfinder::error& e)
