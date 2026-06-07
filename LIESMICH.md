@@ -79,7 +79,7 @@ Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
 - `rel_path`: Relativer Pfad zum Basis-Verzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `<Binärverzeichnis>\\<appname>` zurück (z. B. `C:\\App\\meine_app`)
+- **Windows:** Gibt `<Binärverzeichnis>\\<appname>` zurück (z. B. `C:\\Program Files\\meine_app`)
 - **Linux:** Leitet das share-Verzeichnis aus dem Binärverzeichnis ab
   (z. B. `/usr/share/meine_app`)
 - **macOS Bundle:** Gibt das Resources-Verzeichnis zurück

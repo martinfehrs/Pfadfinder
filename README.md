@@ -80,7 +80,7 @@ Returns the system-wide static data directory of the application.
 - `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Returns `<executable_dir>\\<appname>` (e.g. `C:\\App\\my_app`)
+- **Windows:** Returns `<executable_dir>\\<appname>` (e.g. `C:\\Program Files\\my_app`)
 - **Linux:** Derives the share directory from the binary directory
   (e.g. `/usr/share/my_app`)
 - **macOS Bundle:** Returns the Resources directory
