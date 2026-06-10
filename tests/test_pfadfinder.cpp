@@ -338,4 +338,88 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         
         REQUIRE_THROWS_AS(env.shared_data_dir(), pfadfinder::directory_not_found);
     }
+    
+    // Tests für andere Verzeichnismethoden mit Mock-Backend
+    SECTION("user_data_dir mit rel_path erstellt Verzeichnis") {
+        auto user_dir = env.user_data_dir("subdir", true);
+        auto expected = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name / "subdir";
+        REQUIRE(user_dir == expected);
+        REQUIRE(fs::exists(user_dir));
+        REQUIRE(fs::is_directory(user_dir));
+    }
+    
+    SECTION("config_dir mit rel_path erstellt Verzeichnis") {
+        auto config_dir = env.config_dir("subdir", true);
+        auto expected = backend.base_temp_dir / "home" / ".config" / test_app_name / "subdir";
+        REQUIRE(config_dir == expected);
+        REQUIRE(fs::exists(config_dir));
+        REQUIRE(fs::is_directory(config_dir));
+    }
+    
+    SECTION("cache_dir mit rel_path erstellt Verzeichnis") {
+        auto cache_dir = env.cache_dir("subdir", true);
+        auto expected = backend.base_temp_dir / "home" / ".cache" / test_app_name / "subdir";
+        REQUIRE(cache_dir == expected);
+        REQUIRE(fs::exists(cache_dir));
+        REQUIRE(fs::is_directory(cache_dir));
+    }
+    
+    SECTION("log_dir mit rel_path erstellt Verzeichnis") {
+        auto log_dir = env.log_dir("subdir", true);
+        auto expected = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log" / "subdir";
+        REQUIRE(log_dir == expected);
+        REQUIRE(fs::exists(log_dir));
+        REQUIRE(fs::is_directory(log_dir));
+    }
+    
+    SECTION("temp_dir mit rel_path erstellt Verzeichnis") {
+        auto temp_dir = env.temp_dir("subdir", true);
+        auto expected = backend.base_temp_dir / "tmp" / test_app_name / "subdir";
+        REQUIRE(temp_dir == expected);
+        REQUIRE(fs::exists(temp_dir));
+        REQUIRE(fs::is_directory(temp_dir));
+    }
+    
+    // Tests für create_dir=false mit nicht existierenden Verzeichnissen
+    SECTION("user_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        pfadfinder::application_environment<test_backend::test_system_environment> env_no_create("nonexistent_app", backend);
+        REQUIRE_THROWS_AS(env_no_create.user_data_dir(false), pfadfinder::directory_not_found);
+    }
+    
+    SECTION("config_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        pfadfinder::application_environment<test_backend::test_system_environment> env_no_create("nonexistent_app", backend);
+        REQUIRE_THROWS_AS(env_no_create.config_dir(false), pfadfinder::directory_not_found);
+    }
+    
+    SECTION("cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        pfadfinder::application_environment<test_backend::test_system_environment> env_no_create("nonexistent_app", backend);
+        REQUIRE_THROWS_AS(env_no_create.cache_dir(false), pfadfinder::directory_not_found);
+    }
+    
+    SECTION("static_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        REQUIRE_THROWS_AS(env.static_data_dir(), pfadfinder::directory_not_found);
+    }
+    
+    SECTION("shared_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        REQUIRE_THROWS_AS(env.shared_data_dir(), pfadfinder::directory_not_found);
+    }
+    
+    // Caching-Verhalten prüfen (Wert bleibt konsistent)
+    SECTION("executable_path gibt konsistente Werte zurück") {
+        auto path1 = env.executable_path();
+        auto path2 = env.executable_path();
+        REQUIRE(path1 == path2);
+    }
+    
+    SECTION("executable_dir gibt konsistente Werte zurück") {
+        auto dir1 = env.executable_dir();
+        auto dir2 = env.executable_dir();
+        REQUIRE(dir1 == dir2);
+    }
+    
+    SECTION("user_dir gibt konsistente Werte zurück") {
+        auto dir1 = env.user_dir();
+        auto dir2 = env.user_dir();
+        REQUIRE(dir1 == dir2);
+    }
 }
