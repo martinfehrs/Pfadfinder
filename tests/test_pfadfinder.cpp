@@ -96,7 +96,7 @@ namespace test_backend
         
         fs::path shared_config_dir(const std::string& app_name) const
         {
-            return base_temp_dir / "etc" / app_name;
+            return base_temp_dir / "var" / "lib" / app_name;
         }
     };
 }
@@ -482,7 +482,7 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
     }
 
     SECTION("shared_config_dir gibt gültigen Pfad zurück") {
-        auto expected_path = backend.base_temp_dir / "etc" / test_app_name;
+        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name;
         fs::create_directories(expected_path);
         
         auto config_dir = env.shared_config_dir();

@@ -352,7 +352,7 @@ Returns the system-wide shared configuration directory of the application.
 - `rel_path`: Relative path to the base directory (optional).
 
 **Platform-specific behavior:**
-- **Windows:** Returns `%ALLUSERSAPPDATA%\<appname>\Config`
+- **Windows:** Returns `%ALLUSERSAPPDATA%\<appname>`
 - **Linux:** Returns `/etc/<appname>`
 - **macOS:** Returns `/Library/Preferences/<appname>`
 

@@ -343,7 +343,7 @@ Gibt das systemweite geteilte Konfigurationsverzeichnis der Anwendung zurück.
 - `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
 
 **Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Config` zurück
+- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>` zurück
 - **Linux:** Gibt `/etc/<appname>` zurück
 - **macOS:** Gibt `/Library/Preferences/<appname>` zurück
 

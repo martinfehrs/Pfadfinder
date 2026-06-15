@@ -193,7 +193,7 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>/Config.
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>.
          * Unter Linux entspricht dies /etc/<appname>.
          * Unter macOS entspricht dies /Library/Preferences/<appname>.
          * 

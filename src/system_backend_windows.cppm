@@ -220,7 +220,7 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/<appname>/Config).
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/<appname>).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         static fs::path shared_config_dir(const std::string& app_name)
@@ -228,7 +228,7 @@ namespace pfadfinder
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
             if (!allusersappdata)
                 throw allusersappdata_not_set();
-            return fs::path(allusersappdata) / app_name / "Config";
+            return fs::path(allusersappdata) / app_name;
         }
     };
 
