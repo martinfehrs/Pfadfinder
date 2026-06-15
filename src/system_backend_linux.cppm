@@ -158,6 +158,38 @@ namespace pfadfinder
                 throw home_not_set();
             return fs::path(home);
         }
+
+        /**
+         * @brief Gibt das geteilte Cache-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Cache-Verzeichnis (/var/cache/<appname>).
+         */
+        static fs::path shared_cache_dir(const std::string& app_name)
+        {
+            return fs::path("/var/cache") / app_name;
+        }
+
+        /**
+         * @brief Gibt das geteilte Log-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Log-Verzeichnis (/var/log/<appname>).
+         */
+        static fs::path shared_log_dir(const std::string& app_name)
+        {
+            return fs::path("/var/log") / app_name;
+        }
+
+        /**
+         * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (/etc/<appname>).
+         * 
+         * @note Linux-Backend erlaubt nur Lesen von /etc (kleinster gemeinsamer Nenner).
+         */
+        static fs::path shared_config_dir(const std::string& app_name)
+        {
+            return fs::path("/etc") / app_name;
+        }
     };
 
 }

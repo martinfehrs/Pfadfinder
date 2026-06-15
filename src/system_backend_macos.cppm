@@ -246,6 +246,39 @@ namespace pfadfinder
                 throw home_not_set();
             return fs::path(home);
         }
+
+        /**
+         * @brief Gibt das geteilte Cache-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Cache-Verzeichnis (/Library/Caches/<appname>).
+         */
+        static fs::path shared_cache_dir(const std::string& app_name)
+        {
+            // macOS: Systemweites Cache-Verzeichnis
+            return fs::path("/Library/Caches") / app_name;
+        }
+
+        /**
+         * @brief Gibt das geteilte Log-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Log-Verzeichnis (/Library/Logs/<appname>).
+         */
+        static fs::path shared_log_dir(const std::string& app_name)
+        {
+            // macOS: Systemweites Log-Verzeichnis
+            return fs::path("/Library/Logs") / app_name;
+        }
+
+        /**
+         * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (/Library/Preferences/<appname>).
+         */
+        static fs::path shared_config_dir(const std::string& app_name)
+        {
+            // macOS: Systemweites Konfigurationsverzeichnis
+            return fs::path("/Library/Preferences") / app_name;
+        }
     };
 
 }

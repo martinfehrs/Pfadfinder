@@ -82,6 +82,22 @@ namespace test_backend
         {
             return base_temp_dir / "home";
         }
+        
+        // Neue Methoden für geteilte Verzeichnisse
+        fs::path shared_cache_dir(const std::string& app_name) const
+        {
+            return base_temp_dir / "var" / "cache" / app_name;
+        }
+        
+        fs::path shared_log_dir(const std::string& app_name) const
+        {
+            return base_temp_dir / "var" / "log" / app_name;
+        }
+        
+        fs::path shared_config_dir(const std::string& app_name) const
+        {
+            return base_temp_dir / "etc" / app_name;
+        }
     };
 }
 
@@ -421,5 +437,57 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         auto dir1 = env.user_dir();
         auto dir2 = env.user_dir();
         REQUIRE(dir1 == dir2);
+    }
+
+    // Tests für die neuen Methoden
+    SECTION("shared_cache_dir gibt gültigen Pfad zurück") {
+        auto expected_path = backend.base_temp_dir / "var" / "cache" / test_app_name;
+        fs::create_directories(expected_path);
+        
+        auto cache_dir = env.shared_cache_dir();
+        REQUIRE(cache_dir == expected_path);
+        REQUIRE(fs::exists(cache_dir));
+        REQUIRE(fs::is_directory(cache_dir));
+    }
+
+    SECTION("shared_cache_dir erstellt Verzeichnis") {
+        auto cache_dir = env.shared_cache_dir("", true);
+        auto expected = backend.base_temp_dir / "var" / "cache" / test_app_name;
+        REQUIRE(cache_dir == expected);
+        REQUIRE(fs::exists(cache_dir));
+        REQUIRE(fs::is_directory(cache_dir));
+    }
+
+    SECTION("shared_cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        test_env_type env_no_create("nonexistent_shared_cache", backend);
+        REQUIRE_THROWS_AS(env_no_create.shared_cache_dir("", false), pfadfinder::directory_not_found);
+    }
+
+    SECTION("shared_log_dir erstellt Verzeichnis") {
+        auto log_dir = env.shared_log_dir("", true);
+        auto expected = backend.base_temp_dir / "var" / "log" / test_app_name;
+        REQUIRE(log_dir == expected);
+        REQUIRE(fs::exists(log_dir));
+        REQUIRE(fs::is_directory(log_dir));
+    }
+
+    SECTION("shared_log_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+        test_env_type env_no_create("nonexistent_shared_log", backend);
+        REQUIRE_THROWS_AS(env_no_create.shared_log_dir("", false), pfadfinder::directory_not_found);
+    }
+
+    SECTION("shared_config_dir wirft immer") {
+        test_env_type env_no_create("nonexistent_shared_config", backend);
+        REQUIRE_THROWS_AS(env_no_create.shared_config_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("shared_config_dir gibt gültigen Pfad zurück") {
+        auto expected_path = backend.base_temp_dir / "etc" / test_app_name;
+        fs::create_directories(expected_path);
+        
+        auto config_dir = env.shared_config_dir();
+        REQUIRE(config_dir == expected_path);
+        REQUIRE(fs::exists(config_dir));
+        REQUIRE(fs::is_directory(config_dir));
     }
 }

@@ -188,6 +188,48 @@ namespace pfadfinder
                 throw home_not_set();
             return fs::path(userprofile);
         }
+
+        /**
+         * @brief Gibt das geteilte Cache-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Cache-Verzeichnis (%ALLUSERSAPPDATA%/<appname>/Cache).
+         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
+        static fs::path shared_cache_dir(const std::string& app_name)
+        {
+            const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
+            if (!allusersappdata)
+                throw allusersappdata_not_set();
+            return fs::path(allusersappdata) / app_name / "Cache";
+        }
+
+        /**
+         * @brief Gibt das geteilte Log-Verzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Log-Verzeichnis (%ALLUSERSAPPDATA%/<appname>/Logs).
+         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
+        static fs::path shared_log_dir(const std::string& app_name)
+        {
+            const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
+            if (!allusersappdata)
+                throw allusersappdata_not_set();
+            return fs::path(allusersappdata) / app_name / "Logs";
+        }
+
+        /**
+         * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
+         * @param app_name Der Name der Anwendung.
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/<appname>/Config).
+         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         */
+        static fs::path shared_config_dir(const std::string& app_name)
+        {
+            const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
+            if (!allusersappdata)
+                throw allusersappdata_not_set();
+            return fs::path(allusersappdata) / app_name / "Config";
+        }
     };
 
 }

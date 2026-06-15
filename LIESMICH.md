@@ -306,6 +306,52 @@ Gibt das Home-Verzeichnis des Benutzers zurück.
 
 **Rückgabewert:** `fs::path` - Das Home-Verzeichnis.
 
+#### `shared_cache_dir(const fs::path& rel_path = "", bool create_dir = true)`
+Gibt das systemweite geteilte Cache-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
+- `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Cache` zurück
+- **Linux:** Gibt `/var/cache/<appname>` zurück
+- **macOS:** Gibt `/Library/Caches/<appname>` zurück
+
+**Rückgabewert:** `fs::path` - Das geteilte Cache-Verzeichnis (Basis oder Basis + rel_path).
+**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
+
+#### `shared_log_dir(const fs::path& rel_path = "", bool create_dir = true)`
+Gibt das systemweite geteilte Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
+- `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Logs` zurück
+- **Linux:** Gibt `/var/log/<appname>` zurück
+- **macOS:** Gibt `/Library/Logs/<appname>` zurück
+
+**Rückgabewert:** `fs::path` - Das geteilte Log-Verzeichnis (Basis oder Basis + rel_path).
+**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
+
+#### `shared_config_dir(const fs::path& rel_path = "")`
+Gibt das systemweite geteilte Konfigurationsverzeichnis der Anwendung zurück.
+
+**Parameter:**
+- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
+
+**Plattform-spezifisches Verhalten:**
+- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Config` zurück
+- **Linux:** Gibt `/etc/<appname>` zurück
+- **macOS:** Gibt `/Library/Preferences/<appname>` zurück
+
+**Rückgabewert:** `fs::path` - Das geteilte Konfigurationsverzeichnis (Basis oder Basis + rel_path).
+**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
+
+**Hinweis:** Im Gegensatz zu den meisten anderen Methoden hat diese Methode **keine** `create_dir`-Option, da das Linux-Backend nur Lesezugriff auf `/etc` erlaubt (kleinster gemeinsamer Nenner über alle Plattformen).
+
 ## Verwendungsbeispiel
 
 ```cpp
@@ -350,6 +396,28 @@ int main()
         std::println("Temp Dir: {}", temp_dir.string());
         
         std::println("Data Dir: {}", env.static_data_dir().string());
+        
+        // Geteilte Verzeichnisse (systemweit)
+        try {
+            auto shared_cache = env.shared_cache_dir();
+            std::println("Shared Cache Dir: {}", shared_cache.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Cache Dir nicht verfügbar: {}", e.what());
+        }
+        
+        try {
+            auto shared_log = env.shared_log_dir();
+            std::println("Shared Log Dir: {}", shared_log.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Log Dir nicht verfügbar: {}", e.what());
+        }
+        
+        try {
+            auto shared_config = env.shared_config_dir();
+            std::println("Shared Config Dir: {}", shared_config.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Config Dir nicht verfügbar: {}", e.what());
+        }
     }
     catch (const pfadfinder::error& e)
     {
@@ -402,9 +470,11 @@ cd build
 Pfadfinder/
 ├── CMakeLists.txt                  # Haupt-CMake-Konfiguration
 ├── LIESMICH.md                     # Diese Datei
+├── LIZENZ.md                      # Lizenzinformationen
+├── README.md                      # Englische Dokumentation
 ├── src/
 │   ├── error.cppm                  # Fehlerbehandlung (Ausnahmeklassen)
-│   ├── pfadfinder.cppm             # Hauptmodul
+│   ├── pfadfinder.cppm             # Hauptmodul mit application_environment
 │   ├── system_backend_linux.cppm   # Linux-spezifische Implementierung
 │   ├── system_backend_windows.cppm # Windows-spezifische Implementierung
 │   └── system_backend_macos.cppm   # macOS-spezifische Implementierung

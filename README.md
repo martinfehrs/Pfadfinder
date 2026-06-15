@@ -315,6 +315,52 @@ Returns the user's home directory.
 
 **Return value:** `fs::path` - The home directory.
 
+#### `shared_cache_dir(const fs::path& rel_path = "", bool create_dir = true)`
+Returns the system-wide shared cache directory of the application. Optionally creates the directory if it does not exist.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
+- `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%ALLUSERSAPPDATA%\<appname>\Cache`
+- **Linux:** Returns `/var/cache/<appname>`
+- **macOS:** Returns `/Library/Caches/<appname>`
+
+**Return value:** `fs::path` - The shared cache directory (base or base + rel_path).
+**Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
+
+#### `shared_log_dir(const fs::path& rel_path = "", bool create_dir = true)`
+Returns the system-wide shared log directory of the application. Optionally creates the directory if it does not exist.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
+- `create_dir`: Whether to create the directory if it does not exist (Default: `true`).
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%ALLUSERSAPPDATA%\<appname>\Logs`
+- **Linux:** Returns `/var/log/<appname>`
+- **macOS:** Returns `/Library/Logs/<appname>`
+
+**Return value:** `fs::path` - The shared log directory (base or base + rel_path).
+**Exceptions:** `directory_not_found` - If the directory does not exist and `create_dir=false`.
+
+#### `shared_config_dir(const fs::path& rel_path = "")`
+Returns the system-wide shared configuration directory of the application.
+
+**Parameters:**
+- `rel_path`: Relative path to the base directory (optional).
+
+**Platform-specific behavior:**
+- **Windows:** Returns `%ALLUSERSAPPDATA%\<appname>\Config`
+- **Linux:** Returns `/etc/<appname>`
+- **macOS:** Returns `/Library/Preferences/<appname>`
+
+**Return value:** `fs::path` - The shared configuration directory (base or base + rel_path).
+**Exceptions:** `directory_not_found` - If the directory does not exist.
+
+**Note:** Unlike most other methods, this method does **not** have a `create_dir` option, because the Linux backend only allows read access to `/etc` (smallest common denominator across all platforms).
+
 ## Usage Example
 
 ```cpp
@@ -359,6 +405,28 @@ int main()
         std::println("Temp Dir: {}", temp_dir.string());
         
         std::println("Data Dir: {}", env.static_data_dir().string());
+        
+        // Shared directories (system-wide)
+        try {
+            auto shared_cache = env.shared_cache_dir();
+            std::println("Shared Cache Dir: {}", shared_cache.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Cache Dir not available: {}", e.what());
+        }
+        
+        try {
+            auto shared_log = env.shared_log_dir();
+            std::println("Shared Log Dir: {}", shared_log.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Log Dir not available: {}", e.what());
+        }
+        
+        try {
+            auto shared_config = env.shared_config_dir();
+            std::println("Shared Config Dir: {}", shared_config.string());
+        } catch (const pfadfinder::error& e) {
+            std::println(stderr, "Shared Config Dir not available: {}", e.what());
+        }
     }
     catch (const pfadfinder::error& e)
     {
@@ -410,11 +478,12 @@ cd build
 ```
 Pfadfinder/
 ├── CMakeLists.txt                  # Main CMake configuration
-├── LIESMICH.md                     # Projektbeschreibung (Deutsch)
+├── LIESMICH.md                     # Project description (German)
+├── LICENSE.md                      # License information
 ├── README.md                       # Project description (English)
 ├── src/
 │   ├── error.cppm                  # Error handling (exception classes)
-│   ├── pfadfinder.cppm             # main module
+│   ├── pfadfinder.cppm             # main module with application_environment
 │   ├── system_backend_linux.cppm   # Linux-specific implementation
 │   ├── system_backend_windows.cppm # Windows-specific implementation
 │   └── system_backend_macos.cppm   # macOS-specific implementation
