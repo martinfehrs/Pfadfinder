@@ -14,6 +14,7 @@ module;
 
 export module pfadfinder:system_backend;
 
+import :system_environment;
 import :error;
 
 namespace fs = std::filesystem;
@@ -26,30 +27,35 @@ namespace pfadfinder
      */
     export struct readlink_failed : error
     {
-        readlink_failed() : error("readlink failed") {}
+        readlink_failed()
+            : error{ "readlink failed" }
+        {}
     };
 
     /**
      * @brief Enthält plattformspezifische Methoden für Linux zur Pfadermittlung.
      * 
-     * Diese Klasse implementiert alle statischen Methoden zur Bestimmung
-     * von Systempfaden spezifisch für das Linux-Betriebssystem.
+     * Diese Klasse implementiert die system_environment-Schnittstelle
+     * spezifisch für das Linux-Betriebssystem.
      */
-    export struct default_system_environment
+    export struct default_system_environment : system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
          * @return fs::path Der absolute Pfad zur ausführbaren Datei.
          * @throws readlink_failed Wenn der readlink-Aufruf fehlschlägt.
          */
-        static fs::path executable_path()
+        [[nodiscard]] fs::path executable_path() const override
         {
-            char path[PATH_MAX] = {0};
+            char path[PATH_MAX]{};
             ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+ 
             if (len == -1)
-                throw readlink_failed();
+                throw readlink_failed{};
+ 
             path[len] = '\0';
-            return fs::path(path);
+
+            return fs::path{ path };
         }
 
         /**
@@ -58,7 +64,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das statische Datenverzeichnis (/usr/share/<appname>).
          */
-        static fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name)
+        [[nodiscard]] fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
             // Linux: von /usr/bin/myapp zu /usr/share/myapp
             return exe_dir.parent_path() / "share" / app_name;
@@ -70,10 +76,10 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Datenverzeichnis (/var/lib/<appname>).
          */
-        static fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
+        [[nodiscard]] fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             // Linux: /var/lib/<appname>
-            return fs::path("/var/lib") / app_name;
+            return fs::path{ "/var/lib" } / app_name;
         }
 
         /**
@@ -83,12 +89,14 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-Datenverzeichnis (~/.local/share/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        static fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
+        [[nodiscard]] fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
+ 
             if (!home)
-                throw home_not_set();
-            return fs::path(home) / ".local" / "share" / app_name;
+                throw home_not_set{};
+ 
+            return fs::path{ home } / ".local" / "share" / app_name;
         }
 
         /**
@@ -98,12 +106,14 @@ namespace pfadfinder
          * @return fs::path Das Konfigurationsverzeichnis (~/.config/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        static fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
+        [[nodiscard]] fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
+
             if (!home)
-                throw home_not_set();
-            return fs::path(home) / ".config" / app_name;
+                throw home_not_set{};
+
+            return fs::path{ home } / ".config" / app_name;
         }
 
         /**
@@ -113,12 +123,14 @@ namespace pfadfinder
          * @return fs::path Das Cache-Verzeichnis (~/.cache/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        static fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
+        [[nodiscard]] fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
+
             if (!home)
-                throw home_not_set();
-            return fs::path(home) / ".cache" / app_name;
+                throw home_not_set{};
+
+            return fs::path{ home } / ".cache" / app_name;
         }
 
         /**
@@ -128,12 +140,14 @@ namespace pfadfinder
          * @return fs::path Das Log-Verzeichnis (~/.local/state/<appname>/log).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        static fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name)
+        [[nodiscard]] fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
+
             if (!home)
-                throw home_not_set();
-            return fs::path(home) / ".local" / "state" / app_name / "log";
+                throw home_not_set{};
+
+            return fs::path{ home } / ".local" / "state" / app_name / "log";
         }
 
         /**
@@ -141,7 +155,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das temporäre Verzeichnis (system temp dir / <appname>).
          */
-        static fs::path temp_dir(const std::string& app_name)
+        [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
         {
             return fs::temp_directory_path() / app_name;
         }
@@ -151,12 +165,14 @@ namespace pfadfinder
          * @return fs::path Das Home-Verzeichnis des Benutzers.
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        static fs::path user_dir()
+        [[nodiscard]] fs::path user_dir() const override
         {
             const char* home = std::getenv("HOME");
+
             if (!home)
-                throw home_not_set();
-            return fs::path(home);
+                throw home_not_set{};
+
+            return fs::path{ home };
         }
 
         /**
@@ -164,9 +180,9 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Cache-Verzeichnis (/var/cache/<appname>).
          */
-        static fs::path shared_cache_dir(const std::string& app_name)
+        [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
         {
-            return fs::path("/var/cache") / app_name;
+            return fs::path{ "/var/cache" } / app_name;
         }
 
         /**
@@ -174,9 +190,9 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Log-Verzeichnis (/var/log/<appname>).
          */
-        static fs::path shared_log_dir(const std::string& app_name)
+        [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
         {
-            return fs::path("/var/log") / app_name;
+            return fs::path{ "/var/log" } / app_name;
         }
 
         /**
@@ -186,9 +202,9 @@ namespace pfadfinder
          * 
          * @note Linux-Backend erlaubt nur Lesen von /etc (kleinster gemeinsamer Nenner).
          */
-        static fs::path shared_config_dir(const std::string& app_name)
+        [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override
         {
-            return fs::path("/etc") / app_name;
+            return fs::path{ "/etc" } / app_name;
         }
     };
 

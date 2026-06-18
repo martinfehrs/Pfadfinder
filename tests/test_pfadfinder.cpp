@@ -20,9 +20,10 @@ namespace fs = std::filesystem;
 // Mock-Backend für Integrationstests
 // Dieses Backend leitet alle Pfade in ein temporäres Verzeichnis um,
 // damit wir die Verzeichnisfunktionen ohne Admin-Rechte testen können.
+
 namespace test_backend
 {
-    struct test_system_environment
+    struct test_system_environment : pfadfinder::system_environment
     {
         fs::path base_temp_dir;
         
@@ -38,63 +39,63 @@ namespace test_backend
             fs::remove_all(base_temp_dir);
         }
         
-        fs::path executable_path() const
+        [[nodiscard]] fs::path executable_path() const override
         {
             return base_temp_dir / "bin" / "test_app";
         }
         
-        fs::path static_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path static_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "share" / app_name;
         }
         
-        fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "var" / "lib" / app_name;
         }
         
-        fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "share" / app_name;
         }
         
-        fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".config" / app_name;
         }
         
-        fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".cache" / app_name;
         }
         
-        fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const
+        [[nodiscard]] fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "state" / app_name / "log";
         }
         
-        fs::path temp_dir(const std::string& app_name) const
+        [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "tmp" / app_name;
         }
         
-        fs::path user_dir() const
+        [[nodiscard]] fs::path user_dir() const override
         {
             return base_temp_dir / "home";
         }
         
         // Neue Methoden für geteilte Verzeichnisse
-        fs::path shared_cache_dir(const std::string& app_name) const
+        [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "var" / "cache" / app_name;
         }
         
-        fs::path shared_log_dir(const std::string& app_name) const
+        [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "var" / "log" / app_name;
         }
         
-        fs::path shared_config_dir(const std::string& app_name) const
+        [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "var" / "lib" / app_name;
         }

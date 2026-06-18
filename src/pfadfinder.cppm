@@ -30,6 +30,7 @@ export module pfadfinder;
 
 export import :system_backend;
 export import :error;
+export import :system_environment;
 
 namespace fs = std::filesystem;
 

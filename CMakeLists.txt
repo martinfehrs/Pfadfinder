@@ -30,13 +30,13 @@ endif()
 # Plattformspezifisches Backend-Modul auswählen
 set(SYSTEM_BACKEND_SOURCE "")
 if(IS_WINDOWS)
-    set(SYSTEM_BACKEND_SOURCE src/system_backend_windows.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/windows_environment.cppm)
     set(SELECTED_BACKEND "system_backend_windows")
 elseif(IS_MACOSX)
-    set(SYSTEM_BACKEND_SOURCE src/system_backend_macos.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/macos_environment.cppm)
     set(SELECTED_BACKEND "system_backend_macos")
 elseif(IS_LINUX)
-    set(SYSTEM_BACKEND_SOURCE src/system_backend_linux.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/linux_environment.cppm)
     set(SELECTED_BACKEND "system_backend_linux")
 else()
     message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
@@ -49,6 +49,7 @@ target_sources(pfadfinder PUBLIC
     FILE_SET CXX_MODULES
         FILES src/pfadfinder.cppm
                 src/error.cppm
+                src/system_environment.cppm
                 ${SYSTEM_BACKEND_SOURCE}
 )
 
