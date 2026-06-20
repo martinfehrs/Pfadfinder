@@ -30,7 +30,7 @@ namespace pfadfinder
         get_executable_path_failed()
             : error{ "_NSGetExecutablePath failed" }
         {}
-    }
+    };
 
     /**
      * @brief Ausnahme, die geworfen wird, wenn realpath() fehlschlägt.
