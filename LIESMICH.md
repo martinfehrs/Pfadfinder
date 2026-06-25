@@ -1,433 +1,27 @@
 # Pfadfinder
 
-Projekt zur Bestimmung verschiedener Verzeichnisse einer laufenden Anwendung.
+Projekt zur plattformübergreifenden Bestimmung gebräuchlicher Anwendungsverzeichnisse.
 
 ## Beschreibung
 
-Dieses Projekt stellt die Klasse `pfadfinder::application_environment` bereit,
- die Methoden zur Ermittlung verschiedener Verzeichnispfade für eine Anwendung
- auf verschiedenen Plattformen (Windows, Linux, macOS) bereitstellt.
+Mittels einer Instanz der Klasse `pfadfinder::application_environment` erhält man
+Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade:
 
-Die Implementierung unterstützt:
+    - Benutzerspezifische Konfiguration
+    - Benutzerspezifische Cache
+    - Benutzerspezifische Daten
+    - Benutzerübergreifende Konfiguration
+    - Benuterübergreifender Cache
+    - Benutzerübergreifende Daten
+    - Statsiche Anwendungsdaten
+    - Benutzerverzeichnis
+    - Temporäre Daten
+
+## Unterstützte Plattformen
+
 - Windows
 - macOS
 - Linux
-
-## Klasse: `application_environment`
-
-Die Hauptklasse des Moduls, die alle Pfadfunktionen als Methoden bereitstellt.
-
-### Vorlagenparameter
-
-Die Klasse ist eine Vorlage und akzeptiert einen optionalen Vorlagenparameter:
-- `SystemEnvironment`: Typ der Backend-Implementierung für plattformspezifische Pfadermittlung.
-  Standardmäßig wird `pfadfinder::default_system_environment` verwendet.
-
-### Konstruktor
-
-**Parameter:**
-- `app_name` (optional, Standard: leerer String): Der Name der Anwendung, der für alle
-  Verzeichnispfade verwendet wird. Wird kein Name angegeben, wird der Dateiname der
-  ausführbaren Datei verwendet.
-- `system_env` (optional, Standard: `SystemEnvironment{}`): Backend-Implementierung für
-  die Pfadermittlung. Ermöglicht die Verwendung einer benutzerdefinierten Backend-Klasse.
-
-### Backend-Klassen
-
-Jedes plattformspezifische Modul exportiert eine `default_system_environment`-Klasse:
-
-- **`pfadfinder::default_system_environment`** (aus `pfadfinder:system_backend`):
-  Plattformspezifische Implementierung für Linux, macOS oder Windows (je nach kompilierter Plattform).
-  Diese Klasse implementiert statische Methoden zur Ermittlung von Systempfaden für die respective Plattform.
-
-### Fehlerbehandlung
-
-Alle Pfadfunktionen geben `fs::path` zurück und können Ausnahmen werfen, wenn
- ein Fehler auftritt. Die folgenden Ausnahmen können geworfen werden:
-
-- `home_not_set`                - Umgebungsvariable HOME nicht gesetzt
-- `readlink_failed`             - readlink /proc/self/exe scheiterte (Linux)
-- `appdata_not_set`             - Umgebungsvariable APPDATA nicht gesetzt (Windows)
-- `localappdata_not_set`        - Umgebungsvariable LOCALAPPDATA nicht gesetzt (Windows)
-- `allusersappdata_not_set`     - Umgebungsvariable ALLUSERSAPPDATA nicht gesetzt (Windows)
-- `get_module_file_name_failed` - GetModuleFileNameW scheiterte (Windows)
-- `get_executable_path_failed`  - _NSGetExecutablePath scheiterte (macOS)
-- `realpath_failed`             - realpath scheiterte (macOS)
-- `file_not_found`              - Datei nicht gefunden
-- `directory_not_found`         - Verzeichnis nicht gefunden
-
-Alle Ausnahmen sind von `pfadfinder::error` abgeleitet, die ihrerseits
- von `std::runtime_error` abgeleitet ist.
-
-### Methoden
-
-#### `executable_path()`
-Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-
-**Rückgabewert:** `fs::path` - Der vollständige Pfad zur ausführbaren Datei.
-**Ausnahmen:** Plattformspezifische Ausnahmen (siehe Fehlerbehandlung).
-
-#### `executable_dir()`
-Gibt das Verzeichnis der ausführbaren Datei zurück.
-
-**Rückgabewert:** `fs::path` - Das Verzeichnis der ausführbaren Datei.
-
-#### `static_data_dir(const fs::path& rel_path = "")`
-Gibt das systemweite statische Datenverzeichnis der Anwendung zurück.
-
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `<Binärverzeichnis>` zurück (z. B. `C:\\Program Files\\meine_app`)
-- **Linux:** Leitet das share-Verzeichnis aus dem Binärverzeichnis ab
-  (z. B. `/usr/share/meine_app`)
-- **macOS Bundle:** Gibt das Resources-Verzeichnis zurück
-  (z. B. `MeineApp.app/Contents/Resources/`)
-- **macOS CLI:** Ähnlich wie Linux (z. B. `/usr/local/share/meine_app`)
-
-**Rückgabewert:** `fs::path` - Das statische Datenverzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
-
-#### `shared_data_dir(const fs::path& rel_path = "")`
-Gibt das systemweite geteilte Datenverzeichnis der Anwendung zurück.
-
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%ALLUSERSAPPDATA%\\<appname>` zurück
-- **Linux:** Gibt `/var/lib/<appname>` zurück
-- **macOS:** Gibt `/Library/Application Support/<appname>` zurück
-
-**Rückgabewert:** `fs::path` - Das geteilte Datenverzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
-
-#### `user_data_dir` (überladen)
-Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Überladungen:**
-
-1. **`user_data_dir(bool create_dir = true)`**
-   
-   Gibt das Basis-Benutzer-Datenverzeichnis zurück.
-
-   **Parameter:**
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%APPDATA%\<appname>` zurück
-     (z. B. `C:\\Users\\Benutzer\\AppData\\Roaming\\meine_app`)
-   - **Linux:** Gibt `~/.local/share/<appname>` zurück
-     (z. B. `/home/benutzer/.local/share/meine_app`)
-   - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>` zurück
-   - **macOS CLI:** Gibt `~/.local/share/<appname>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis.
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-2. **`user_data_dir(const fs::path& rel_path, bool create_dir = true)`**
-   
-   Gibt das Benutzer-Datenverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-   **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%APPDATA%\<appname>\<rel_path>` zurück
-   - **Linux:** Gibt `~/.local/share/<appname>/<rel_path>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Application Support/<appname>/<rel_path>` zurück
-   - **macOS CLI:** Gibt `~/.local/share/<appname>/<rel_path>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Benutzer-Datenverzeichnis (Basis + rel_path).
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-#### `config_dir` (überladen)
-Gibt das Konfigurationsverzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Überladungen:**
-
-1. **`config_dir(bool create_dir = true)`**
-   
-   Gibt das Basis-Konfigurationsverzeichnis zurück.
-
-   **Parameter:**
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%APPDATA%\<appname>` zurück
-   - **Linux:** Gibt `~/.config/<appname>` zurück (XDG Base Directory Specification)
-   - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>` zurück
-   - **macOS CLI:** Gibt `~/.config/<appname>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis.
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-2. **`config_dir(const fs::path& rel_path, bool create_dir = true)`**
-   
-   Gibt das Konfigurationsverzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-   **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%APPDATA%\<appname>\<rel_path>` zurück
-   - **Linux:** Gibt `~/.config/<appname>/<rel_path>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Preferences/<appname>/<rel_path>` zurück
-   - **macOS CLI:** Gibt `~/.config/<appname>/<rel_path>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Konfigurationsverzeichnis (Basis + rel_path).
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-
-#### `cache_dir` (überladen)
-Gibt das Cache-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Überladungen:**
-
-1. **`cache_dir(bool create_dir = true)`**
-   
-   Gibt das Basis-Cache-Verzeichnis zurück.
-
-   **Parameter:**
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache` zurück
-   - **Linux:** Gibt `~/.cache/<appname>` zurück (XDG Base Directory Specification)
-   - **macOS Bundle:** Gibt `~/Library/Caches/<appname>` zurück
-   - **macOS CLI:** Gibt `~/.cache/<appname>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis.
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-2. **`cache_dir(const fs::path& rel_path, bool create_dir = true)`**
-   
-   Gibt das Cache-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-   **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Cache\<rel_path>` zurück
-   - **Linux:** Gibt `~/.cache/<appname>/<rel_path>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Caches/<appname>/<rel_path>` zurück
-   - **macOS CLI:** Gibt `~/.cache/<appname>/<rel_path>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Cache-Verzeichnis (Basis + rel_path).
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-Gibt das Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Überladungen:**
-
-1. **`log_dir(bool create_dir = true)`**
-   
-   Gibt das Basis-Log-Verzeichnis zurück.
-
-   **Parameter:**
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs` zurück
-   - **Linux:** Gibt `~/.local/state/<appname>/log` zurück (XDG Base Directory Specification)
-   - **macOS Bundle:** Gibt `~/Library/Logs/<appname>` zurück
-   - **macOS CLI:** Gibt `~/.local/state/<appname>/log` zurück
-
-   **Rückgabewert:** `fs::path` - Das Log-Verzeichnis.
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-2. **`log_dir(const fs::path& rel_path, bool create_dir = true)`**
-   
-   Gibt das Log-Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-   **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%LOCALAPPDATA%\<appname>\Logs\<rel_path>` zurück
-   - **Linux:** Gibt `~/.local/state/<appname>/log/<rel_path>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Logs/<appname>/<rel_path>` zurück
-   - **macOS CLI:** Gibt `~/.local/state/<appname>/log/<rel_path>` zurück
-
-   **Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-**Rückgabewert:** `fs::path` - Das Log-Verzeichnis (Basis + rel_path).
-
-#### `temp_dir` (überladen)
-Gibt das temporäre Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Überladungen:**
-
-1. **`temp_dir(bool create_dir = true)`**
-   
-   Gibt das Basis-temporäre Verzeichnis zurück.
-
-   **Parameter:**
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%TEMP%\<appname>` zurück
-   - **Linux:** Gibt `/tmp/<appname>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>` zurück
-   - **macOS CLI:** Gibt `/tmp/<appname>` zurück
-
-   **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis.
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-2. **`temp_dir(const fs::path& rel_path, bool create_dir = true)`**
-   
-   Gibt das temporäre Verzeichnis inkl. Unterpfad zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-   **Parameter:**
-   - `rel_path`: Relativer Pfad zum Basisverzeichnis.
-   - `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-   **Plattform-spezifisches Verhalten:**
-   - **Windows:** Gibt `%TEMP%\<appname>\<rel_path>` zurück
-   - **Linux:** Gibt `/tmp/<appname>/<rel_path>` zurück
-   - **macOS Bundle:** Gibt `~/Library/Caches/TemporaryItems/<appname>/<rel_path>` zurück
-   - **macOS CLI:** Gibt `/tmp/<appname>/<rel_path>` zurück
-
-   **Rückgabewert:** `fs::path` - Das temporäre Verzeichnis (Basis + rel_path).
-   **Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-#### `user_dir()`
-Gibt das Home-Verzeichnis des Benutzers zurück.
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%USERPROFILE%` zurück
-- **Linux und macOS:** Gibt `$HOME` zurück
-
-**Rückgabewert:** `fs::path` - Das Home-Verzeichnis.
-
-#### `shared_cache_dir(const fs::path& rel_path = "", bool create_dir = true)`
-Gibt das systemweite geteilte Cache-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
-- `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Cache` zurück
-- **Linux:** Gibt `/var/cache/<appname>` zurück
-- **macOS:** Gibt `/Library/Caches/<appname>` zurück
-
-**Rückgabewert:** `fs::path` - Das geteilte Cache-Verzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-#### `shared_log_dir(const fs::path& rel_path = "", bool create_dir = true)`
-Gibt das systemweite geteilte Log-Verzeichnis der Anwendung zurück. Erstellt das Verzeichnis optional, falls es nicht existiert.
-
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
-- `create_dir`: Legt fest, ob das Verzeichnis erstellt werden soll (Default: `true`).
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>\Logs` zurück
-- **Linux:** Gibt `/var/log/<appname>` zurück
-- **macOS:** Gibt `/Library/Logs/<appname>` zurück
-
-**Rückgabewert:** `fs::path` - Das geteilte Log-Verzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert und `create_dir=false`.
-
-#### `shared_config_dir(const fs::path& rel_path = "")`
-Gibt das systemweite geteilte Konfigurationsverzeichnis der Anwendung zurück.
-
-**Parameter:**
-- `rel_path`: Relativer Pfad zum Basisverzeichnis (optional).
-
-**Plattform-spezifisches Verhalten:**
-- **Windows:** Gibt `%ALLUSERSAPPDATA%\<appname>` zurück
-- **Linux:** Gibt `/etc/<appname>` zurück
-- **macOS:** Gibt `/Library/Preferences/<appname>` zurück
-
-**Rückgabewert:** `fs::path` - Das geteilte Konfigurationsverzeichnis (Basis oder Basis + rel_path).
-**Ausnahmen:** `directory_not_found` - Wenn das Verzeichnis nicht existiert.
-
-**Hinweis:** Im Gegensatz zu den meisten anderen Methoden hat diese Methode **keine** `create_dir`-Option, da das Linux-Backend nur Lesezugriff auf `/etc` erlaubt (kleinster gemeinsamer Nenner über alle Plattformen).
-
-## Verwendungsbeispiel
-
-```cpp
-import std;
-import pfadfinder;
-
-int main()
-{
-    // Erstelle eine Umgebung mit Standard-Backend
-    // Der app_name wird automatisch aus der ausführbaren Datei abgeleitet,
-    // wenn er nicht angegeben wird
-    pfadfinder::application_environment env;
-    
-    // Oder mit explizitem Anwendungsnamen
-    pfadfinder::application_environment env_with_name("MeineApp");
-    
-    // Oder mit benutzerdefiniertem Backend (selten benötigt)
-    pfadfinder::default_system_environment custom_backend;
-    pfadfinder::application_environment env_custom("", custom_backend);
-    
-    try
-    {
-        // Ermittle verschiedene Verzeichnisse
-        std::println("Executable: {}", env.executable_path().string());
-        std::println("Executable Dir: {}", env.executable_dir().string());
-        std::println("User Dir: {}", env.user_dir().string());
-        
-        // Für Verzeichnisse, die existieren müssen: erst erstellen, dann verwenden
-        auto user_data_dir = env.user_data_dir();
-        std::println("User Data Dir: {}", user_data_dir.string());
-        
-        auto config_dir = env.config_dir();
-        std::println("Config Dir: {}", config_dir.string());
-        
-        auto cache_dir = env.cache_dir();
-        std::println("Cache Dir: {}", cache_dir.string());
-        
-        auto log_dir = env.log_dir();
-        std::println("Log Dir: {}", log_dir.string());
-        
-        auto temp_dir = env.temp_dir();
-        std::println("Temp Dir: {}", temp_dir.string());
-        
-        std::println("Data Dir: {}", env.static_data_dir().string());
-        
-        // Geteilte Verzeichnisse (systemweit)
-        try {
-            auto shared_cache = env.shared_cache_dir();
-            std::println("Shared Cache Dir: {}", shared_cache.string());
-        } catch (const pfadfinder::error& e) {
-            std::println(stderr, "Shared Cache Dir nicht verfügbar: {}", e.what());
-        }
-        
-        try {
-            auto shared_log = env.shared_log_dir();
-            std::println("Shared Log Dir: {}", shared_log.string());
-        } catch (const pfadfinder::error& e) {
-            std::println(stderr, "Shared Log Dir nicht verfügbar: {}", e.what());
-        }
-        
-        try {
-            auto shared_config = env.shared_config_dir();
-            std::println("Shared Config Dir: {}", shared_config.string());
-        } catch (const pfadfinder::error& e) {
-            std::println(stderr, "Shared Config Dir nicht verfügbar: {}", e.what());
-        }
-    }
-    catch (const pfadfinder::error& e)
-    {
-        std::println(stderr, "Fehler: {}", e.what());
-        return 1;
-    }
-    
-    return 0;
-}
-```
 
 ## Voraussetzungen
 
@@ -435,9 +29,9 @@ int main()
 - CMake 3.28 oder höher
 - Compiler mit C++-Modul-Unterstützung (GCC 15, Clang 19, MSVC 19.40+)
 
-## Build
+## Erstellung
 
-Unter Linux:
+### Unter MacOS und Linux:
 
 ```bash
 cd Pfadfinder
@@ -447,7 +41,7 @@ cmake -G "Ninja Multi-Config" ..
 cmake --build . --config Release
 ```
 
-Unter Windows mit Visual Studio 2022:
+### Unter Windows mit Visual Studio 2022:
 
 ```bash
 cd Pfadfinder
@@ -457,30 +51,110 @@ cmake -G "Visual Studio 17 2022" -A x64 ..
 cmake --build . --config Release
 ```
 
-## Tests ausführen
+## Verwendungsbeispiele
+
+### Ohne Anpassungen
+
+```cpp
+import std;
+import pfadfinder;
+
+int main() try
+{
+    pfadfinder::application_environment env{};
+
+    std::println("Executable:    {}", env.executable_path().string());
+    std::println("User Dir:      {}", env.user_dir().string());
+    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Config Dir:    {}", env.config_dir.string());
+    std::println("Cache Dir:     {}", env.cache_dir.string());
+ 
+    return 0;
+}
+catch(const pfadfinder::error& e)
+{
+    std::println(stderr, "Fehler: {}", e.what());
+    return 1;    
+}
+```
+
+### Mit benutzerdefiniertem Anwendungsnamen
+
+```cpp
+import std;
+import pfadfinder;
+
+int main() try
+{
+    pfadfinder::application_environment env{ "my_app" };
+
+    std::println("Executable:    {}", env.executable_path().string());
+    std::println("User Dir:      {}", env.user_dir().string());
+    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Config Dir:    {}", env.config_dir.string());
+    std::println("Cache Dir:     {}", env.cache_dir.string());
+ 
+    return 0;
+}
+catch(const pfadfinder::error& e)
+{
+    std::println(stderr, "Fehler: {}", e.what());
+    return 1;    
+}
+```
+
+### Mit angepasster Systemumgebung
+
+```cpp
+import std;
+import pfadfinder;
+
+namespace fs = std::filesystem;
+
+struct my_custom_environment : pfadfinder::default_system_environment
+{
+    [[nodiscard]] fs::path config_dir(const fs::path&, const std::string& app_name) const override
+    {
+        return default_system_environment::user_dir()/std::format(".{}", app_name);
+    }
+
+    [[nodiscard]] fs::path user_data_dir(const fs::path&, const std::string& app_name) const override
+    {
+        return default_system_environment::user_dir()/std::format(".{}", app_name);
+    }
+
+    [[nodiscard]] fs::path cache_dir(const fs::path&, const std::string& app_name) const override
+    {
+        return default_system_environment::user_dir()/std::format(".{}", app_name);
+    }
+};
+
+int main() try
+{
+    pfadfinder::application_environment env{ my_custom_environment{} };
+
+    // Ermittle verschiedene Verzeichnisse
+    std::println("Executable:    {}", env.executable_path().string());
+    std::println("User Dir:      {}", env.user_dir().string());
+    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Config Dir:    {}", env.config_dir.string());
+    std::println("Cache Dir:     {}", env.cache_dir.string());
+ 
+    return 0;
+}
+catch(const pfadfinder::error& e)
+{
+    std::println(stderr, "Fehler: {}", e.what());
+    return 1;    
+}
+```
+
+
+## Testausführung 
 
 ```bash
 cd build
 ./tests/test_pfadfinder
-```
-
-## Projektstruktur
-
-```
-Pfadfinder/
-├── CMakeLists.txt                  # Haupt-CMake-Konfiguration
-├── LIESMICH.md                     # Diese Datei
-├── LIZENZ.md                      # Lizenzinformationen
-├── README.md                      # Englische Dokumentation
-├── src/
-│   ├── error.cppm                  # Fehlerbehandlung (Ausnahmeklassen)
-│   ├── pfadfinder.cppm             # Hauptmodul mit application_environment
-│   ├── system_backend_linux.cppm   # Linux-spezifische Implementierung
-│   ├── system_backend_windows.cppm # Windows-spezifische Implementierung
-│   └── system_backend_macos.cppm   # macOS-spezifische Implementierung
-└── tests/
-    ├── CMakeLists.txt              # Test-Konfiguration
-    └── test_pfadfinder.cpp         # Testfälle mit CATCH2
 ```
 
 ## Autor

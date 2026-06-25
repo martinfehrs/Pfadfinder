@@ -12,16 +12,15 @@ module;
 #include <climits>
 #include <string>
 
-export module pfadfinder:system_backend;
+export module pfadfinder:macos_backend;
 
 import :system_environment;
 import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder
+namespace pfadfinder::inline macos_backend
 {
-    // Ausnahmen für macOS
     /**
      * @brief Ausnahme, die geworfen wird, wenn _NSGetExecutablePath() fehlschlägt.
      */
@@ -244,5 +243,4 @@ namespace pfadfinder
             return fs::path{ "/Library/Preferences" } / app_name;
         }
     };
-
 }

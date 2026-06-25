@@ -12,16 +12,15 @@ module;
 #include <climits>
 #include <string>
 
-export module pfadfinder:system_backend;
+export module pfadfinder:linux_backend;
 
 import :system_environment;
 import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder
+namespace pfadfinder::inline linux_backend
 {
-    // Ausnahmen für Linux
     /**
      * @brief Ausnahme, die geworfen wird, wenn der Aufruf von readlink() fehlschlägt.
      */
@@ -207,5 +206,4 @@ namespace pfadfinder
             return fs::path{ "/etc" } / app_name;
         }
     };
-
 }

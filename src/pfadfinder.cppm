@@ -26,9 +26,18 @@ module;
 #include <optional>
 #include <utility>
 
+#include "config.hpp"
+
 export module pfadfinder;
 
-export import :system_backend;
+#if IS_WINDOWS
+export import :windows_backend;
+#elif IS_MACOS
+export import :macos_backend;
+#elif IS_LINUX
+export import :linux_backend;
+#endif
+
 export import :error;
 export import :system_environment;
 

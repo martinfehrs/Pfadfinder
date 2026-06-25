@@ -12,16 +12,16 @@ module;
 #include <filesystem>
 #include <string>
 
-export module pfadfinder:system_backend;
+export module pfadfinder:windows_backend;
 
 import :system_environment;
 import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder
+namespace pfadfinder::inline windows_backend
 {
-    // Ausnahmen für Windows
+
     /**
      * @brief Ausnahme, die geworfen wird, wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
      */
@@ -63,6 +63,7 @@ namespace pfadfinder
     };
 
     /**
+     * @class "default_system_environment (Windows)" default_system_environment
      * @brief Enthält plattformspezifische Methoden für Windows zur Pfadermittlung.
      * 
      * Diese Klasse implementiert die system_environment-Schnittstelle
