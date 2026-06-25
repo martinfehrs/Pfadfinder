@@ -32,7 +32,7 @@ configure_file(config.hpp.in config.hpp)
 # Plattformspezifisches Backend-Modul auswählen
 set(SYSTEM_BACKEND_SOURCE "")
 if(IS_WINDOWS)
-    set(SYSTEM_BACKEND_SOURCE src/window_backend.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/windows_backend.cppm)
 elseif(IS_MACOS)
     set(SYSTEM_BACKEND_SOURCE src/macos_backend.cppm)
 elseif(IS_LINUX)
