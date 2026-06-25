@@ -7,15 +7,15 @@ Projekt zur plattformübergreifenden Bestimmung gebräuchlicher Anwendungsverzei
 Mittels einer Instanz der Klasse `pfadfinder::application_environment` erhält man
 Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade:
 
-    - Benutzerspezifische Konfiguration
-    - Benutzerspezifische Cache
-    - Benutzerspezifische Daten
-    - Benutzerübergreifende Konfiguration
-    - Benuterübergreifender Cache
-    - Benutzerübergreifende Daten
-    - Statsiche Anwendungsdaten
-    - Benutzerverzeichnis
-    - Temporäre Daten
+- Benutzerspezifische Konfiguration
+- Benutzerspezifische Cache
+- Benutzerspezifische Daten
+- Benutzerübergreifende Konfiguration
+- Benuterübergreifender Cache
+- Benutzerübergreifende Daten
+- Statsiche Anwendungsdaten
+- Benutzerverzeichnis
+- Temporäre Daten
 
 ## Unterstützte Plattformen
 
@@ -148,7 +148,6 @@ catch(const pfadfinder::error& e)
     return 1;    
 }
 ```
-
 
 ## Testausführung 
 
