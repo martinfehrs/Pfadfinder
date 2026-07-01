@@ -1,0 +1,106 @@
+/**
+ * @file system_environment.cppm
+ * @brief Abstract base class for system backends (pfadfinder:system_environment)
+ * @author Martin Fehrs
+ */
+
+/**
+ * @class pfadfinder::system_environment
+ * @brief Abstract base class defining the interface for platform-specific path determination.
+ * 
+ * This class provides virtual methods for determining various directory paths
+ * that are implemented differently for each platform (Windows, Linux, macOS).
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::executable_path() const
+ * @brief Returns the full path to the executable file.
+ * @return fs::path The absolute path to the executable file.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::static_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the static data directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The static data directory (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::shared_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the shared data directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The shared data directory (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::user_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific data directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The user data directory.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the configuration directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The configuration directory (base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the cache directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The cache directory.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the log directory of the application.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The log directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::temp_dir(const std::string&) const
+ * @brief Returns the temporary directory of the application.
+ * @param app_name The name of the application.
+ * @return fs::path The temporary directory of the application.
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::user_dir() const
+ * @brief Returns the user's home directory.
+ * @return fs::path The user's home directory.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::shared_cache_dir(const std::string&) const
+ * @brief Returns the shared cache directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared cache directory.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::shared_log_dir(const std::string&) const
+ * @brief Returns the shared log directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared log directory.
+ */
+
+/**
+ * @fn virtual fs::path pfadfinder::system_environment::shared_config_dir(const std::string&) const
+ * @brief Returns the shared configuration directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared configuration directory.
+ */

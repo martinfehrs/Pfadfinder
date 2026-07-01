@@ -1,0 +1,132 @@
+/**
+ * @file windows_backend.cppm
+ * @brief Platform-specific implementation for Windows (pfadfinder:system_backend)
+ * @author Martin Fehrs
+ */
+
+/**
+ * @class pfadfinder::windows_backend::appdata_not_set
+ * @brief Exception thrown when the APPDATA environment variable is not set.
+ */
+
+/**
+ * @class pfadfinder::windows_backend::localappdata_not_set
+ * @brief Exception thrown when the LOCALAPPDATA environment variable is not set.
+ */
+
+/**
+ * @class pfadfinder::windows_backend::allusersappdata_not_set
+ * @brief Exception thrown when the ALLUSERSAPPDATA environment variable is not set.
+ */
+
+/**
+ * @class pfadfinder::windows_backend::get_module_file_name_failed
+ * @brief Exception thrown when GetModuleFileNameW() fails.
+ */
+
+/**
+ * @class pfadfinder::windows_backend::default_system_environment
+ * @brief Contains platform-specific methods for Windows for path determination.
+ * 
+ * This class implements the system_environment interface
+ * specifically for the Windows operating system.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::executable_path() const
+ * @brief Returns the full path to the executable file.
+ * @return fs::path The absolute path to the executable file.
+ * @throws get_module_file_name_failed When GetModuleFileNameW fails.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::static_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the static data directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The static data directory (same as the binary directory on Windows).
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::shared_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the shared data directory.
+ * @param exe_dir The directory of the executable file (not used on Windows).
+ * @param app_name The name of the application.
+ * @return fs::path The shared data directory (%ALLUSERSAPPDATA%/&lt;appname&gt;).
+ * @throws allusersappdata_not_set When the ALLUSERSAPPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::user_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user data directory.
+ * @param exe_dir The directory of the executable file (not used on Windows).
+ * @param app_name The name of the application.
+ * @return fs::path The user data directory (%APPDATA%/&lt;appname&gt;).
+ * @throws appdata_not_set When the APPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the configuration directory.
+ * @param exe_dir The directory of the executable file (not used on Windows).
+ * @param app_name The name of the application.
+ * @return fs::path The configuration directory (%APPDATA%/&lt;appname&gt;).
+ * @throws appdata_not_set When the APPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the cache directory.
+ * @param exe_dir The directory of the executable file (not used on Windows).
+ * @param app_name The name of the application.
+ * @return fs::path The cache directory (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
+ * @throws localappdata_not_set When the LOCALAPPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the log directory.
+ * @param exe_dir The directory of the executable file (not used on Windows).
+ * @param app_name The name of the application.
+ * @return fs::path The log directory (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
+ * @throws localappdata_not_set When the LOCALAPPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::temp_dir(const std::string&) const
+ * @brief Returns the temporary directory.
+ * @param app_name The name of the application.
+ * @return fs::path The temporary directory (%TEMP%/&lt;appname&gt;).
+ * @throws home_not_set When the TEMP environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::user_dir() const
+ * @brief Returns the user's home directory.
+ * @return fs::path The user's home directory (%USERPROFILE%).
+ * @throws home_not_set When the USERPROFILE environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::shared_cache_dir(const std::string&) const
+ * @brief Returns the shared cache directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared cache directory (%ALLUSERSAPPDATA%/&lt;appname&gt;/Cache).
+ * @throws allusersappdata_not_set When the ALLUSERSAPPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::shared_log_dir(const std::string&) const
+ * @brief Returns the shared log directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared log directory (%ALLUSERSAPPDATA%/&lt;appname&gt;/Logs).
+ * @throws allusersappdata_not_set When the ALLUSERSAPPDATA environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::windows_backend::default_system_environment::shared_config_dir(const std::string&) const
+ * @brief Returns the shared configuration directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared configuration directory (%ALLUSERSAPPDATA%/&lt;appname&gt;).
+ * @throws allusersappdata_not_set When the ALLUSERSAPPDATA environment variable is not set.
+ */

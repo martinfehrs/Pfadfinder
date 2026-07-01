@@ -1,0 +1,390 @@
+/**
+ * @file pfadfinder.cppm
+ * @brief Cross-platform determination of application directories
+ * @author Martin Fehrs
+ *
+ * This module provides:
+ *
+ * 1. The pfadfinder::application_environment class with methods for determining
+ *    platform-specific directory paths for applications (Windows, Linux, macOS):
+ *    - executable_path()      : Full path to the executable file
+ *    - executable_dir()       : Directory of the executable file
+ *    - static_data_dir()      : System-wide static data directory
+ *    - shared_data_dir()      : System-wide shared data directory
+ *    - user_data_dir()        : User-specific data directory (with create_dir parameter)
+ *    - config_dir()           : Configuration directory (with create_dir parameter)
+ *    - cache_dir()            : Cache directory (with create_dir parameter)
+ *    - log_dir()              : Log directory for application logs (with create_dir parameter)
+ *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
+ *    - user_dir()             : User's home directory
+ */
+
+/**
+ * @class pfadfinder::application_environment
+ * @brief Provides methods for determining various directories of an application.
+ * @tparam SystemEnvironment Type of the backend implementation, by default pfadfinder::default_system_environment.
+ *
+ * This class encapsulates the logic for determining paths such as the executable path,
+ * data directory, configuration directory, and cache directory for different
+ * platforms (Windows, Linux, macOS).
+ *
+ * The results of the methods are cached as object variables to avoid repeated
+ * calculations.
+ * 
+ * @note If no app_name is provided, the filename of the executable file will be used.
+ */
+
+/**
+ * @fn pfadfinder::application_environment::application_environment
+ * @brief Creates a new application_environment instance.
+ * @param app_name The name of the application (optional).
+ *                 If not specified, the filename of the executable file will be used.
+ * @param system_env Backend implementation for path determination.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::executable_path() const
+ * @brief Returns the full path to the executable file.
+ * @return fs::path The full path to the executable file.
+ * @throws Exceptions depending on platform (e.g. readlink_failed, get_module_file_name_failed)
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::executable_dir() const
+ * @brief Returns the directory of the executable file.
+ * @return fs::path The directory that contains the executable file.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::static_data_dir(const fs::path&) const
+ * @brief Returns the static data directory of the application.
+ * 
+ * On Windows, this corresponds to the binary directory.
+ * On Linux, the share directory is derived from the binary directory
+ * (e.g., /usr/bin/myapp → /usr/share/myapp).
+ * On macOS, for bundled applications, the Resources directory is
+ * returned, otherwise similar to Linux, the share directory.
+ * 
+ * @param rel_path Relative path to the base directory (optional).
+ * @return fs::path The static data directory of the application (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::shared_data_dir(const fs::path&) const
+ * @brief Returns the shared data directory of the application.
+ * 
+ * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;.
+ * On Linux, this corresponds to /var/lib/&lt;appname&gt;.
+ * On macOS, this corresponds to /Library/Application Support/&lt;appname&gt;.
+ * 
+ * @param rel_path Relative path to the base directory (optional).
+ * @return fs::path The shared data directory of the application (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::shared_cache_dir(const fs::path&, bool) const
+ * @brief Returns the shared cache directory of the application.
+ * 
+ * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;/Cache.
+ * On Linux, this corresponds to /var/cache/&lt;appname&gt;.
+ * On macOS, this corresponds to /Library/Caches/&lt;appname&gt;.
+ * 
+ * @param rel_path Relative path to the base directory (optional).
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The shared cache directory of the application (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::shared_log_dir(const fs::path&, bool) const
+ * @brief Returns the shared log directory of the application.
+ * 
+ * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;/Logs.
+ * On Linux, this corresponds to /var/log/&lt;appname&gt;.
+ * On macOS, this corresponds to /Library/Logs/&lt;appname&gt;.
+ * 
+ * @param rel_path Relative path to the base directory (optional).
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The shared log directory of the application (base or base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ * 
+ * @note Unlike most other methods, this method does not have a create_dir option,
+ * as the Linux backend only allows read access to /etc (least common denominator).
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::shared_config_dir(const fs::path&) const
+ * @brief Returns the shared configuration directory of the application.
+ * 
+ * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;.
+ * On Linux, this corresponds to /etc/&lt;appname&gt;.
+ * On macOS, this corresponds to /Library/Preferences/&lt;appname&gt;.
+ * 
+ * @param rel_path Relative path to the base directory (optional).
+ * @return fs::path The shared configuration directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist.
+ * 
+ * @note Unlike most other methods, this method does not have a create_dir option,
+ * as the Linux backend only allows read access to /etc (least common denominator).
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::user_data_dir(bool) const
+ * @brief Returns the user-specific data directory of the application.
+ * 
+ * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;.
+ * On Linux, this corresponds to ~/.local/share/&lt;appname&gt;.
+ * On macOS (bundled), this corresponds to ~/Library/Application Support/&lt;appname&gt;,
+ * otherwise ~/.local/share/&lt;appname&gt;.
+ * 
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The user data directory of the application.
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::user_data_dir(const fs::path&, bool) const
+ * @brief Returns the user data directory with optional subpath.
+ * 
+ * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Linux, this corresponds to ~/.local/share/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On macOS (bundled), this corresponds to ~/Library/Application Support/&lt;appname&gt;/&lt;rel_path&gt;,
+ * otherwise ~/.local/share/&lt;appname&gt;/&lt;rel_path&gt;.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The user data directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::config_dir(bool) const
+ * @brief Returns the configuration directory of the application.
+ * 
+ * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;.
+ * On Linux, this corresponds to ~/.config/&lt;appname&gt; (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/&lt;appname&gt;,
+ * otherwise ~/.config/&lt;appname&gt;.
+ * 
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The configuration directory of the application.
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::config_dir(const fs::path&, bool) const
+ * @brief Returns the configuration directory with optional subpath.
+ * 
+ * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Linux, this corresponds to ~/.config/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/&lt;appname&gt;/&lt;rel_path&gt;,
+ * otherwise ~/.config/&lt;appname&gt;/&lt;rel_path&gt;.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The configuration directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::cache_dir(bool) const
+ * @brief Returns the cache directory of the application.
+ * 
+ * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache.
+ * On Linux, this corresponds to ~/.cache/&lt;appname&gt; (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Caches/&lt;appname&gt;,
+ * otherwise ~/.cache/&lt;appname&gt;.
+ * 
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The cache directory of the application.
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::cache_dir(const fs::path&, bool) const
+ * @brief Returns the cache directory with optional subpath.
+ * 
+ * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache/&lt;rel_path&gt;.
+ * On Linux, this corresponds to ~/.cache/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Caches/&lt;appname&gt;/&lt;rel_path&gt;,
+ * otherwise ~/.cache/&lt;appname&gt;/&lt;rel_path&gt;.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The cache directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::log_dir(bool) const
+ * @brief Returns the log directory of the application.
+ * 
+ * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs.
+ * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log (XDG Base Directory Specification).
+ * On macOS (Bundle), this corresponds to ~/Library/Logs/&lt;appname&gt;.
+ * On macOS (CLI), this corresponds to ~/.local/state/&lt;appname&gt;/log.
+ * 
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The log directory of the application.
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::log_dir(const fs::path&, bool) const
+ * @brief Returns the log directory with optional subpath.
+ * 
+ * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs/&lt;rel_path&gt;.
+ * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log/&lt;rel_path&gt; (XDG Base Directory Specification).
+ * On macOS (Bundle), this corresponds to ~/Library/Logs/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On macOS (CLI), this corresponds to ~/.local/state/&lt;appname&gt;/log/&lt;rel_path&gt;.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The log directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::temp_dir(bool) const
+ * @brief Returns the temporary directory of the application.
+ * 
+ * On Windows, this corresponds to %TEMP%/&lt;appname&gt;.
+ * On Linux, this corresponds to /tmp/&lt;appname&gt; or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/&lt;appname&gt; or ~/Library/Caches/TemporaryItems/&lt;appname&gt;.
+ * 
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The temporary directory of the application.
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::temp_dir(const fs::path&, bool) const
+ * @brief Returns the temporary directory with optional subpath.
+ * 
+ * On Windows, this corresponds to %TEMP%/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Linux, this corresponds to /tmp/&lt;appname&gt;/&lt;rel_path&gt; or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/&lt;appname&gt;/&lt;rel_path&gt; or ~/Library/Caches/TemporaryItems/&lt;appname&gt;/&lt;rel_path&gt;.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
+ * @return fs::path The temporary directory of the application (base + rel_path).
+ * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::user_dir() const
+ * @brief Returns the user's home directory.
+ * 
+ * On Windows, this corresponds to %USERPROFILE%.
+ * On Linux and macOS, this corresponds to $HOME.
+ * 
+ * @return fs::path The user's home directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_static_data_dir() const
+ * @brief Returns the cached static data directory.
+ * @return fs::path The cached static data directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_shared_data_dir() const
+ * @brief Returns the cached shared data directory.
+ * @return fs::path The cached shared data directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_user_data_dir() const
+ * @brief Returns the cached user data directory.
+ * @return fs::path The cached user data directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_config_dir() const
+ * @brief Returns the cached configuration directory.
+ * @return fs::path The cached configuration directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_cache_dir() const
+ * @brief Returns the cached cache directory.
+ * @return fs::path The cached cache directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_log_dir() const
+ * @brief Returns the cached log directory.
+ * @return fs::path The cached log directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_temp_dir() const
+ * @brief Returns the cached temporary directory.
+ * @return fs::path The cached temporary directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_shared_cache_dir() const
+ * @brief Returns the cached shared cache directory.
+ * @return fs::path The cached shared cache directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_shared_log_dir() const
+ * @brief Returns the cached shared log directory.
+ * @return fs::path The cached shared log directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::get_shared_config_dir() const
+ * @brief Returns the cached shared configuration directory.
+ * @return fs::path The cached shared configuration directory.
+ */
+
+/** @var pfadfinder::application_environment::app_name_
+ * @brief The name of the application. */
+
+/** @var pfadfinder::application_environment::system_env_
+ * @brief Platform-specific implementation for path determination. */
+
+// Cache for the calculated paths (Lazy Initialization)
+/** @var pfadfinder::application_environment::cached_executable_path_
+ * @brief Cached path to the executable file. */
+
+/** @var pfadfinder::application_environment::cached_executable_dir_
+ * @brief Cached directory of the executable file. */
+
+/** @var pfadfinder::application_environment::cached_static_data_dir_
+ * @brief Cached static data directory. */
+
+/** @var pfadfinder::application_environment::cached_shared_data_dir_
+ * @brief Cached shared data directory. */
+
+/** @var pfadfinder::application_environment::cached_user_data_dir_
+ * @brief Cached user data directory. */
+
+/** @var pfadfinder::application_environment::cached_config_dir_
+ * @brief Cached configuration directory. */
+
+/** @var pfadfinder::application_environment::cached_cache_dir_
+ * @brief Cached cache directory. */
+
+/** @var pfadfinder::application_environment::cached_log_dir_
+ * @brief Cached log directory. */
+
+/** @var pfadfinder::application_environment::cached_temp_dir_
+ * @brief Cached temporary directory. */
+
+/** @var pfadfinder::application_environment::cached_user_dir_
+ * @brief Cached user directory (Home). */
+
+/** @var pfadfinder::application_environment::cached_shared_cache_dir_
+ * @brief Cached shared cache directory. */
+
+/** @var pfadfinder::application_environment::cached_shared_log_dir_
+ * @brief Cached shared log directory. */
+
+/** @var pfadfinder::application_environment::cached_shared_config_dir_
+ * @brief Cached shared configuration directory. */

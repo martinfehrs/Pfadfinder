@@ -1,0 +1,28 @@
+/**
+ * @file error.cppm
+ * @brief Error handling (pfadfinder:error)
+ * @author Martin Fehrs
+ */
+
+/**
+ * @class pfadfinder::error
+ * @brief Base class for all pfadfinder-specific exceptions.
+ * 
+ * Inherits from std::runtime_error and serves as the base for all
+ * exception types in this module.
+ */
+
+/**
+ * @class pfadfinder::file_not_found
+ * @brief Exception thrown when a file was not found.
+ */
+
+/**
+ * @class pfadfinder::directory_not_found
+ * @brief Exception thrown when a directory was not found.
+ */
+
+/**
+ * @class pfadfinder::home_not_set
+ * @brief Exception thrown when the home directory is not set.
+ */

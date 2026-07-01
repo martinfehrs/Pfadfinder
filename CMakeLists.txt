@@ -99,6 +99,40 @@ if(DOXYGEN_FOUND)
     
     # Configure English Doxyfile template with awesome CSS path
     set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
+    
+    # Create a small C++ program to filter comments from source files
+    add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
+    target_compile_features(filter_comments PRIVATE cxx_std_23)
+    
+    # Create filtered source directory for English documentation
+    set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)
+    file(MAKE_DIRECTORY ${FILTERED_SRC_EN_DIR})
+    
+    # Filter German comments from source files using filter_comments program
+    add_custom_command(
+        OUTPUT ${FILTERED_SRC_EN_DIR}/stamp
+        COMMAND ${CMAKE_COMMAND} -E remove -f ${FILTERED_SRC_EN_DIR}/*
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${FILTERED_SRC_EN_DIR}
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/error.cppm > ${FILTERED_SRC_EN_DIR}/error.cppm
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/system_environment.cppm > ${FILTERED_SRC_EN_DIR}/system_environment.cppm
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/linux_backend.cppm > ${FILTERED_SRC_EN_DIR}/linux_backend.cppm
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/windows_backend.cppm > ${FILTERED_SRC_EN_DIR}/windows_backend.cppm
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/macos_backend.cppm > ${FILTERED_SRC_EN_DIR}/macos_backend.cppm
+        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/pfadfinder.cppm > ${FILTERED_SRC_EN_DIR}/pfadfinder.cppm
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/error.cppm.dox ${FILTERED_SRC_EN_DIR}/error.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/system_environment.cppm.dox ${FILTERED_SRC_EN_DIR}/system_environment.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/linux_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/linux_backend.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/macos_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/macos_backend.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/windows_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/windows_backend.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/pfadfinder.cppm.dox ${FILTERED_SRC_EN_DIR}/pfadfinder.cppm.dox
+        COMMAND ${CMAKE_COMMAND} -E touch ${FILTERED_SRC_EN_DIR}/stamp
+        COMMENT "Creating filtered source files and English documentation for English doxygen"
+        DEPENDS filter_comments
+        VERBATIM
+    )
+    
+    # Set output directory for English doxygen
+    set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
     configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile_en.in
         ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
@@ -121,6 +155,7 @@ if(DOXYGEN_FOUND)
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Generating English API documentation with Doxygen"
+        DEPENDS ${FILTERED_SRC_EN_DIR}/stamp
         VERBATIM
     )
     

@@ -1,0 +1,114 @@
+/**
+ * @file linux_backend.cppm
+ * @brief Platform-specific implementation for Linux (pfadfinder:system_backend)
+ * @author Martin Fehrs
+ */
+
+/**
+ * @class pfadfinder::linux_backend::readlink_failed
+ * @brief Exception thrown when the readlink() call fails.
+ */
+
+/**
+ * @class pfadfinder::linux_backend::default_system_environment
+ * @brief Contains platform-specific methods for Linux for path determination.
+ * 
+ * This class implements the system_environment interface
+ * specifically for the Linux operating system.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::executable_path() const
+ * @brief Returns the full path to the executable file.
+ * @return fs::path The absolute path to the executable file.
+ * @throws readlink_failed When the readlink call fails.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::static_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the static data directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The static data directory (/usr/share/&lt;appname&gt;).
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::shared_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the shared data directory.
+ * @param exe_dir The directory of the executable file (not used on Linux).
+ * @param app_name The name of the application.
+ * @return fs::path The shared data directory (/var/lib/&lt;appname&gt;).
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::user_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user data directory.
+ * @param exe_dir The directory of the executable file (not used on Linux).
+ * @param app_name The name of the application.
+ * @return fs::path The user data directory (~/.local/share/&lt;appname&gt;).
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the configuration directory.
+ * @param exe_dir The directory of the executable file (not used on Linux).
+ * @param app_name The name of the application.
+ * @return fs::path The configuration directory (~/.config/&lt;appname&gt;).
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the cache directory.
+ * @param exe_dir The directory of the executable file (not used on Linux).
+ * @param app_name The name of the application.
+ * @return fs::path The cache directory (~/.cache/&lt;appname&gt;).
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the log directory.
+ * @param exe_dir The directory of the executable file (not used on Linux).
+ * @param app_name The name of the application.
+ * @return fs::path The log directory (~/.local/state/&lt;appname&gt;/log).
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::temp_dir(const std::string& app_name) const
+ * @brief Returns the temporary directory.
+ * @param app_name The name of the application.
+ * @return fs::path The temporary directory (system temp dir / &lt;appname&gt;).
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::user_dir() const
+ * @brief Returns the user's home directory.
+ * @return fs::path The user's home directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::shared_cache_dir(const std::string& app_name) const
+ * @brief Returns the shared cache directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared cache directory (/var/cache/&lt;appname&gt;).
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::shared_log_dir(const std::string& app_name) const
+ * @brief Returns the shared log directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared log directory (/var/log/&lt;appname&gt;).
+ */
+
+/**
+ * @fn fs::path pfadfinder::linux_backend::default_system_environment::shared_config_dir(const std::string& app_name) const
+ * @brief Returns the shared configuration directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared configuration directory (/etc/&lt;appname&gt;).
+ * 
+ * @note Linux backend only allows reading from /etc (least common denominator).
+ */

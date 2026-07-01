@@ -75,7 +75,7 @@ namespace pfadfinder::inline linux_backend
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Datenverzeichnis (/var/lib/<appname>).
          */
-        [[nodiscard]] fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path shared_data_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
         {
             // Linux: /var/lib/<appname>
             return fs::path{ "/var/lib" } / app_name;
@@ -88,7 +88,7 @@ namespace pfadfinder::inline linux_backend
          * @return fs::path Das Benutzer-Datenverzeichnis (~/.local/share/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_data_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
  
@@ -105,7 +105,7 @@ namespace pfadfinder::inline linux_backend
          * @return fs::path Das Konfigurationsverzeichnis (~/.config/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path config_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
@@ -122,7 +122,7 @@ namespace pfadfinder::inline linux_backend
          * @return fs::path Das Cache-Verzeichnis (~/.cache/<appname>).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path cache_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
@@ -139,7 +139,7 @@ namespace pfadfinder::inline linux_backend
          * @return fs::path Das Log-Verzeichnis (~/.local/state/<appname>/log).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path log_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 

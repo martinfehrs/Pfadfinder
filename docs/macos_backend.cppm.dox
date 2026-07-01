@@ -1,0 +1,120 @@
+/**
+ * @file macos_backend.cppm
+ * @brief Platform-specific implementation for macOS (pfadfinder:system_backend)
+ * @author Martin Fehrs
+ */
+
+/**
+ * @class pfadfinder::macos_backend::get_executable_path_failed
+ * @brief Exception thrown when _NSGetExecutablePath() fails.
+ */
+
+/**
+ * @class pfadfinder::macos_backend::realpath_failed
+ * @brief Exception thrown when realpath() fails.
+ */
+
+/**
+ * @class pfadfinder::macos_backend::default_system_environment
+ * @brief Contains platform-specific methods for macOS for path determination.
+ * 
+ * This class implements the system_environment interface
+ * specifically for the macOS operating system.
+ * It supports both bundled applications (Bundle) and
+ * command-line tools (CLI).
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::executable_path() const
+ * @brief Returns the full path to the executable file.
+ * @return fs::path The absolute path to the executable file.
+ * @throws get_executable_path_failed When _NSGetExecutablePath fails.
+ * @throws realpath_failed When realpath fails.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::static_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the static data directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The static data directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::shared_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the shared data directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The shared data directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::user_data_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user data directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The user data directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the configuration directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The configuration directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the cache directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The cache directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the log directory.
+ * @param exe_dir The directory of the executable file.
+ * @param app_name The name of the application.
+ * @return fs::path The log directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::temp_dir(const std::string&) const
+ * @brief Returns the temporary directory.
+ * @param app_name The name of the application.
+ * @return fs::path The temporary directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::user_dir() const
+ * @brief Returns the user's home directory.
+ * @return fs::path The home directory.
+ * @throws home_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::shared_cache_dir(const std::string&) const
+ * @brief Returns the shared cache directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared cache directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::shared_log_dir(const std::string&) const
+ * @brief Returns the shared log directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared log directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::macos_backend::default_system_environment::shared_config_dir(const std::string&) const
+ * @brief Returns the shared configuration directory.
+ * @param app_name The name of the application.
+ * @return fs::path The shared configuration directory.
+ */
