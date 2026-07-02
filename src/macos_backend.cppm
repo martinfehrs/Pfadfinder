@@ -210,7 +210,7 @@ namespace pfadfinder::inline macos_backend
             if (!home)
                 throw home_not_set{};
 
-                return fs::path{ home };
+            return fs::path{ home };
         }
 
         /**
