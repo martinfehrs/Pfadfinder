@@ -4,6 +4,11 @@
 
 Cross-platform project for determining common application directories.
 
+## Documentation
+
+- [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
+- [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
+
 ## Description
 
 Using an instance of the `pfadfinder::application_environment` class, you get access to the following operating system-dependent paths and their subpaths:
@@ -155,6 +160,14 @@ catch(const pfadfinder::error& e)
 cd build
 ./tests/test_pfadfinder
 ```
+
+## Documentation
+
+The API documentation is automatically generated and hosted on GitHub Pages:
+
+[🌐 Online Documentation](https://martinfehrs.github.io/Pfadfinder/) | [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/) | [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
+
+---
 
 ## Author
 

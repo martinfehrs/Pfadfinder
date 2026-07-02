@@ -2,6 +2,11 @@
 
 Projekt zur plattformübergreifenden Bestimmung gebräuchlicher Anwendungsverzeichnisse.
 
+## Dokumentation
+
+- [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
+- [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
+
 ## Beschreibung
 
 Mittels einer Instanz der Klasse `pfadfinder::application_environment` erhält man
@@ -155,6 +160,8 @@ catch(const pfadfinder::error& e)
 cd build
 ./tests/test_pfadfinder
 ```
+
+---
 
 ## Autor
 
