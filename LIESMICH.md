@@ -161,8 +161,6 @@ cd build
 ./tests/test_pfadfinder
 ```
 
----
-
 ## Autor
 
 Martin Fehrs
