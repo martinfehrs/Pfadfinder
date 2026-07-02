@@ -2,11 +2,6 @@
 
 Projekt zur plattformübergreifenden Bestimmung gebräuchlicher Anwendungsverzeichnisse.
 
-## Dokumentation
-
-- [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
-- [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
-
 ## Beschreibung
 
 Mittels einer Instanz der Klasse `pfadfinder::application_environment` erhält man
@@ -21,6 +16,11 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade:
 - Statsiche Anwendungsdaten
 - Benutzerverzeichnis
 - Temporäre Daten
+
+## Dokumentation
+
+- [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
+- [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
 
 ## Unterstützte Plattformen
 
