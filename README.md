@@ -161,14 +161,6 @@ cd build
 ./tests/test_pfadfinder
 ```
 
-## Documentation
-
-The API documentation is automatically generated and hosted on GitHub Pages:
-
-[🌐 Online Documentation](https://martinfehrs.github.io/Pfadfinder/) | [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/) | [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
-
----
-
 ## Author
 
 Martin Fehrs
