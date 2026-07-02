@@ -1,0 +1,88 @@
+name: Generate and Deploy Documentation
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/**'
+      - 'docs/**'
+      - 'Doxyfile_*.in'
+      - 'CMakeLists.txt'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    concurrency: ci-docs-${{ github.ref }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz ninja-build cmake
+
+      - name: Configure CMake
+        run: |
+          cmake -B build
+          -GNinja
+          -DCMAKE_BUILD_TYPE=Release
+          -S ${{ github.workspace }}
+
+      - name: Generate English documentation
+        run: cmake --build build --target docs-en
+
+      - name: Generate German documentation
+        run: cmake --build build --target docs-de
+
+      - name: Prepare deployment artifact
+        run: |
+          mkdir -p docs-artifacts
+          # Copy English docs to docs-artifacts/en
+          mkdir -p docs-artifacts/en
+          cp -r build/docs/doxygen/en/html/* docs-artifacts/en/
+          # Copy German docs to docs-artifacts/de
+          mkdir -p docs-artifacts/de
+          cp -r build/docs/doxygen/de/html/* docs-artifacts/de/
+          # Add index.html that redirects to language selection
+          cat > docs-artifacts/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="refresh" content="0; url=en/index.html">
+              <title>Pfadfinder Documentation</title>
+          </head>
+          <body>
+              <p>Redirecting to <a href="en/index.html">English documentation</a>...</p>
+              <p>For German documentation, go to <a href="de/index.html">Deutsche Dokumentation</a>.</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-artifacts
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [build-docs]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
