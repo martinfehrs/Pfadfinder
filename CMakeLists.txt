@@ -113,14 +113,9 @@ if(DOXYGEN_FOUND)
         OUTPUT ${FILTERED_SRC_EN_DIR}/stamp
         COMMAND ${CMAKE_COMMAND} -E remove -f ${FILTERED_SRC_EN_DIR}/*
         COMMAND ${CMAKE_COMMAND} -E make_directory ${FILTERED_SRC_EN_DIR}
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/error.cppm > ${FILTERED_SRC_EN_DIR}/error.cppm
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/system_environment.cppm > ${FILTERED_SRC_EN_DIR}/system_environment.cppm
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/linux_backend.cppm > ${FILTERED_SRC_EN_DIR}/linux_backend.cppm
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/windows_backend.cppm > ${FILTERED_SRC_EN_DIR}/windows_backend.cppm
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/macos_backend.cppm > ${FILTERED_SRC_EN_DIR}/macos_backend.cppm
-        COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/pfadfinder.cppm > ${FILTERED_SRC_EN_DIR}/pfadfinder.cppm
+        COMMAND filter_comments ${CMAKE_CURRENT_SOURCE_DIR}/src ${FILTERED_SRC_EN_DIR}
         COMMAND ${CMAKE_COMMAND} -E touch ${FILTERED_SRC_EN_DIR}/stamp
-        COMMENT "Creating filtered source files and English documentation for English doxygen"
+        COMMENT "Creating filtered source files for English doxygen"
         DEPENDS filter_comments
         VERBATIM
     )
