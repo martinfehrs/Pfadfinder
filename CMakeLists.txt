@@ -106,15 +106,11 @@ if(DOXYGEN_FOUND)
     
     # Create filtered source directory for English documentation
     set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)
-    file(MAKE_DIRECTORY ${FILTERED_SRC_EN_DIR})
     
-    # Filter German comments from source files using filter_comments program
-    add_custom_command(
-        OUTPUT ${FILTERED_SRC_EN_DIR}/stamp
+    # Custom target to filter German comments from source files
+    add_custom_target(filter_sources
         COMMAND ${CMAKE_COMMAND} -E remove -f ${FILTERED_SRC_EN_DIR}/*
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${FILTERED_SRC_EN_DIR}
         COMMAND filter_comments ${CMAKE_CURRENT_SOURCE_DIR}/src ${FILTERED_SRC_EN_DIR}
-        COMMAND ${CMAKE_COMMAND} -E touch ${FILTERED_SRC_EN_DIR}/stamp
         COMMENT "Creating filtered source files for English doxygen"
         DEPENDS filter_comments
         VERBATIM
@@ -144,7 +140,7 @@ if(DOXYGEN_FOUND)
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Generating English API documentation with Doxygen"
-        DEPENDS ${FILTERED_SRC_EN_DIR}/stamp
+        DEPENDS filter_sources
         VERBATIM
     )
     
