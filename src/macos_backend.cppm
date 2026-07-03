@@ -95,7 +95,7 @@ namespace pfadfinder::inline macos_backend
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Datenverzeichnis.
          */
-        [[nodiscard]] fs::path shared_data_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             return fs::path{ "/Library/Application Support" } / app_name;
         }

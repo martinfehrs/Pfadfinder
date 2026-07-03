@@ -105,7 +105,7 @@ namespace pfadfinder::inline windows_backend
          * @return fs::path Das geteilte Datenverzeichnis (%ALLUSERSAPPDATA%/<appname>).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path shared_data_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             // Windows: %ALLUSERSAPPDATA%/<appname>
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
@@ -123,7 +123,7 @@ namespace pfadfinder::inline windows_backend
          * @return fs::path Das Benutzer-Datenverzeichnis (%APPDATA%/<appname>).
          * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path user_data_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* appdata = std::getenv("APPDATA");
 
@@ -140,7 +140,7 @@ namespace pfadfinder::inline windows_backend
          * @return fs::path Das Konfigurationsverzeichnis (%APPDATA%/<appname>).
          * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path config_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* appdata = std::getenv("APPDATA");
 
@@ -157,7 +157,7 @@ namespace pfadfinder::inline windows_backend
          * @return fs::path Das Cache-Verzeichnis (%LOCALAPPDATA%/<appname>/Cache).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path cache_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 
@@ -174,7 +174,7 @@ namespace pfadfinder::inline windows_backend
          * @return fs::path Das Log-Verzeichnis (%LOCALAPPDATA%/<appname>/Logs).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path log_dir(const fs::path& [[maybe_unused]] exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 
