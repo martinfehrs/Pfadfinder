@@ -119,12 +119,6 @@ if(DOXYGEN_FOUND)
         COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/windows_backend.cppm > ${FILTERED_SRC_EN_DIR}/windows_backend.cppm
         COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/macos_backend.cppm > ${FILTERED_SRC_EN_DIR}/macos_backend.cppm
         COMMAND filter_comments < ${CMAKE_CURRENT_SOURCE_DIR}/src/pfadfinder.cppm > ${FILTERED_SRC_EN_DIR}/pfadfinder.cppm
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/error.cppm.dox ${FILTERED_SRC_EN_DIR}/error.cppm.dox
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/system_environment.cppm.dox ${FILTERED_SRC_EN_DIR}/system_environment.cppm.dox
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/linux_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/linux_backend.cppm.dox
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/macos_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/macos_backend.cppm.dox
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/windows_backend.cppm.dox ${FILTERED_SRC_EN_DIR}/windows_backend.cppm.dox
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/docs/pfadfinder.cppm.dox ${FILTERED_SRC_EN_DIR}/pfadfinder.cppm.dox
         COMMAND ${CMAKE_COMMAND} -E touch ${FILTERED_SRC_EN_DIR}/stamp
         COMMENT "Creating filtered source files and English documentation for English doxygen"
         DEPENDS filter_comments
