@@ -9,6 +9,7 @@ on:
       - 'Doxyfile_*.in'
       - 'CMakeLists.txt'
       - '.github/workflows/docs.yml'
+      - '**/*.md'
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
