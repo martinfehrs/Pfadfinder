@@ -6,28 +6,66 @@ Cross-platform project for determining common application directories.
 
 ## Description
 
-Using an instance of the `pfadfinder::application_environment` class, you get access to the following operating system-dependent paths and their subpaths:
+Using an instance of the `pfadfinder::application_environment` class, you get access to the following operating system-dependent paths and their subpaths.
 
-- User-specific configuration
-- User-specific cache
-- User-specific data
-- System-wide configuration
-- System-wide cache
-- System-wide data
-- Static application data
-- User directory
-- Temporary data
+### Windows
+
+| Method | Path |
+|--------|------|
+| `executable_path()` | Full path to the executable |
+| `executable_dir()` | Directory containing the executable |
+| `static_data_dir()` | Binary directory |
+| `shared_data_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `shared_cache_dir()` | `%ALLUSERSAPPDATA%\<appname>\Cache` |
+| `shared_log_dir()` | `%ALLUSERSAPPDATA%\<appname>\Logs` |
+| `user_data_dir()` | `%APPDATA%\<appname>` |
+| `config_dir()` | `%APPDATA%\<appname>` |
+| `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `temp_dir()` | `%TEMP%\<appname>` |
+| `user_dir()` | `%USERPROFILE%` |
+
+### macOS
+
+| Method | Bundle | CLI |
+|--------|--------|-----|
+| `executable_path()` | Full path to the executable | Full path to the executable |
+| `executable_dir()` | Directory containing the executable | Directory containing the executable |
+| `static_data_dir()` | `Resources` directory | Derived from binary path |
+| `shared_data_dir()` | `/Library/Application Support/<appname>` | `/Library/Application Support/<appname>` |
+| `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
+| `shared_cache_dir()` | `/Library/Caches/<appname>` | `/Library/Caches/<appname>` |
+| `shared_log_dir()` | `/Library/Logs/<appname>` | `/Library/Logs/<appname>` |
+| `user_data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
+| `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
+| `user_dir()` | `$HOME` | `$HOME` |
+
+### Linux
+
+| Method | Path |
+|--------|------|
+| `executable_path()` | Full path to the executable |
+| `executable_dir()` | Directory containing the executable |
+| `static_data_dir()` | Derived from binary path (e.g., `/usr/bin/myapp` → `/usr/share/myapp`) |
+| `shared_data_dir()` | `/var/lib/<appname>` |
+| `shared_config_dir()` | `/etc/<appname>` |
+| `shared_cache_dir()` | `/var/cache/<appname>` |
+| `shared_log_dir()` | `/var/log/<appname>` |
+| `user_data_dir()` | `~/.local/share/<appname>` (XDG standard) |
+| `config_dir()` | `~/.config/<appname>` (XDG standard) |
+| `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
+| `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `temp_dir()` | `/tmp/<appname>` or system temp directory |
+| `user_dir()` | `$HOME` |
 
 ## Documentation
 
 - [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
 - [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
-
-## Supported Platforms
-
-- Windows
-- macOS
-- Linux
 
 ## Requirements
 

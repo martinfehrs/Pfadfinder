@@ -5,28 +5,66 @@ Projekt zur plattformübergreifenden Bestimmung gebräuchlicher Anwendungsverzei
 ## Beschreibung
 
 Mittels einer Instanz der Klasse `pfadfinder::application_environment` erhält man
-Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade:
+Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 
-- Benutzerspezifische Konfiguration
-- Benutzerspezifische Cache
-- Benutzerspezifische Daten
-- Benutzerübergreifende Konfiguration
-- Benuterübergreifender Cache
-- Benutzerübergreifende Daten
-- Statsiche Anwendungsdaten
-- Benutzerverzeichnis
-- Temporäre Daten
+### Windows
+
+| Methode | Pfad |
+|---------|------|
+| `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
+| `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
+| `static_data_dir()` | Binärverzeichnis |
+| `shared_data_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `shared_cache_dir()` | `%ALLUSERSAPPDATA%\<appname>\Cache` |
+| `shared_log_dir()` | `%ALLUSERSAPPDATA%\<appname>\Logs` |
+| `user_data_dir()` | `%APPDATA%\<appname>` |
+| `config_dir()` | `%APPDATA%\<appname>` |
+| `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `temp_dir()` | `%TEMP%\<appname>` |
+| `user_dir()` | `%USERPROFILE%` |
+
+### macOS
+
+| Methode | Bundle | CLI |
+|---------|--------|-----|
+| `executable_path()` | Vollständiger Pfad zur ausführbaren Datei | Vollständiger Pfad zur ausführbaren Datei |
+| `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält | Verzeichnis, das die ausführbare Datei enthält |
+| `static_data_dir()` | `Resources`-Verzeichnis | Abgeleitet vom Binärpfad |
+| `shared_data_dir()` | `/Library/Application Support/<appname>` | `/Library/Application Support/<appname>` |
+| `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
+| `shared_cache_dir()` | `/Library/Caches/<appname>` | `/Library/Caches/<appname>` |
+| `shared_log_dir()` | `/Library/Logs/<appname>` | `/Library/Logs/<appname>` |
+| `user_data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
+| `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
+| `user_dir()` | `$HOME` | `$HOME` |
+
+### Linux
+
+| Methode | Pfad |
+|---------|------|
+| `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
+| `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
+| `static_data_dir()` | Abgeleitet vom Binärpfad (z. B. `/usr/bin/myapp` → `/usr/share/myapp`) |
+| `shared_data_dir()` | `/var/lib/<appname>` |
+| `shared_config_dir()` | `/etc/<appname>` |
+| `shared_cache_dir()` | `/var/cache/<appname>` |
+| `shared_log_dir()` | `/var/log/<appname>` |
+| `user_data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
+| `config_dir()` | `~/.config/<appname>` (XDG-Standard) |
+| `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |
+| `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
+| `user_dir()` | `$HOME` |
 
 ## Dokumentation
 
 - [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
 - [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
-
-## Unterstützte Plattformen
-
-- Windows
-- macOS
-- Linux
 
 ## Voraussetzungen
 
