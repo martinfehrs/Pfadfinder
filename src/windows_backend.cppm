@@ -102,12 +102,12 @@ namespace pfadfinder::inline windows_backend
          * @brief Gibt das geteilte Datenverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Datenverzeichnis (%ALLUSERSAPPDATA%/<appname>).
+         * @return fs::path Das geteilte Datenverzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
-            // Windows: %ALLUSERSAPPDATA%/<appname>
+            // Windows: %ALLUSERSAPPDATA%/&lt;appname&gt;
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
 
             if (!allusersappdata)
@@ -120,7 +120,7 @@ namespace pfadfinder::inline windows_backend
          * @brief Gibt das Benutzer-Datenverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-Datenverzeichnis (%APPDATA%/<appname>).
+         * @return fs::path Das Benutzer-Datenverzeichnis (%APPDATA%/&lt;appname&gt;).
          * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -137,7 +137,7 @@ namespace pfadfinder::inline windows_backend
          * @brief Gibt das Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis (%APPDATA%/<appname>).
+         * @return fs::path Das Konfigurationsverzeichnis (%APPDATA%/&lt;appname&gt;).
          * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -154,7 +154,7 @@ namespace pfadfinder::inline windows_backend
          * @brief Gibt das Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis (%LOCALAPPDATA%/<appname>/Cache).
+         * @return fs::path Das Cache-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -171,7 +171,7 @@ namespace pfadfinder::inline windows_backend
          * @brief Gibt das Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis (%LOCALAPPDATA%/<appname>/Logs).
+         * @return fs::path Das Log-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -187,7 +187,7 @@ namespace pfadfinder::inline windows_backend
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das temporäre Verzeichnis (%TEMP%/<appname>).
+         * @return fs::path Das temporäre Verzeichnis (%TEMP%/&lt;appname&gt;).
          * @throws home_not_set Wenn die TEMP-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
@@ -218,7 +218,7 @@ namespace pfadfinder::inline windows_backend
         /**
          * @brief Gibt das geteilte Cache-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Cache-Verzeichnis (%ALLUSERSAPPDATA%/<appname>/Cache).
+         * @return fs::path Das geteilte Cache-Verzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;/Cache).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
@@ -234,7 +234,7 @@ namespace pfadfinder::inline windows_backend
         /**
          * @brief Gibt das geteilte Log-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Log-Verzeichnis (%ALLUSERSAPPDATA%/<appname>/Logs).
+         * @return fs::path Das geteilte Log-Verzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;/Logs).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
@@ -250,7 +250,7 @@ namespace pfadfinder::inline windows_backend
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/<appname>).
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;).
          * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override

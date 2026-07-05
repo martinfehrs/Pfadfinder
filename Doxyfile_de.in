@@ -106,7 +106,6 @@ VERBATIM_HEADERS       = YES
 
 # Alphabetical index configuration
 ALPHABETICAL_INDEX     = YES
-COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = ""
 
 # HTML output configuration
@@ -115,7 +114,6 @@ HTML_OUTPUT            = "html"
 HTML_FILE_EXTENSION    = ".html"
 HTML_EXTRA_STYLESHEET  = @AWESOME_CSS_DIR@/doxygen-awesome.css @AWESOME_CSS_DIR@/doxygen-awesome-sidebar-only.css @AWESOME_CSS_DIR@/doxygen-awesome-sidebar-only-darkmode-toggle.css
 HTML_COLORSTYLE        = LIGHT
-HTML_TIMESTAMP         = YES
 HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
 HTML_INDEX_NUM_ENTRIES = 100
@@ -173,9 +171,7 @@ LATEX_EXTRA_FILES      = ""
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
-LATEX_HIDE_INDECES     = NO
 LATEX_BIB_STYLE        = plain
-LATEX_TIMESTAMP        = NO
 
 # RTF output configuration
 GENERATE_RTF           = NO
@@ -210,8 +206,6 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = NO
 EXPAND_AS_DEFINED      = ""
 SKIP_FUNCTION_MACROS   = YES
-PREDEFINED_MACROS      = ""
-EXPAND_AS_DEFINED_MACROS = ""
 MARKDOWN_SUPPORT       = YES
 TOC_INCLUDE_HEADINGS    = 2
 AUTOLINK_SUPPORT       = YES

@@ -134,9 +134,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Datenverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>.
-         * Unter Linux entspricht dies /var/lib/<appname>.
-         * Unter macOS entspricht dies /Library/Application Support/<appname>.
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>lt;appname<appname>gt;.
+         * Unter Linux entspricht dies /var/lib/<appname>lt;appname<appname>gt;.
+         * Unter macOS entspricht dies /Library/Application Support/<appname>lt;appname<appname>gt;.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das geteilte Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
@@ -155,9 +155,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Cache-Verzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>/Cache.
-         * Unter Linux entspricht dies /var/cache/<appname>.
-         * Unter macOS entspricht dies /Library/Caches/<appname>.
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>lt;appname<appname>gt;/Cache.
+         * Unter Linux entspricht dies /var/cache/<appname>lt;appname<appname>gt;.
+         * Unter macOS entspricht dies /Library/Caches/<appname>lt;appname<appname>gt;.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -179,9 +179,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Log-Verzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>/Logs.
-         * Unter Linux entspricht dies /var/log/<appname>.
-         * Unter macOS entspricht dies /Library/Logs/<appname>.
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>lt;appname<appname>gt;/Logs.
+         * Unter Linux entspricht dies /var/log/<appname>lt;appname<appname>gt;.
+         * Unter macOS entspricht dies /Library/Logs/<appname>lt;appname<appname>gt;.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -203,9 +203,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>.
-         * Unter Linux entspricht dies /etc/<appname>.
-         * Unter macOS entspricht dies /Library/Preferences/<appname>.
+         * Unter Windows entspricht dies %ALLUSERSAPPDATA%/<appname>lt;appname<appname>gt;.
+         * Unter Linux entspricht dies /etc/<appname>lt;appname<appname>gt;.
+         * Unter macOS entspricht dies /Library/Preferences/<appname>lt;appname<appname>gt;.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
@@ -227,10 +227,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das benutzer-spezifische Datenverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %APPDATA%/<appname>.
-         * Unter Linux entspricht dies ~/.local/share/<appname>.
+         * Unter Windows entspricht dies %APPDATA%/<appname>lt;appname<appname>gt;.
+         * Unter Linux entspricht dies ~/.local/share/<appname>lt;appname<appname>gt;.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Application Support/<appname>, ansonsten ~/.local/share/<appname>.
+         * ~/Library/Application Support/<appname>lt;appname<appname>gt;, ansonsten ~/.local/share/<appname>lt;appname<appname>gt;.
          * 
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
@@ -249,10 +249,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das benutzerspezifische Datenverzeichnis mit optionalem Unterpfad zurück.
          * 
-         * Unter Windows entspricht dies %APPDATA%/<appname>/<rel_path>.
-         * Unter Linux entspricht dies ~/.local/share/<appname>/<rel_path>.
+         * Unter Windows entspricht dies %APPDATA%/<appname>lt;appname<appname>gt;/<rel_path>.
+         * Unter Linux entspricht dies ~/.local/share/<appname>lt;appname<appname>gt;/<rel_path>.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Application Support/<appname>/<rel_path>, ansonsten ~/.local/share/<appname>/<rel_path>.
+         * ~/Library/Application Support/<appname>lt;appname<appname>gt;/<rel_path>, ansonsten ~/.local/share/<appname>lt;appname<appname>gt;/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -274,10 +274,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Konfigurationsverzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %APPDATA%/<appname>.
-         * Unter Linux entspricht dies ~/.config/<appname> (XDG-Standard).
+         * Unter Windows entspricht dies %APPDATA%/<appname>lt;appname<appname>gt;.
+         * Unter Linux entspricht dies ~/.config/<appname>lt;appname<appname>gt; (XDG-Standard).
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Preferences/<appname>, ansonsten ~/.config/<appname>.
+         * ~/Library/Preferences/<appname>lt;appname<appname>gt;, ansonsten ~/.config/<appname>lt;appname<appname>gt;.
          * 
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Konfigurationsverzeichnis der Anwendung.
@@ -296,10 +296,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Konfigurationsverzeichnis mit optionalem Unterpfad zurück.
          * 
-         * Unter Windows entspricht dies %APPDATA%/<appname>/<rel_path>.
-         * Unter Linux entspricht dies ~/.config/<appname>/<rel_path> (XDG-Standard).
+         * Unter Windows entspricht dies %APPDATA%/<appname>lt;appname<appname>gt;/<rel_path>.
+         * Unter Linux entspricht dies ~/.config/<appname>lt;appname<appname>gt;/<rel_path> (XDG-Standard).
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Preferences/<appname>/<rel_path>, ansonsten ~/.config/<appname>/<rel_path>.
+         * ~/Library/Preferences/<appname>lt;appname<appname>gt;/<rel_path>, ansonsten ~/.config/<appname>lt;appname<appname>gt;/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -321,10 +321,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Cache-Verzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Cache.
-         * Unter Linux entspricht dies ~/.cache/<appname> (XDG-Standard).
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>lt;appname<appname>gt;/Cache.
+         * Unter Linux entspricht dies ~/.cache/<appname>lt;appname<appname>gt; (XDG-Standard).
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Caches/<appname>, ansonsten ~/.cache/<appname>.
+         * ~/Library/Caches/<appname>lt;appname<appname>gt;, ansonsten ~/.cache/<appname>lt;appname<appname>gt;.
          * 
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Cache-Verzeichnis der Anwendung.
@@ -343,10 +343,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Cache-Verzeichnis mit optionalem Unterpfad zurück.
          * 
-         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Cache/<rel_path>.
-         * Unter Linux entspricht dies ~/.cache/<appname>/<rel_path> (XDG-Standard).
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>lt;appname<appname>gt;/Cache/<rel_path>.
+         * Unter Linux entspricht dies ~/.cache/<appname>lt;appname<appname>gt;/<rel_path> (XDG-Standard).
          * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Caches/<appname>/<rel_path>, ansonsten ~/.cache/<appname>/<rel_path>.
+         * ~/Library/Caches/<appname>lt;appname<appname>gt;/<rel_path>, ansonsten ~/.cache/<appname>lt;appname<appname>gt;/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -368,10 +368,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Log-Verzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Logs.
-         * Unter Linux entspricht dies ~/.local/state/<appname>/log (XDG Base Directory Specification).
-         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>.
-         * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log.
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>lt;appname<appname>gt;/Logs.
+         * Unter Linux entspricht dies ~/.local/state/<appname>lt;appname<appname>gt;/log (XDG Base Directory Specification).
+         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>lt;appname<appname>gt;.
+         * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>lt;appname<appname>gt;/log.
          * 
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das Log-Verzeichnis der Anwendung.
@@ -390,10 +390,10 @@ namespace pfadfinder
         /**
          * @brief Gibt das Log-Verzeichnis mit optionalem Unterpfad zurück.
          * 
-         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>/Logs/<rel_path>.
-         * Unter Linux entspricht dies ~/.local/state/<appname>/log/<rel_path> (XDG Base Directory Specification).
-         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>/<rel_path>.
-         * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>/log/<rel_path>.
+         * Unter Windows entspricht dies %LOCALAPPDATA%/<appname>lt;appname<appname>gt;/Logs/<rel_path>.
+         * Unter Linux entspricht dies ~/.local/state/<appname>lt;appname<appname>gt;/log/<rel_path> (XDG Base Directory Specification).
+         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/<appname>lt;appname<appname>gt;/<rel_path>.
+         * Unter macOS (CLI) entspricht dies ~/.local/state/<appname>lt;appname<appname>gt;/log/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
@@ -415,9 +415,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das temporäre Verzeichnis der Anwendung zurück.
          * 
-         * Unter Windows entspricht dies %TEMP%/<appname>.
-         * Unter Linux entspricht dies /tmp/<appname> oder dem systemweiten Temp-Verzeichnis.
-         * Unter macOS entspricht dies /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
+         * Unter Windows entspricht dies %TEMP%/<appname>lt;appname<appname>gt;.
+         * Unter Linux entspricht dies /tmp/<appname>lt;appname<appname>gt; oder dem systemweiten Temp-Verzeichnis.
+         * Unter macOS entspricht dies /tmp/<appname>lt;appname<appname>gt; oder ~/Library/Caches/TemporaryItems/<appname>lt;appname<appname>gt;.
          * 
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung.
@@ -436,9 +436,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das temporäre Verzeichnis mit optionalem Unterpfad zurück.
          * 
-         * Unter Windows entspricht dies %TEMP%/<appname>/<rel_path>.
-         * Unter Linux entspricht dies /tmp/<appname>/<rel_path> oder dem systemweiten Temp-Verzeichnis.
-         * Unter macOS entspricht dies /tmp/<appname>/<rel_path> oder ~/Library/Caches/TemporaryItems/<appname>/<rel_path>.
+         * Unter Windows entspricht dies %TEMP%/<appname>lt;appname<appname>gt;/<rel_path>.
+         * Unter Linux entspricht dies /tmp/<appname>lt;appname<appname>gt;/<rel_path> oder dem systemweiten Temp-Verzeichnis.
+         * Unter macOS entspricht dies /tmp/<appname>lt;appname<appname>gt;/<rel_path> oder ~/Library/Caches/TemporaryItems/<appname>lt;appname<appname>gt;/<rel_path>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
          * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).

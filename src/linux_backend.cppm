@@ -61,7 +61,7 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das statische Datenverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das statische Datenverzeichnis (/usr/share/<appname>).
+         * @return fs::path Das statische Datenverzeichnis (/usr/share/&lt;appname&gt;).
          */
         [[nodiscard]] fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -73,11 +73,11 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das geteilte Datenverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Datenverzeichnis (/var/lib/<appname>).
+         * @return fs::path Das geteilte Datenverzeichnis (/var/lib/&lt;appname&gt;).
          */
         [[nodiscard]] fs::path shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
-            // Linux: /var/lib/<appname>
+            // Linux: /var/lib/&lt;appname&gt;
             return fs::path{ "/var/lib" } / app_name;
         }
 
@@ -85,7 +85,7 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das Benutzer-Datenverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-Datenverzeichnis (~/.local/share/<appname>).
+         * @return fs::path Das Benutzer-Datenverzeichnis (~/.local/share/&lt;appname&gt;).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -102,7 +102,7 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis (~/.config/<appname>).
+         * @return fs::path Das Konfigurationsverzeichnis (~/.config/&lt;appname&gt;).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -119,7 +119,7 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis (~/.cache/<appname>).
+         * @return fs::path Das Cache-Verzeichnis (~/.cache/&lt;appname&gt;).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -136,7 +136,7 @@ namespace pfadfinder::inline linux_backend
          * @brief Gibt das Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis (~/.local/state/<appname>/log).
+         * @return fs::path Das Log-Verzeichnis (~/.local/state/&lt;appname&gt;/log).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
@@ -152,7 +152,7 @@ namespace pfadfinder::inline linux_backend
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das temporäre Verzeichnis (system temp dir / <appname>).
+         * @return fs::path Das temporäre Verzeichnis (system temp dir / &lt;appname&gt;).
          */
         [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
         {
@@ -177,7 +177,7 @@ namespace pfadfinder::inline linux_backend
         /**
          * @brief Gibt das geteilte Cache-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Cache-Verzeichnis (/var/cache/<appname>).
+         * @return fs::path Das geteilte Cache-Verzeichnis (/var/cache/&lt;appname&gt;).
          */
         [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
         {
@@ -187,7 +187,7 @@ namespace pfadfinder::inline linux_backend
         /**
          * @brief Gibt das geteilte Log-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Log-Verzeichnis (/var/log/<appname>).
+         * @return fs::path Das geteilte Log-Verzeichnis (/var/log/&lt;appname&gt;).
          */
         [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
         {
@@ -197,7 +197,7 @@ namespace pfadfinder::inline linux_backend
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Konfigurationsverzeichnis (/etc/<appname>).
+         * @return fs::path Das geteilte Konfigurationsverzeichnis (/etc/&lt;appname&gt;).
          * 
          * @note Linux-Backend erlaubt nur Lesen von /etc (kleinster gemeinsamer Nenner).
          */
