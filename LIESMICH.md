@@ -61,7 +61,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `user_dir()` | `$HOME` |
 
-## Dokumentation
+## Dokumentation in unterschiedlichen Sprachen
 
 - [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
 - [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)

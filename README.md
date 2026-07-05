@@ -62,7 +62,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `temp_dir()` | `/tmp/<appname>` or system temp directory |
 | `user_dir()` | `$HOME` |
 
-## Documentation
+## Documentation in different languages
 
 - [🇬🇧 English Documentation](https://martinfehrs.github.io/Pfadfinder/en/)
 - [🇩🇪 Deutsche Dokumentation](https://martinfehrs.github.io/Pfadfinder/de/)
@@ -95,9 +95,9 @@ cmake -G "Visual Studio 17 2022" -A x64 ..
 cmake --build . --config Release
 ```
 
-## Usage Examples
+## Usage examples
 
-### Without Customizations
+### Without customizations
 
 ```cpp
 import std;
@@ -122,7 +122,7 @@ catch(const pfadfinder::error& e)
 }
 ```
 
-### With Custom Application Name
+### With custom application name
 
 ```cpp
 import std;
@@ -147,7 +147,7 @@ catch(const pfadfinder::error& e)
 }
 ```
 
-### With Custom System Environment
+### With custom system environment
 
 ```cpp
 import std;
@@ -192,7 +192,7 @@ catch(const pfadfinder::error& e)
 }
 ```
 
-## Run Tests
+## Run tests
 
 ```bash
 cd build
