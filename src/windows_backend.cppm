@@ -134,13 +134,13 @@ namespace pfadfinder::inline windows_backend
         }
 
         /**
-         * @brief Gibt das Konfigurationsverzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis (%APPDATA%/&lt;appname&gt;).
+         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis (%APPDATA%/&lt;appname&gt;).
          * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* appdata = std::getenv("APPDATA");
 
@@ -151,13 +151,13 @@ namespace pfadfinder::inline windows_backend
         }
 
         /**
-         * @brief Gibt das Cache-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
+         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 
@@ -168,13 +168,13 @@ namespace pfadfinder::inline windows_backend
         }
 
         /**
-         * @brief Gibt das Log-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
+         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
          * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 

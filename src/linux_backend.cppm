@@ -99,13 +99,13 @@ namespace pfadfinder::inline linux_backend
         }
 
         /**
-         * @brief Gibt das Konfigurationsverzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis (~/.config/&lt;appname&gt;).
+         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis (~/.config/&lt;appname&gt;).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
@@ -116,13 +116,13 @@ namespace pfadfinder::inline linux_backend
         }
 
         /**
-         * @brief Gibt das Cache-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis (~/.cache/&lt;appname&gt;).
+         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis (~/.cache/&lt;appname&gt;).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
@@ -133,13 +133,13 @@ namespace pfadfinder::inline linux_backend
         }
 
         /**
-         * @brief Gibt das Log-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis (~/.local/state/&lt;appname&gt;/log).
+         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis (~/.local/state/&lt;appname&gt;/log).
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 

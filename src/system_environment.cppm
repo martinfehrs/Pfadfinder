@@ -65,28 +65,28 @@ namespace pfadfinder
         [[nodiscard]] virtual fs::path user_data_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
 
         /**
-         * @brief Gibt das Konfigurationsverzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis.
+         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis.
          */
-        [[nodiscard]] virtual fs::path config_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
+        [[nodiscard]] virtual fs::path user_config_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
 
         /**
-         * @brief Gibt das Cache-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis.
+         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis.
          */
-        [[nodiscard]] virtual fs::path cache_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
+        [[nodiscard]] virtual fs::path user_cache_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
 
         /**
-         * @brief Gibt das Log-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis.
+         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis.
          */
-        [[nodiscard]] virtual fs::path log_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
+        [[nodiscard]] virtual fs::path user_log_dir(const fs::path& exe_dir, const std::string& app_name) const = 0;
 
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.

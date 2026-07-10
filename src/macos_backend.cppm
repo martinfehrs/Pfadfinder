@@ -123,13 +123,13 @@ namespace pfadfinder::inline macos_backend
         }
 
         /**
-         * @brief Gibt das Konfigurationsverzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Konfigurationsverzeichnis.
+         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis.
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path config_dir(const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_config_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
             const auto exe_dir_str = exe_dir.string();
 
@@ -145,13 +145,13 @@ namespace pfadfinder::inline macos_backend
         }
 
         /**
-         * @brief Gibt das Cache-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Cache-Verzeichnis.
+         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis.
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path cache_dir(const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_cache_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
             const auto exe_dir_str = exe_dir.string();
 
@@ -167,13 +167,13 @@ namespace pfadfinder::inline macos_backend
         }
 
         /**
-         * @brief Gibt das Log-Verzeichnis zurück.
+         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Log-Verzeichnis.
+         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis.
          * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] fs::path log_dir(const fs::path& exe_dir, const std::string& app_name) const override
+        [[nodiscard]] fs::path user_log_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
             const auto exe_dir_str = exe_dir.string();
 
