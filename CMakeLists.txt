@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(pfadfinder
+project(Pfadfinder
     VERSION 0.9.0
     DESCRIPTION "Projekt zur Bestimmung des Binärverzeichnisses der laufenden Anwendung"
     LANGUAGES CXX
