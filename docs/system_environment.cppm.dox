@@ -45,28 +45,28 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::config_dir(const fs::path&, const std::string&) const
- * @brief Returns the configuration directory of the application.
+ * @fn virtual fs::path pfadfinder::system_environment::user_config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific configuration directory of the application.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The configuration directory (base + rel_path).
+ * @return fs::path The user-specific configuration directory (base + rel_path).
  * @throws directory_not_found If the directory does not exist.
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::cache_dir(const fs::path&, const std::string&) const
- * @brief Returns the cache directory of the application.
+ * @fn virtual fs::path pfadfinder::system_environment::user_cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific cache directory of the application.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The cache directory.
+ * @return fs::path The user-specific cache directory.
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::log_dir(const fs::path&, const std::string&) const
- * @brief Returns the log directory of the application.
+ * @fn virtual fs::path pfadfinder::system_environment::user_log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific log directory of the application.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The log directory of the application (base + rel_path).
+ * @return fs::path The user-specific log directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist.
  */
 

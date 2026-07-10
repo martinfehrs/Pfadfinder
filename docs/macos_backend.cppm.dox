@@ -58,29 +58,29 @@
  */
 
 /**
- * @fn fs::path macos_backend::default_system_environment::config_dir(const fs::path&, const std::string&) const
- * @brief Returns the configuration directory.
+ * @fn fs::path macos_backend::default_system_environment::user_config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific configuration directory.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The configuration directory.
+ * @return fs::path The user-specific configuration directory.
  * @throws home_not_set When the HOME environment variable is not set.
  */
 
 /**
- * @fn fs::path macos_backend::default_system_environment::cache_dir(const fs::path&, const std::string&) const
- * @brief Returns the cache directory.
+ * @fn fs::path macos_backend::default_system_environment::user_cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific cache directory.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The cache directory.
+ * @return fs::path The user-specific cache directory.
  * @throws home_not_set When the HOME environment variable is not set.
  */
 
 /**
- * @fn fs::path macos_backend::default_system_environment::log_dir(const fs::path&, const std::string&) const
- * @brief Returns the log directory.
+ * @fn fs::path macos_backend::default_system_environment::user_log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific log directory.
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The log directory.
+ * @return fs::path The user-specific log directory.
  * @throws home_not_set When the HOME environment variable is not set.
  */
 

@@ -66,29 +66,29 @@
  */
 
 /**
- * @fn fs::path windows_backend::default_system_environment::config_dir(const fs::path&, const std::string&) const
- * @brief Returns the configuration directory.
+ * @fn fs::path windows_backend::default_system_environment::user_config_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific configuration directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The configuration directory (%APPDATA%/&lt;appname&gt;).
+ * @return fs::path The user-specific configuration directory (%APPDATA%/&lt;appname&gt;).
  * @throws appdata_not_set When the APPDATA environment variable is not set.
  */
 
 /**
- * @fn fs::path windows_backend::default_system_environment::cache_dir(const fs::path&, const std::string&) const
- * @brief Returns the cache directory.
+ * @fn fs::path windows_backend::default_system_environment::user_cache_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific cache directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The cache directory (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
+ * @return fs::path The user-specific cache directory (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
  * @throws localappdata_not_set When the LOCALAPPDATA environment variable is not set.
  */
 
 /**
- * @fn fs::path windows_backend::default_system_environment::log_dir(const fs::path&, const std::string&) const
- * @brief Returns the log directory.
+ * @fn fs::path windows_backend::default_system_environment::user_log_dir(const fs::path&, const std::string&) const
+ * @brief Returns the user-specific log directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The log directory (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
+ * @return fs::path The user-specific log directory (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
  * @throws localappdata_not_set When the LOCALAPPDATA environment variable is not set.
  */
 

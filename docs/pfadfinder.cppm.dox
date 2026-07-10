@@ -12,9 +12,9 @@
  *    - static_data_dir()      : System-wide static data directory
  *    - shared_data_dir()      : System-wide shared data directory
  *    - user_data_dir()        : User-specific data directory (with create_dir parameter)
- *    - config_dir()           : Configuration directory (with create_dir parameter)
- *    - cache_dir()            : Cache directory (with create_dir parameter)
- *    - log_dir()              : Log directory for application logs (with create_dir parameter)
+ *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
+ *    - user_cache_dir()       : User-specific cache directory (with create_dir parameter)
+ *    - user_log_dir()         : User-specific log directory for application logs (with create_dir parameter)
  *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
  *    - user_dir()             : User's home directory
  */
@@ -160,8 +160,8 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::config_dir(bool) const
- * @brief Returns the configuration directory of the application.
+ * @fn fs::path pfadfinder::application_environment::user_config_dir(bool) const
+ * @brief Returns the user-specific configuration directory of the application.
  * 
  * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;.
  * On Linux, this corresponds to ~/.config/&lt;appname&gt; (XDG standard).
@@ -169,13 +169,13 @@
  * otherwise ~/.config/&lt;appname&gt;.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The configuration directory of the application.
+ * @return fs::path The user-specific configuration directory of the application.
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::config_dir(const fs::path&, bool) const
- * @brief Returns the configuration directory with optional subpath.
+ * @fn fs::path pfadfinder::application_environment::user_config_dir(const fs::path&, bool) const
+ * @brief Returns the user-specific configuration directory with optional subpath.
  * 
  * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;/&lt;rel_path&gt;.
  * On Linux, this corresponds to ~/.config/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
@@ -184,13 +184,13 @@
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The configuration directory of the application (base + rel_path).
+ * @return fs::path The user-specific configuration directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::cache_dir(bool) const
- * @brief Returns the cache directory of the application.
+ * @fn fs::path pfadfinder::application_environment::user_cache_dir(bool) const
+ * @brief Returns the user-specific cache directory of the application.
  * 
  * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache.
  * On Linux, this corresponds to ~/.cache/&lt;appname&gt; (XDG standard).
@@ -198,13 +198,13 @@
  * otherwise ~/.cache/&lt;appname&gt;.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The cache directory of the application.
+ * @return fs::path The user-specific cache directory of the application.
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::cache_dir(const fs::path&, bool) const
- * @brief Returns the cache directory with optional subpath.
+ * @fn fs::path pfadfinder::application_environment::user_cache_dir(const fs::path&, bool) const
+ * @brief Returns the user-specific cache directory with optional subpath.
  * 
  * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache/&lt;rel_path&gt;.
  * On Linux, this corresponds to ~/.cache/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
@@ -213,13 +213,13 @@
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The cache directory of the application (base + rel_path).
+ * @return fs::path The user-specific cache directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::log_dir(bool) const
- * @brief Returns the log directory of the application.
+ * @fn fs::path pfadfinder::application_environment::user_log_dir(bool) const
+ * @brief Returns the user-specific log directory of the application.
  * 
  * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs.
  * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log (XDG Base Directory Specification).
@@ -227,13 +227,13 @@
  * On macOS (CLI), this corresponds to ~/.local/state/&lt;appname&gt;/log.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The log directory of the application.
+ * @return fs::path The user-specific log directory of the application.
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::log_dir(const fs::path&, bool) const
- * @brief Returns the log directory with optional subpath.
+ * @fn fs::path pfadfinder::application_environment::user_log_dir(const fs::path&, bool) const
+ * @brief Returns the user-specific log directory with optional subpath.
  * 
  * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs/&lt;rel_path&gt;.
  * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log/&lt;rel_path&gt; (XDG Base Directory Specification).
@@ -242,7 +242,7 @@
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The log directory of the application (base + rel_path).
+ * @return fs::path The user-specific log directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
  */
 
@@ -302,21 +302,21 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_config_dir() const
- * @brief Returns the cached configuration directory.
- * @return fs::path The cached configuration directory.
+ * @fn fs::path pfadfinder::application_environment::get_user_config_dir() const
+ * @brief Returns the cached user-specific configuration directory.
+ * @return fs::path The cached user-specific configuration directory.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_cache_dir() const
- * @brief Returns the cached cache directory.
- * @return fs::path The cached cache directory.
+ * @fn fs::path pfadfinder::application_environment::get_user_cache_dir() const
+ * @brief Returns the cached user-specific cache directory.
+ * @return fs::path The cached user-specific cache directory.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_log_dir() const
- * @brief Returns the cached log directory.
- * @return fs::path The cached log directory.
+ * @fn fs::path pfadfinder::application_environment::get_user_log_dir() const
+ * @brief Returns the cached user-specific log directory.
+ * @return fs::path The cached user-specific log directory.
  */
 
 /**
@@ -365,14 +365,14 @@
 /** @var pfadfinder::application_environment::cached_user_data_dir_
  * @brief Cached user data directory. */
 
-/** @var pfadfinder::application_environment::cached_config_dir_
- * @brief Cached configuration directory. */
+/** @var pfadfinder::application_environment::cached_user_config_dir_
+ * @brief Cached user-specific configuration directory. */
 
-/** @var pfadfinder::application_environment::cached_cache_dir_
- * @brief Cached cache directory. */
+/** @var pfadfinder::application_environment::cached_user_cache_dir_
+ * @brief Cached user-specific cache directory. */
 
-/** @var pfadfinder::application_environment::cached_log_dir_
- * @brief Cached log directory. */
+/** @var pfadfinder::application_environment::cached_user_log_dir_
+ * @brief Cached user-specific log directory. */
 
 /** @var pfadfinder::application_environment::cached_temp_dir_
  * @brief Cached temporary directory. */
