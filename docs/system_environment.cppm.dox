@@ -6,10 +6,16 @@
 
 /**
  * @class pfadfinder::system_environment
- * @brief Abstract base class defining the interface for platform-specific path determination.
- * 
- * This class provides virtual methods for determining various directory paths
- * that are implemented differently for each platform (Windows, Linux, macOS).
+ * @brief Abstract base class for system environment backends.
+ *
+ * This class defines the interface for platform-specific
+ * implementations for path determination. All concrete backends
+ * (Linux, Windows, macOS) must inherit from this class and
+ * implement all virtual methods.
+ *
+ * The class is designed as an interface - all methods are
+ * pure virtual (since C++20 with = 0) and there is no state.
+ * This enables simple mock implementations for tests.
  */
 
 /**

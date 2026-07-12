@@ -20,6 +20,12 @@
  */
 
 /**
+ * @typedef pfadfinder::default_system_environment
+ * @brief The system environment of the current system (Windows, Linux, macOS).
+ * @see windows_system_environment, macos_system_environment, linux_system_environment
+ */
+
+/**
  * @class pfadfinder::application_environment
  * @brief Provides methods for determining various directories of an application.
  * @tparam SystemEnvironment Type of the backend implementation, by default pfadfinder::default_system_environment.
