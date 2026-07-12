@@ -19,7 +19,7 @@ import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder::inline macos_backend
+namespace pfadfinder
 {
     /**
      * @brief Ausnahme, die geworfen wird, wenn _NSGetExecutablePath() fehlschlägt.
@@ -49,7 +49,7 @@ namespace pfadfinder::inline macos_backend
      * Sie unterstützt sowohl gebündelte Anwendungen (Bundle) als auch
      * Kommandozeilen-Tools (CLI).
      */
-    export struct default_system_environment : system_environment
+    export struct macos_system_environment : system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

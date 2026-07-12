@@ -19,7 +19,7 @@ import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder::inline linux_backend
+namespace pfadfinder
 {
     /**
      * @brief Ausnahme, die geworfen wird, wenn der Aufruf von readlink() fehlschlägt.
@@ -37,7 +37,7 @@ namespace pfadfinder::inline linux_backend
      * Diese Klasse implementiert die system_environment-Schnittstelle
      * spezifisch für das Linux-Betriebssystem.
      */
-    export struct default_system_environment : system_environment
+    export struct linux_system_environment : system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

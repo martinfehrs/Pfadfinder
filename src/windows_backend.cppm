@@ -19,7 +19,7 @@ import :error;
 
 namespace fs = std::filesystem;
 
-namespace pfadfinder::inline windows_backend
+namespace pfadfinder
 {
 
     /**
@@ -63,13 +63,12 @@ namespace pfadfinder::inline windows_backend
     };
 
     /**
-     * @class "default_system_environment (Windows)" default_system_environment
      * @brief Enthält plattformspezifische Methoden für Windows zur Pfadermittlung.
      * 
      * Diese Klasse implementiert die system_environment-Schnittstelle
      * spezifisch für das Windows-Betriebssystem.
      */
-    export struct default_system_environment : system_environment
+    export struct windows_system_environment : system_environment
     {
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
