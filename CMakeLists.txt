@@ -64,11 +64,27 @@ enable_testing()
 add_subdirectory(tests)
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
-find_package(Doxygen QUIET)
+include(FetchContent)
 
-if(DOXYGEN_FOUND)
+# Beziehe die neueste Doxygen-Version per FetchContent (Quellcode)
+FetchContent_Declare(
+    doxygen
+    GIT_REPOSITORY https://github.com/doxygen/doxygen.git
+    GIT_TAG Release_1_17_0
+)
+
+FetchContent_MakeAvailable(doxygen)
+
+# Setze DOXYGEN_EXECUTABLE auf die kompilierte Doxygen-Binärdatei
+# Auf Windows heisst die Executable doxygen.exe, auf Unix-ähnlichen Systemen doxygen
+if(IS_WINDOWS)
+    set(DOXYGEN_EXECUTABLE "${doxygen_BINARY_DIR}/bin/doxygen.exe")
+else()
+    set(DOXYGEN_EXECUTABLE "${doxygen_BINARY_DIR}/bin/doxygen")
+endif()
+
+if(EXISTS "${DOXYGEN_EXECUTABLE}")
     # Fetch doxygen-awesome-css theme
-    include(FetchContent)
     FetchContent_Declare(
         doxygen-awesome-css
         URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
