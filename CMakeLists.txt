@@ -76,107 +76,86 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(doxygen)
 
 # Setze DOXYGEN_EXECUTABLE auf die kompilierte Doxygen-Binärdatei
-# Auf Windows heisst die Executable doxygen.exe, auf Unix-ähnlichen Systemen doxygen
-if(IS_WINDOWS)
-    set(DOXYGEN_EXECUTABLE "${doxygen_BINARY_DIR}/bin/doxygen.exe")
-else()
-    set(DOXYGEN_EXECUTABLE "${doxygen_BINARY_DIR}/bin/doxygen")
-endif()
+set(DOXYGEN_EXECUTABLE "${doxygen_BINARY_DIR}/bin/doxygen")
 
-if(EXISTS "${DOXYGEN_EXECUTABLE}")
-    # Fetch doxygen-awesome-css theme
-    FetchContent_Declare(
-        doxygen-awesome-css
-        URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
-    )
-    FetchContent_MakeAvailable(doxygen-awesome-css)
-    FetchContent_GetProperties(doxygen-awesome-css SOURCE_DIR AWESOME_CSS_DIR)
-    
-    # Set output directories for German and English documentation
-    set(DOXYGEN_OUTPUT_DIR_DE ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen/de)
-    set(DOXYGEN_OUTPUT_DIR_EN ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen/en)
-    
-    # Configure German Doxyfile template with awesome CSS path
-    set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_DE})
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile_de.in
-        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_de
-    )
-    
-    # Filter README.md for English documentation (remove lines before # Pfadfinder)
-    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/README.md README_CONTENT)
-    string(FIND "${README_CONTENT}" "# Pfadfinder" TITLE_POS)
-    if(NOT TITLE_POS EQUAL -1)
-        string(SUBSTRING "${README_CONTENT}" "${TITLE_POS}" -1 README_DOXYGEN)
-    else()
-        set(README_DOXYGEN "${README_CONTENT}")
-    endif()
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/README_doxygen.md "${README_DOXYGEN}")
-    
-    # Configure English Doxyfile template with awesome CSS path
-    set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
-    
-    # Create a small C++ program to filter comments from source files
-    add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
-    target_compile_features(filter_comments PRIVATE cxx_std_23)
-    
-    # Create filtered source directory for English documentation
-    set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)
-    
-    # Custom target to filter German comments from source files
-    add_custom_target(filter_sources
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${FILTERED_SRC_EN_DIR}/*
-        COMMAND filter_comments ${CMAKE_CURRENT_SOURCE_DIR}/src ${FILTERED_SRC_EN_DIR}
-        COMMENT "Creating filtered source files for English doxygen"
-        DEPENDS filter_comments
-        VERBATIM
-    )
-    
-    # Set output directory for English doxygen
-    set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile_en.in
-        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
-    )
-        
-    # Add custom target for German documentation
-    add_custom_target(docs-de
-        # Create output directory first
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR_DE}
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_de
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Generating German API documentation with Doxygen"
-        VERBATIM
-    )
-    
-    # Add custom target for English documentation
-    add_custom_target(docs-en
-        # Create output directory first
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR_EN}
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Generating English API documentation with Doxygen"
-        DEPENDS filter_sources
-        VERBATIM
-    )
-    
-    # Add combined target for both languages
-    add_custom_target(docs
-        DEPENDS docs-de docs-en
-        COMMENT "Generating API documentation in both German and English"
-    )
+# Fetch doxygen-awesome-css theme
+FetchContent_Declare(
+    doxygen-awesome-css
+    URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
+)
+FetchContent_MakeAvailable(doxygen-awesome-css)
+FetchContent_GetProperties(doxygen-awesome-css SOURCE_DIR AWESOME_CSS_DIR)
+
+# Set output directories for German and English documentation
+set(DOXYGEN_OUTPUT_DIR_DE ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen/de)
+set(DOXYGEN_OUTPUT_DIR_EN ${CMAKE_CURRENT_BINARY_DIR}/docs/doxygen/en)
+
+# Configure German Doxyfile template with awesome CSS path
+set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_DE})
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile_de.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_de
+)
+
+# Filter README.md for English documentation (remove lines before # Pfadfinder)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/README.md README_CONTENT)
+string(FIND "${README_CONTENT}" "# Pfadfinder" TITLE_POS)
+if(NOT TITLE_POS EQUAL -1)
+    string(SUBSTRING "${README_CONTENT}" "${TITLE_POS}" -1 README_DOXYGEN)
 else()
-    message(WARNING "Doxygen not found. Documentation targets will show warning.")
-    add_custom_target(docs
-        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen not found. Please install Doxygen to generate documentation."
-        COMMENT "Doxygen not available"
-    )
-    add_custom_target(docs-de
-        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen not found. Please install Doxygen to generate German documentation."
-        COMMENT "Doxygen not available (German)"
-    )
-    add_custom_target(docs-en
-        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen not found. Please install Doxygen to generate English documentation."
-        COMMENT "Doxygen not available (English)"
-    )
+    set(README_DOXYGEN "${README_CONTENT}")
 endif()
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/README_doxygen.md "${README_DOXYGEN}")
+
+# Configure English Doxyfile template with awesome CSS path
+set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
+
+# Create a small C++ program to filter comments from source files
+add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
+target_compile_features(filter_comments PRIVATE cxx_std_23)
+
+# Create filtered source directory for English documentation
+set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)
+
+# Custom target to filter German comments from source files
+add_custom_target(filter_sources
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${FILTERED_SRC_EN_DIR}/*
+    COMMAND filter_comments ${CMAKE_CURRENT_SOURCE_DIR}/src ${FILTERED_SRC_EN_DIR}
+    COMMENT "Creating filtered source files for English doxygen"
+    DEPENDS filter_comments
+    VERBATIM
+)
+
+# Set output directory for English doxygen
+set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile_en.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
+)
+
+# Add custom target for German documentation
+add_custom_target(docs-de
+    # Create output directory first
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR_DE}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_de
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating German API documentation with Doxygen"
+    VERBATIM
+)
+
+# Add custom target for English documentation
+add_custom_target(docs-en
+    # Create output directory first
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR_EN}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile_en
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating English API documentation with Doxygen"
+    DEPENDS filter_sources
+    VERBATIM
+)
+
+# Add combined target for both languages
+add_custom_target(docs
+    DEPENDS docs-de docs-en
+    COMMENT "Generating API documentation in both German and English"
+)
