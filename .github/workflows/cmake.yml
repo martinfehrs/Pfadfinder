@@ -58,6 +58,9 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
+    - name: Install Conan
+      run: pip install conan
+
     - name: Install Linux dependencies
       if: runner.os == 'Linux'
       run: |
@@ -72,6 +75,11 @@ jobs:
         brew install llvm
         echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
 
+    - name: Conan install
+      run: >
+        conan install . --build=missing --output-folder=${{ steps.strings.outputs.build-output-dir }}
+        -c tools.cmake.cmaketoolchain:generator=${{ matrix.generator == 'Visual Studio 17 2022' && 'Visual Studio 17 2022' || 'Ninja' }}
+
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
@@ -79,6 +87,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/conan_toolchain.cmake
         -S ${{ github.workspace }}
 
     - name: Build
