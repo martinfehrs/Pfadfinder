@@ -1,0 +1,12 @@
+[requires]
+catch2/3.6.0
+
+[tool_requires]
+doxygen/1.17.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
