@@ -16,7 +16,7 @@ on:
 
 jobs:
   build-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     concurrency: ci-docs-${{ github.ref }}
 
     steps:
@@ -31,11 +31,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build cmake
-          sudo apt-get install -y clang-19 clang-tools-19
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
       - name: Create default Conan profile
         run: conan profile detect --force
