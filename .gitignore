@@ -4,6 +4,7 @@ build/
 # CMake generated files
 CMakeCache.txt
 CMakeFiles/
+CMakeUserPresets.json
 Makefile
 cmake_install.cmake
 install_manifest.txt
