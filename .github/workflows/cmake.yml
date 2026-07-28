@@ -61,6 +61,9 @@ jobs:
     - name: Install Conan
       run: pip install conan
 
+    - name: Create default Conan profile
+      run: conan profile detect
+
     - name: Install Linux dependencies
       if: runner.os == 'Linux'
       run: |
@@ -76,9 +79,7 @@ jobs:
         echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
 
     - name: Conan install
-      run: >
-        conan install . --build=missing --output-folder=${{ steps.strings.outputs.build-output-dir }}
-        -c tools.cmake.cmaketoolchain:generator=${{ matrix.generator == 'Visual Studio 17 2022' && 'Visual Studio 17 2022' || 'Ninja' }}
+      run: conan install . --build=missing --output-folder=${{ steps.strings.outputs.build-output-dir }} -c tools.cmake.cmaketoolchain:generator=${{ matrix.generator }}
 
     - name: Configure CMake
       run: >
