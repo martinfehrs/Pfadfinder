@@ -84,19 +84,10 @@ jobs:
       run: conan install . --build=missing -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -s:all compiler.cppstd=23
 
     - name: Configure CMake
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -G "${{ matrix.generator }}"
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/conan_toolchain.cmake
-        -S ${{ github.workspace }}
+      run: cmake --preset=conan-${{ matrix.build_type }}
 
     - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: cmake --build --preset=conan-${{ matrix.build_type }}
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      shell: bash
-      run: ctest --build-config ${{ matrix.build_type }} -V
+      run: ctest --preset=conan-${{ matrix.build_type }} -V

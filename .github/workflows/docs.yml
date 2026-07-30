@@ -39,15 +39,10 @@ jobs:
         run: conan install . --build=missing -c tools.cmake.cmaketoolchain:generator=Ninja -s:all compiler.cppstd=23
 
       - name: Configure CMake
-        run: >
-          cmake -B build
-          -G "Ninja"
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake
-          -S ${{ github.workspace }}
+        run: cmake --preset=conan-release
 
       - name: Generate docs
-        run: cmake --build build --target docs
+        run: cmake --build --preset=conan-release --target docs
 
       - name: Prepare deployment artifact
         run: |
