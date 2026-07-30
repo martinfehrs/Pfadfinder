@@ -19,12 +19,12 @@ jobs:
         os: [ubuntu-26.04, windows-2022, macos-26]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
-        generator: [Ninja, "Visual Studio 17 2022"]
+        generator: ["Ninja Multi-Config", "Visual Studio 17 2022"]
         include:
           - os: ubuntu-26.04
             c_compiler: gcc
             cpp_compiler: g++
-            generator: Ninja
+            generator: "Ninja Multi-Config"
           - os: windows-2022
             c_compiler: cl
             cpp_compiler: cl
@@ -32,7 +32,7 @@ jobs:
           - os: macos-26
             c_compiler: clang
             cpp_compiler: clang++
-            generator: Ninja
+            generator: "Ninja Multi-Config"
         exclude:
           - os: ubuntu-26.04
             c_compiler: cl
@@ -45,7 +45,7 @@ jobs:
           - os: windows-2022
             c_compiler: gcc
           - os: windows-2022
-            generator: Ninja
+            generator: "Ninja Multi-Config"
           - os: macos-26
             c_compiler: cl
           - os: macos-26
@@ -72,7 +72,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y ninja-build
+        sudo apt-get install -y ninja-build cmake
 
     - name: Install Macos depencendies
       if: runner.os == 'Macos'
@@ -84,7 +84,7 @@ jobs:
       run: conan install . --build=missing -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -s:a compiler.cppstd=23
 
     - name: Configure CMake
-      run: cmake --preset=conan-${{ matrix.build_type }}
+      run: cmake --preset=conan-default
 
     - name: Build
       run: cmake --build --preset=conan-${{ matrix.build_type }}

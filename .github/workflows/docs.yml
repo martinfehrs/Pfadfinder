@@ -39,7 +39,7 @@ jobs:
         run: conan install . --build=missing -c tools.cmake.cmaketoolchain:generator=Ninja -s:a compiler.cppstd=23
 
       - name: Configure CMake
-        run: cmake --preset=conan-release
+        run: cmake --preset=conan-default
 
       - name: Generate docs
         run: cmake --build --preset=conan-release --target docs
