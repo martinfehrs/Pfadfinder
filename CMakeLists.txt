@@ -6,8 +6,8 @@ project(Pfadfinder
     LANGUAGES CXX
 )
 
-# C++23-Standard aktivieren (erforderlich für std::expected)
-set(CMAKE_CXX_STANDARD 23)
+# C++20-Standard aktivieren
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Plattform erkennen
@@ -55,7 +55,7 @@ target_sources(pfadfinder PUBLIC
 target_include_directories(pfadfinder PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 # Compiler-Features setzen
-target_compile_features(pfadfinder PUBLIC cxx_std_23)
+target_compile_features(pfadfinder PUBLIC cxx_std_20)
 
 # Testing aktivieren
 enable_testing()
@@ -101,7 +101,7 @@ set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
 
 # Create a small C++ program to filter comments from source files
 add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
-target_compile_features(filter_comments PRIVATE cxx_std_23)
+target_compile_features(filter_comments PRIVATE cxx_std_20)
 
 # Create filtered source directory for English documentation
 set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)

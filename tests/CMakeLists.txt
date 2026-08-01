@@ -15,7 +15,7 @@ target_link_libraries(test_pfadfinder PRIVATE
     Catch2::Catch2WithMain
 )
 
-# C++23 für Tests aktivieren
-target_compile_features(test_pfadfinder PRIVATE cxx_std_23)
+# C++20 für Tests aktivieren
+target_compile_features(test_pfadfinder PRIVATE cxx_std_20)
 
 
