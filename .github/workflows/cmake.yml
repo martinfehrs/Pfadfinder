@@ -78,7 +78,7 @@ jobs:
         LLVM_PREFIX=$(brew --prefix llvm@22)
         echo "CC=$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
         echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
-        echo "$(brew --prefix llvm@22)/bin" >> $GITHUB_PATH
+        echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
 
     - name: Create Conan profile
       run: conan profile detect --force
