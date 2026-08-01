@@ -65,23 +65,31 @@ jobs:
     - name: Install Conan
       run: pip install conan
 
-    - name: Create default Conan profile
-      run: conan profile detect --force
-
     - name: Install Linux dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y ninja-build cmake
 
-    - name: Install Macos depencendies
-      if: runner.os == 'Macos'
+    - name: Install macOS dependencies
+      if: runner.os == 'macOS'
       run: |
-        brew install llvm
-        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
+        brew install llvm@22
+        LLVM_PREFIX=$(brew --prefix llvm@22)
+        echo "CC=$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
+        echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
+        echo "$(brew --prefix llvm@22)/bin" >> $GITHUB_PATH
 
-    - name: Conan install
-      run: conan install . --build=missing -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -s:a compiler.cppstd=23
+    - name: Create Conan profile
+      run: conan profile detect --force
+
+    - name: Conan install (macOS)
+      if: runner.os == 'macOS'
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=23 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+
+    - name: Conan install (other)
+      if: runner.os != 'macOS'
+      run: conan install . --build=missing -s:a compiler.cppstd=23 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
