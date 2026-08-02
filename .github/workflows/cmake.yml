@@ -62,8 +62,10 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Install Conan
-      run: pip install conan
+    - name: Setup Conan
+      uses: conan-io/setup-conan@v1
+      with:
+        cache: true
 
     - name: Install Linux dependencies
       if: runner.os == 'Linux'
