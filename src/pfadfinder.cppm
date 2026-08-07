@@ -26,17 +26,7 @@ module;
 #include <optional>
 #include <utility>
 
-#include "config.hpp"
-
 export module pfadfinder;
-
-#if IS_WINDOWS
-export import :windows_backend;
-#elif IS_MACOS
-export import :macos_backend;
-#elif IS_LINUX
-export import :linux_backend;
-#endif
 
 export import :error;
 export import :system_environment;
@@ -45,21 +35,6 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-
-#if DOXYGEN
-        /**
-         * @brief Systemumgebung des aktuellen Systems (Windows, Linux, macOS).
-         * @see   windows_system_environment, macos_system_environment,
-                  linux_system_environment
-         */
-        using default_system_environment = /* Systemabhängig */;
-#elif IS_WINDOWS
-        using default_system_environment = windows_system_environment;
-#elif IS_MACOS
-        using default_system_environment = macos_system_environment;
-#elif IS_LINUX
-        using default_system_environment = linux_system_environment;
-#endif
 
     /**
      * @brief Stellt Methoden zur Bestimmung verschiedener Verzeichnisse einer Anwendung bereit.
@@ -71,11 +46,11 @@ namespace pfadfinder
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
      * 
-     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::default_system_environment.
+     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::system_environment.
      * 
      * @note Wenn kein app_name angegeben wird, wird der Dateiname der ausführbaren Datei verwendet.
      */
-    export template <typename SystemEnvironment = default_system_environment>
+    export template <typename SystemEnvironment = system_environment>
     class application_environment
     {
 

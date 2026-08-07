@@ -27,30 +27,28 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(IS_LINUX 1)
 endif()
 
-configure_file(config.hpp.in config.hpp)
-
-# Plattformspezifisches Backend-Modul auswählen
-set(SYSTEM_BACKEND_SOURCE "")
+# Plattformspezifische Implementierungsdatei auswählen
 if(IS_WINDOWS)
-    set(SYSTEM_BACKEND_SOURCE src/windows_backend.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/windows_system_environment.cpp)
 elseif(IS_MACOS)
-    set(SYSTEM_BACKEND_SOURCE src/macos_backend.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/macos_system_environment.cpp)
 elseif(IS_LINUX)
-    set(SYSTEM_BACKEND_SOURCE src/linux_backend.cppm)
+    set(SYSTEM_BACKEND_SOURCE src/linux_system_environment.cpp)
 else()
     message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
 
 # Statische Bibliothek mit Modul-Dateisatz erstellen
 add_library(pfadfinder STATIC)
-# Alle Moduldateien in einem FILE_SET
+# Moduldateien in FILE_SET CXX_MODULES
 target_sources(pfadfinder PUBLIC
     FILE_SET CXX_MODULES
         FILES src/pfadfinder.cppm
-                src/error.cppm
-                src/system_environment.cppm
-                ${SYSTEM_BACKEND_SOURCE}
+              src/error.cppm
+              src/system_environment.cppm
 )
+# Plattformspezifische Implementierung als normale Quelle
+target_sources(pfadfinder PRIVATE src/pfadfinder.cpp ${SYSTEM_BACKEND_SOURCE})
 
 target_include_directories(pfadfinder PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -64,7 +62,6 @@ enable_testing()
 add_subdirectory(tests)
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
-find_package(Doxygen 1.17 REQUIRED)
 
 # Fetch doxygen-awesome-css theme
 include(FetchContent)
