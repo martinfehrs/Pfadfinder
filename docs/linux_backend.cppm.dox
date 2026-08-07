@@ -13,15 +13,10 @@
  */
 
 /**
- * @class pfadfinder::readlink_failed
- * @brief Exception thrown when the readlink() call fails.
- */
-
-/**
  * @fn fs::path pfadfinder::linux_system_environment::executable_path() const
  * @brief Returns the full path to the executable file.
  * @return fs::path The absolute path to the executable file.
- * @throws readlink_failed When the readlink call fails.
+ * @throws indeterminable_exe_path When the path to the executable cannot be determined.
  */
 
 /**
@@ -46,7 +41,7 @@
  * @param exe_dir The directory of the executable file (not used on Linux).
  * @param app_name The name of the application.
  * @return fs::path The user data directory (~/.local/share/&lt;appname&gt;).
- * @throws home_not_set When the HOME environment variable is not set.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
@@ -55,7 +50,7 @@
  * @param exe_dir The directory of the executable file (not used on Linux).
  * @param app_name The name of the application.
  * @return fs::path The user-specific configuration directory (~/.config/&lt;appname&gt;).
- * @throws home_not_set When the HOME environment variable is not set.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
@@ -64,7 +59,7 @@
  * @param exe_dir The directory of the executable file (not used on Linux).
  * @param app_name The name of the application.
  * @return fs::path The user-specific cache directory (~/.cache/&lt;appname&gt;).
- * @throws home_not_set When the HOME environment variable is not set.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
@@ -73,7 +68,7 @@
  * @param exe_dir The directory of the executable file (not used on Linux).
  * @param app_name The name of the application.
  * @return fs::path The user-specific log directory (~/.local/state/&lt;appname&gt;/log).
- * @throws home_not_set When the HOME environment variable is not set.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
@@ -87,7 +82,7 @@
  * @fn fs::path pfadfinder::linux_system_environment::user_dir() const
  * @brief Returns the user's home directory.
  * @return fs::path The user's home directory.
- * @throws home_not_set When the HOME environment variable is not set.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
