@@ -22,26 +22,6 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     /**
-     * @brief Ausnahme, die geworfen wird, wenn _NSGetExecutablePath() fehlschlägt.
-     */
-    export struct get_executable_path_failed : error
-    {
-        get_executable_path_failed()
-            : error{ "_NSGetExecutablePath failed" }
-        {}
-    };
-
-    /**
-     * @brief Ausnahme, die geworfen wird, wenn realpath() fehlschlägt.
-     */
-    export struct realpath_failed : error
-    {
-        realpath_failed()
-            : error{ "realpath failed" }
-        {}
-    };
-
-    /**
      * @brief Enthält plattformspezifische Methoden für macOS zur Pfadermittlung.
      * 
      * Diese Klasse implementiert die system_environment-Schnittstelle
@@ -54,8 +34,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
          * @return fs::path Der absolute Pfad zur ausführbaren Datei.
-         * @throws get_executable_path_failed Wenn _NSGetExecutablePath fehlschlägt.
-         * @throws realpath_failed Wenn realpath fehlschlägt.
+         * @throws indeterminable_exe_path Wenn der Pfad zur ausführbaren Datei nicht ermittelt werden kann.
          */
         [[nodiscard]] fs::path executable_path() const override
         {
@@ -63,12 +42,12 @@ namespace pfadfinder
             uint32_t size = sizeof(path);
 
             if (_NSGetExecutablePath(path, &size) != 0)
-                throw get_executable_path_failed{};
+                throw indeterminable_exe_path{};
             
             char real_path[PATH_MAX]{};
 
             if (realpath(path, real_path) == nullptr)
-                throw realpath_failed{};
+                throw indeterminable_exe_path{};
             
             return fs::path{ real_path };
         }
@@ -105,7 +84,7 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-Datenverzeichnis.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_data_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -114,7 +93,7 @@ namespace pfadfinder
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
                 return fs::path{ home } / "Library" / "Application Support" / app_name;
@@ -127,7 +106,7 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_config_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -136,7 +115,7 @@ namespace pfadfinder
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
                 return fs::path{ home } / "Library" / "Preferences" / app_name;
@@ -149,7 +128,7 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_cache_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -158,7 +137,7 @@ namespace pfadfinder
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
                 return fs::path{ home } / "Library" / "Caches" / app_name;
@@ -171,7 +150,7 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_log_dir(const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -180,7 +159,7 @@ namespace pfadfinder
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             if (exe_dir_str.find("Contents/MacOS") != std::string::npos)
                 return fs::path{ home } / "Library" / "Logs" / app_name;
@@ -201,14 +180,14 @@ namespace pfadfinder
         /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
          * @return fs::path Das Home-Verzeichnis.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_dir() const override
         {
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             return fs::path{ home };
         }

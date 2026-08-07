@@ -94,7 +94,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
          * @return fs::path Der vollständige Pfad zur ausführbaren Datei.
-         * @throws Ausnahmen je nach Plattform (z.B. readlink_failed, get_module_file_name_failed)
+         * @throws indeterminable_exe_path Wenn der Pfad zur ausführbaren Datei nicht ermittelt werden kann.
          */
         [[nodiscard]] fs::path executable_path() const
         {

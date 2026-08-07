@@ -22,16 +22,6 @@ namespace fs = std::filesystem;
 namespace pfadfinder
 {
     /**
-     * @brief Ausnahme, die geworfen wird, wenn der Aufruf von readlink() fehlschlägt.
-     */
-    export struct readlink_failed : error
-    {
-        readlink_failed()
-            : error{ "readlink failed" }
-        {}
-    };
-
-    /**
      * @brief Enthält plattformspezifische Methoden für Linux zur Pfadermittlung.
      * 
      * Diese Klasse implementiert die system_environment-Schnittstelle
@@ -42,7 +32,7 @@ namespace pfadfinder
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
          * @return fs::path Der absolute Pfad zur ausführbaren Datei.
-         * @throws readlink_failed Wenn der readlink-Aufruf fehlschlägt.
+         * @throws indeterminable_exe_path Wenn der Pfad zur ausführbaren Datei nicht ermittelt werden kann.
          */
         [[nodiscard]] fs::path executable_path() const override
         {
@@ -50,7 +40,7 @@ namespace pfadfinder
             ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
  
             if (len == -1)
-                throw readlink_failed{};
+                throw indeterminable_exe_path{};
  
             path[len] = '\0';
 
@@ -86,14 +76,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-Datenverzeichnis (~/.local/share/&lt;appname&gt;).
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
  
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
  
             return fs::path{ home } / ".local" / "share" / app_name;
         }
@@ -103,14 +93,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis (~/.config/&lt;appname&gt;).
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             return fs::path{ home } / ".config" / app_name;
         }
@@ -120,14 +110,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis (~/.cache/&lt;appname&gt;).
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             return fs::path{ home } / ".cache" / app_name;
         }
@@ -137,14 +127,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Linux).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis (~/.local/state/&lt;appname&gt;/log).
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             return fs::path{ home } / ".local" / "state" / app_name / "log";
         }
@@ -162,14 +152,14 @@ namespace pfadfinder
         /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
          * @return fs::path Das Home-Verzeichnis des Benutzers.
-         * @throws home_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_dir() const override
         {
             const char* home = std::getenv("HOME");
 
             if (!home)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "HOME" };
 
             return fs::path{ home };
         }

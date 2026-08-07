@@ -23,46 +23,6 @@ namespace pfadfinder
 {
 
     /**
-     * @brief Ausnahme, die geworfen wird, wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
-     */
-    export struct appdata_not_set : error
-    {
-        appdata_not_set()
-            : error{ "APPDATA environment variable not set" }
-        {}
-    };
-
-    /**
-     * @brief Ausnahme, die geworfen wird, wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
-     */
-    export struct localappdata_not_set : error
-    {
-        localappdata_not_set()
-            : error{ "LOCALAPPDATA environment variable not set" }
-        {}
-    };
-
-    /**
-     * @brief Ausnahme, die geworfen wird, wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
-     */
-    export struct allusersappdata_not_set : error
-    {
-        allusersappdata_not_set()
-            : error{ "ALLUSERSAPPDATA environment variable not set" }
-        {}
-    };
-
-    /**
-     * @brief Ausnahme, die geworfen wird, wenn GetModuleFileNameW() fehlschlägt.
-     */
-    export struct get_module_file_name_failed : error
-    {
-        get_module_file_name_failed()
-            : error{ "GetModuleFileNameW failed" }
-        {}
-    };
-
-    /**
      * @brief Enthält plattformspezifische Methoden für Windows zur Pfadermittlung.
      * 
      * Diese Klasse implementiert die system_environment-Schnittstelle
@@ -73,14 +33,14 @@ namespace pfadfinder
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
          * @return fs::path Der absolute Pfad zur ausführbaren Datei.
-         * @throws get_module_file_name_failed Wenn GetModuleFileNameW fehlschlägt.
+         * @throws indeterminable_exe_path Wenn der Pfad zur ausführbaren Datei nicht ermittelt werden kann.
          */
         [[nodiscard]] fs::path executable_path() const override
         {
             wchar_t path[MAX_PATH]{};
 
             if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
-                throw get_module_file_name_failed{};
+                throw indeterminable_exe_path{};
 
             return fs::path{ path };
         }
@@ -102,7 +62,7 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Datenverzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;).
-         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
@@ -110,7 +70,7 @@ namespace pfadfinder
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
 
             if (!allusersappdata)
-                throw allusersappdata_not_set{};
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
 
             return fs::path{ allusersappdata } / app_name;
         }
@@ -120,14 +80,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-Datenverzeichnis (%APPDATA%/&lt;appname&gt;).
-         * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* appdata = std::getenv("APPDATA");
 
             if (!appdata)
-                throw appdata_not_set{};
+                throw environment_variable_not_set{ "APPDATA" };
 
             return fs::path{ appdata } / app_name;
         }
@@ -137,14 +97,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis (%APPDATA%/&lt;appname&gt;).
-         * @throws appdata_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die APPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* appdata = std::getenv("APPDATA");
 
             if (!appdata)
-                throw appdata_not_set{};
+                throw environment_variable_not_set{ "APPDATA" };
 
             return fs::path{ appdata } / app_name;
         }
@@ -154,14 +114,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
-         * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 
             if (!localappdata)
-                throw localappdata_not_set{};
+                throw environment_variable_not_set{ "LOCALAPPDATA" };
 
             return fs::path{ localappdata } / app_name / "Cache";
         }
@@ -171,14 +131,14 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei (nicht verwendet unter Windows).
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
-         * @throws localappdata_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die LOCALAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const override
         {
             const char* localappdata = std::getenv("LOCALAPPDATA");
 
             if (!localappdata)
-                throw localappdata_not_set{};
+                throw environment_variable_not_set{ "LOCALAPPDATA" };
 
             return fs::path{ localappdata } / app_name / "Logs";
         }
@@ -187,14 +147,14 @@ namespace pfadfinder
          * @brief Gibt das temporäre Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das temporäre Verzeichnis (%TEMP%/&lt;appname&gt;).
-         * @throws home_not_set Wenn die TEMP-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die TEMP-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
         {
             const char* temp = std::getenv("TEMP");
 
             if (!temp)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "TEMP" };
 
             return fs::path{ temp } / app_name;
         }
@@ -202,14 +162,14 @@ namespace pfadfinder
         /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
          * @return fs::path Das Home-Verzeichnis des Benutzers (%USERPROFILE%).
-         * @throws home_not_set Wenn die USERPROFILE-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die USERPROFILE-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path user_dir() const override
         {
             const char* userprofile = std::getenv("USERPROFILE");
 
             if (!userprofile)
-                throw home_not_set{};
+                throw environment_variable_not_set{ "USERPROFILE" };
 
             return fs::path{ userprofile };
         }
@@ -218,14 +178,14 @@ namespace pfadfinder
          * @brief Gibt das geteilte Cache-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Cache-Verzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;/Cache).
-         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
         {
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
 
             if (!allusersappdata)
-                throw allusersappdata_not_set{};
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
 
             return fs::path{ allusersappdata } / app_name / "Cache";
         }
@@ -234,14 +194,14 @@ namespace pfadfinder
          * @brief Gibt das geteilte Log-Verzeichnis zurück.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Log-Verzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;/Logs).
-         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
         {
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
 
             if (!allusersappdata)
-                throw allusersappdata_not_set{};
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
 
             return fs::path{ allusersappdata } / app_name / "Logs";
         }
@@ -250,14 +210,14 @@ namespace pfadfinder
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Konfigurationsverzeichnis (%ALLUSERSAPPDATA%/&lt;appname&gt;).
-         * @throws allusersappdata_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
+         * @throws environment_variable_not_set Wenn die ALLUSERSAPPDATA-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override
         {
             const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
 
             if (!allusersappdata)
-                throw allusersappdata_not_set{};
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
 
             return fs::path{ allusersappdata } / app_name;
         }
