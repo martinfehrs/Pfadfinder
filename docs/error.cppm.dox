@@ -23,6 +23,11 @@
  */
 
 /**
- * @class pfadfinder::home_not_set
- * @brief Exception thrown when the home directory is not set.
+ * @class pfadfinder::indeterminable_exe_path
+ * @brief Exception thrown when the path to the executable cannot be determined.
+ */
+
+/**
+ * @class pfadfinder::environment_variable_not_set
+ * @brief Exception thrown when an environment variable is not set.
  */
