@@ -48,7 +48,7 @@ target_sources(pfadfinder PUBLIC
               src/system_environment.cppm
 )
 # Plattformspezifische Implementierung als normale Quelle
-target_sources(pfadfinder PRIVATE src/pfadfinder.cpp ${SYSTEM_BACKEND_SOURCE})
+target_sources(pfadfinder PRIVATE ${SYSTEM_BACKEND_SOURCE})
 
 target_include_directories(pfadfinder PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 

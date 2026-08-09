@@ -12,7 +12,7 @@ module;
 #include <climits>
 #include <string>
 
-module pfadfinder:system_environment;
+module pfadfinder;
 
 namespace fs = std::filesystem;
 
