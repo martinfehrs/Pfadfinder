@@ -62,6 +62,7 @@ enable_testing()
 add_subdirectory(tests)
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
+find_package(Doxygen 1.17 REQUIRED)
 
 # Fetch doxygen-awesome-css theme
 include(FetchContent)
