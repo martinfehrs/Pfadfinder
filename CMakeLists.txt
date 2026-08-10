@@ -31,8 +31,6 @@ else()
     message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-target_include_directories(pfadfinder PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
 # Compiler-Features setzen
 target_compile_features(pfadfinder PUBLIC cxx_std_20)
 
