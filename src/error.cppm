@@ -24,7 +24,7 @@ namespace pfadfinder
     {
         explicit error(const char* message) : std::runtime_error(message) {}
 
-        explicit error(const std::string& message) : std::runtime_error(message.c_str()) {}
+        explicit error(const std::string& message) : std::runtime_error(message) {}
     };
 
     /**
