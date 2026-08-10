@@ -10,36 +10,9 @@ project(Pfadfinder
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Plattform erkennen
-set(IS_WINDOWS 0)
-set(IS_MACOS 0)
-set(IS_LINUX 0)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(IS_WINDOWS 1)
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(IS_MACOS 1)
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(IS_LINUX 1)
-endif()
-
-# Plattformspezifische Implementierungsdatei auswählen
-if(IS_WINDOWS)
-    set(SYSTEM_BACKEND_SOURCE src/windows_system_environment.cpp)
-elseif(IS_MACOS)
-    set(SYSTEM_BACKEND_SOURCE src/macos_system_environment.cpp)
-elseif(IS_LINUX)
-    set(SYSTEM_BACKEND_SOURCE src/linux_system_environment.cpp)
-else()
-    message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
-endif()
-
 # Statische Bibliothek mit Modul-Dateisatz erstellen
 add_library(pfadfinder STATIC)
+
 # Moduldateien in FILE_SET CXX_MODULES
 target_sources(pfadfinder PUBLIC
     FILE_SET CXX_MODULES
@@ -47,8 +20,16 @@ target_sources(pfadfinder PUBLIC
               src/error.cppm
               src/system_environment.cppm
 )
-# Plattformspezifische Implementierung als normale Quelle
-target_sources(pfadfinder PRIVATE ${SYSTEM_BACKEND_SOURCE})
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_sources(pfadfinder PRIVATE src/windows_system_environment.cpp)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_sources(pfadfinder PRIVATE src/macos_system_environment.cpp)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_sources(pfadfinder PRIVATE src/linux_system_environment.cpp)
+else()
+    message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+endif()
 
 target_include_directories(pfadfinder PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
