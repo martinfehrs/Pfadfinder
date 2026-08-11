@@ -81,14 +81,15 @@ jobs:
     - name: Install
       run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix install --config Release
 
-    - name: Create package with CPack
+    - name: Create package with CPack (Windows)
+      if: runner.os == 'Windows'
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G ZIP
-        else
-          cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G TGZ
-        fi
+      run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G ZIP
+
+    - name: Create package with CPack (Unix)
+      if: runner.os != 'Windows'
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G TGZ
 
     - name: Publish Dev Release
       uses: softprops/action-gh-release@v2
