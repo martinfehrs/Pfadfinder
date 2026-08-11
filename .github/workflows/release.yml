@@ -83,7 +83,12 @@ jobs:
 
     - name: Create package with CPack
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}"
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G ZIP
+        else
+          cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G TGZ
+        fi
 
     - name: Publish Dev Release
       uses: softprops/action-gh-release@v2
