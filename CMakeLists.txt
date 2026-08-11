@@ -40,6 +40,45 @@ enable_testing()
 # Test-Verzeichnis hinzufügen
 add_subdirectory(tests)
 
+# ============================================================================
+# INSTALLATION
+# ============================================================================
+include(GNUInstallDirs)
+
+# CMake Config + Module installieren (für find_package)
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pfadfinderConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/pfadfinderConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/pfadfinder
+)
+
+# Bibliothek installieren
+install(TARGETS pfadfinder
+    EXPORT pfadfinderTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/pfadfinder
+)
+
+# Export-Targets installieren
+install(EXPORT pfadfinderTargets
+    FILE pfadfinderConfig.cmake
+    NAMESPACE pfadfinder::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/pfadfinder
+)
+
+# pkg-config Datei installieren (für manuelle Nutzung)
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pfadfinder.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
+    @ONLY
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
+
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
 find_package(Doxygen 1.17 REQUIRED)
 

@@ -1,0 +1,27 @@
+@PACKAGE_INIT@
+
+# Pfadfinder Configuration
+# ------------------------
+
+# Modulpfad für C++20 Module
+get_filename_component(_pfadfinder_config_dir "${CMAKE_CURRENT_LIST_DIR}" ABSOLUTE)
+get_filename_component(_pfadfinder_moduledir "${_pfadfinder_config_dir}/src" ABSOLUTE)
+
+# C++ Module Path für find_package() Nutzer
+if(NOT _pfadfinder_moduledir IN_LIST CMAKE_CXX_MODULE_PATH)
+    list(APPEND CMAKE_CXX_MODULE_PATH "${_pfadfinder_moduledir}")
+    set(CMAKE_CXX_MODULE_PATH ${CMAKE_CXX_MODULE_PATH} CACHE PATH "Pfadfinder module path")
+endif()
+
+# Targets importieren
+include("${CMAKE_CURRENT_LIST_DIR}/pfadfinderTargets.cmake")
+
+# Variablen setzen
+set(pfadfinder_VERSION @PROJECT_VERSION@)
+set(pfadfinder_FOUND TRUE)
+set(pfadfinder_DIR "${_pfadfinder_config_dir}")
+
+# Kompatibilität für ältere CMake-Versionen
+if(NOT TARGET pfadfinder AND NOT Pfadfinder_FOUND)
+    include("${CMAKE_CURRENT_LIST_DIR}/pfadfinderTargets.cmake")
+endif()

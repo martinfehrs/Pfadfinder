@@ -1,0 +1,9 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+moduledir=${prefix}/@CMAKE_INSTALL_LIBDIR@/cmake/pfadfinder/src
+
+Name: pfadfinder
+Description: Cross-platform library for determining application directories
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lpfadfinder
+Cflags: -I${moduledir} -fmodules-ts
