@@ -74,3 +74,19 @@ jobs:
 
     - name: Test
       run: ctest --preset=conan-${{ matrix.build_type }} -V
+
+    - name: Install
+      run: cmake --install . --prefix ./install --preset=conan-${{ matrix.build_type }}
+
+    - name: Create package with CPack
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}"
+
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pfadfinder-${{ runner.os }}-${{ github.ref_name }}
+        path: ${{ steps.strings.outputs.build-output-dir }}/*
+        compression-level: 0
+
+

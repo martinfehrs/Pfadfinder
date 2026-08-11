@@ -6,6 +6,10 @@ project(Pfadfinder
     LANGUAGES CXX
 )
 
+# ============================================================================
+# KOMPILIERUNG
+# ============================================================================
+
 # C++20-Standard aktivieren
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,6 +37,10 @@ endif()
 
 # Compiler-Features setzen
 target_compile_features(pfadfinder PUBLIC cxx_std_20)
+
+# ============================================================================
+# TESTS
+# ============================================================================
 
 # Testing aktivieren
 enable_testing()
@@ -68,16 +76,22 @@ install(EXPORT pfadfinderTargets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/pfadfinder
 )
 
-# pkg-config Datei installieren (für manuelle Nutzung)
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pfadfinder.pc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
-    @ONLY
-)
+# pkg-config Datei installieren (nur für Linux/macOS)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pfadfinder.pc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
+        @ONLY
+    )
+    
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+    )
+endif()
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pfadfinder.pc
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-)
+# ============================================================================
+# DOKUMENTATIONSGENERIERUNG
+# ============================================================================
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
 find_package(Doxygen 1.17 REQUIRED)
@@ -164,3 +178,8 @@ add_custom_target(docs
     DEPENDS docs-de docs-en
     COMMENT "Generating API documentation in both German and English"
 )
+
+# ============================================================================
+# PACKETIERUNG
+# ============================================================================
+include(CPack)
