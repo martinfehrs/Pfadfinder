@@ -76,7 +76,7 @@ jobs:
       run: ctest --preset=conan-${{ matrix.build_type }} -V
 
     - name: Install
-      run: cmake --install . --prefix ./install
+      run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix install
 
     - name: Create package with CPack
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
