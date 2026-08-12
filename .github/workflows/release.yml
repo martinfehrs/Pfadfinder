@@ -95,7 +95,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.strings.outputs.build-output-dir }}/pfadfinder-dev-*
-        tag_name: main
+        tag_name: dev-${{ github.ref_name }}
         name: Development Builds
         prerelease: true
         make_latest: false
