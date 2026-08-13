@@ -80,9 +80,9 @@
  * @fn fs::path pfadfinder::application_environment::shared_data_dir(const fs::path&) const
  * @brief Returns the shared data directory of the application.
  * 
- * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;.
- * On Linux, this corresponds to /var/lib/&lt;appname&gt;.
- * On macOS, this corresponds to /Library/Application Support/&lt;appname&gt;.
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>.
+ * On Linux, this corresponds to /var/lib/\<appname\>.
+ * On macOS, this corresponds to /Library/Application Support/\<appname\>.
  * 
  * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The shared data directory of the application (base or base + rel_path).
@@ -93,9 +93,9 @@
  * @fn fs::path pfadfinder::application_environment::shared_cache_dir(const fs::path&, bool) const
  * @brief Returns the shared cache directory of the application.
  * 
- * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;/Cache.
- * On Linux, this corresponds to /var/cache/&lt;appname&gt;.
- * On macOS, this corresponds to /Library/Caches/&lt;appname&gt;.
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>/Cache.
+ * On Linux, this corresponds to /var/cache/\<appname\>.
+ * On macOS, this corresponds to /Library/Caches/\<appname\>.
  * 
  * @param rel_path Relative path to the base directory (optional).
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -107,9 +107,9 @@
  * @fn fs::path pfadfinder::application_environment::shared_log_dir(const fs::path&, bool) const
  * @brief Returns the shared log directory of the application.
  * 
- * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;/Logs.
- * On Linux, this corresponds to /var/log/&lt;appname&gt;.
- * On macOS, this corresponds to /Library/Logs/&lt;appname&gt;.
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>/Logs.
+ * On Linux, this corresponds to /var/log/\<appname\>.
+ * On macOS, this corresponds to /Library/Logs/\<appname\>.
  * 
  * @param rel_path Relative path to the base directory (optional).
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -124,9 +124,9 @@
  * @fn fs::path pfadfinder::application_environment::shared_config_dir(const fs::path&) const
  * @brief Returns the shared configuration directory of the application.
  * 
- * On Windows, this corresponds to %ALLUSERSAPPDATA%/&lt;appname&gt;.
- * On Linux, this corresponds to /etc/&lt;appname&gt;.
- * On macOS, this corresponds to /Library/Preferences/&lt;appname&gt;.
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>.
+ * On Linux, this corresponds to /etc/\<appname\>.
+ * On macOS, this corresponds to /Library/Preferences/\<appname\>.
  * 
  * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The shared configuration directory of the application (base + rel_path).
@@ -140,10 +140,10 @@
  * @fn fs::path pfadfinder::application_environment::user_data_dir(bool) const
  * @brief Returns the user-specific data directory of the application.
  * 
- * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;.
- * On Linux, this corresponds to ~/.local/share/&lt;appname&gt;.
- * On macOS (bundled), this corresponds to ~/Library/Application Support/&lt;appname&gt;,
- * otherwise ~/.local/share/&lt;appname&gt;.
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>.
+ * On Linux, this corresponds to ~/.local/share/\<appname\>.
+ * On macOS (bundled), this corresponds to ~/Library/Application Support/\<appname\>,
+ * otherwise ~/.local/share/\<appname\>.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user data directory of the application.
@@ -154,10 +154,10 @@
  * @fn fs::path pfadfinder::application_environment::user_data_dir(const fs::path&, bool) const
  * @brief Returns the user data directory with optional subpath.
  * 
- * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;/&lt;rel_path&gt;.
- * On Linux, this corresponds to ~/.local/share/&lt;appname&gt;/&lt;rel_path&gt;.
- * On macOS (bundled), this corresponds to ~/Library/Application Support/&lt;appname&gt;/&lt;rel_path&gt;,
- * otherwise ~/.local/share/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to ~/.local/share/\<appname\>/\<rel_path\>.
+ * On macOS (bundled), this corresponds to ~/Library/Application Support/\<appname\>/\<rel_path\>,
+ * otherwise ~/.local/share/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -169,10 +169,10 @@
  * @fn fs::path pfadfinder::application_environment::user_config_dir(bool) const
  * @brief Returns the user-specific configuration directory of the application.
  * 
- * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;.
- * On Linux, this corresponds to ~/.config/&lt;appname&gt; (XDG standard).
- * On macOS (bundled), this corresponds to ~/Library/Preferences/&lt;appname&gt;,
- * otherwise ~/.config/&lt;appname&gt;.
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>.
+ * On Linux, this corresponds to ~/.config/\<appname\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/\<appname\>,
+ * otherwise ~/.config/\<appname\>.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific configuration directory of the application.
@@ -183,10 +183,10 @@
  * @fn fs::path pfadfinder::application_environment::user_config_dir(const fs::path&, bool) const
  * @brief Returns the user-specific configuration directory with optional subpath.
  * 
- * On Windows, this corresponds to %APPDATA%/&lt;appname&gt;/&lt;rel_path&gt;.
- * On Linux, this corresponds to ~/.config/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
- * On macOS (bundled), this corresponds to ~/Library/Preferences/&lt;appname&gt;/&lt;rel_path&gt;,
- * otherwise ~/.config/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to ~/.config/\<appname\>/\<rel_path\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/\<appname\>/\<rel_path\>,
+ * otherwise ~/.config/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -198,10 +198,10 @@
  * @fn fs::path pfadfinder::application_environment::user_cache_dir(bool) const
  * @brief Returns the user-specific cache directory of the application.
  * 
- * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache.
- * On Linux, this corresponds to ~/.cache/&lt;appname&gt; (XDG standard).
- * On macOS (bundled), this corresponds to ~/Library/Caches/&lt;appname&gt;,
- * otherwise ~/.cache/&lt;appname&gt;.
+ * On Windows, this corresponds to \%LOCALAPPDATA\%/\<appname\>/Cache.
+ * On Linux, this corresponds to ~/.cache/\<appname\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Caches/\<appname\>,
+ * otherwise ~/.cache/\<appname\>.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific cache directory of the application.
@@ -212,10 +212,10 @@
  * @fn fs::path pfadfinder::application_environment::user_cache_dir(const fs::path&, bool) const
  * @brief Returns the user-specific cache directory with optional subpath.
  * 
- * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Cache/&lt;rel_path&gt;.
- * On Linux, this corresponds to ~/.cache/&lt;appname&gt;/&lt;rel_path&gt; (XDG standard).
- * On macOS (bundled), this corresponds to ~/Library/Caches/&lt;appname&gt;/&lt;rel_path&gt;,
- * otherwise ~/.cache/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Windows, this corresponds to \%LOCALAPPDATA\%/\<appname\>/Cache/\<rel_path\>.
+ * On Linux, this corresponds to ~/.cache/\<appname\>/\<rel_path\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Caches/\<appname\>/\<rel_path\>,
+ * otherwise ~/.cache/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -227,10 +227,10 @@
  * @fn fs::path pfadfinder::application_environment::user_log_dir(bool) const
  * @brief Returns the user-specific log directory of the application.
  * 
- * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs.
- * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log (XDG Base Directory Specification).
- * On macOS (Bundle), this corresponds to ~/Library/Logs/&lt;appname&gt;.
- * On macOS (CLI), this corresponds to ~/.local/state/&lt;appname&gt;/log.
+ * On Windows, this corresponds to \%LOCALAPPDATA\%/\<appname\>/Logs.
+ * On Linux, this corresponds to ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+ * On macOS (Bundle), this corresponds to ~/Library/Logs/\<appname\>.
+ * On macOS (CLI), this corresponds to ~/.local/state/\<appname\>/log.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific log directory of the application.
@@ -241,10 +241,10 @@
  * @fn fs::path pfadfinder::application_environment::user_log_dir(const fs::path&, bool) const
  * @brief Returns the user-specific log directory with optional subpath.
  * 
- * On Windows, this corresponds to %LOCALAPPDATA%/&lt;appname&gt;/Logs/&lt;rel_path&gt;.
- * On Linux, this corresponds to ~/.local/state/&lt;appname&gt;/log/&lt;rel_path&gt; (XDG Base Directory Specification).
- * On macOS (Bundle), this corresponds to ~/Library/Logs/&lt;appname&gt;/&lt;rel_path&gt;.
- * On macOS (CLI), this corresponds to ~/.local/state/&lt;appname&gt;/log/&lt;rel_path&gt;.
+ * On Windows, this corresponds to \%LOCALAPPDATA\%/\<appname\>/Logs/\<rel_path\>.
+ * On Linux, this corresponds to ~/.local/state/\<appname\>/log/\<rel_path\> (XDG Base Directory Specification).
+ * On macOS (Bundle), this corresponds to ~/Library/Logs/\<appname\>/\<rel_path\>.
+ * On macOS (CLI), this corresponds to ~/.local/state/\<appname\>/log/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -256,9 +256,9 @@
  * @fn fs::path pfadfinder::application_environment::temp_dir(bool) const
  * @brief Returns the temporary directory of the application.
  * 
- * On Windows, this corresponds to %TEMP%/&lt;appname&gt;.
- * On Linux, this corresponds to /tmp/&lt;appname&gt; or the system-wide temp directory.
- * On macOS, this corresponds to /tmp/&lt;appname&gt; or ~/Library/Caches/TemporaryItems/&lt;appname&gt;.
+ * On Windows, this corresponds to \%TEMP\%/\<appname\>.
+ * On Linux, this corresponds to /tmp/\<appname\> or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/\<appname\> or ~/Library/Caches/TemporaryItems/\<appname\>.
  * 
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The temporary directory of the application.
@@ -269,9 +269,9 @@
  * @fn fs::path pfadfinder::application_environment::temp_dir(const fs::path&, bool) const
  * @brief Returns the temporary directory with optional subpath.
  * 
- * On Windows, this corresponds to %TEMP%/&lt;appname&gt;/&lt;rel_path&gt;.
- * On Linux, this corresponds to /tmp/&lt;appname&gt;/&lt;rel_path&gt; or the system-wide temp directory.
- * On macOS, this corresponds to /tmp/&lt;appname&gt;/&lt;rel_path&gt; or ~/Library/Caches/TemporaryItems/&lt;appname&gt;/&lt;rel_path&gt;.
+ * On Windows, this corresponds to \%TEMP\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to /tmp/\<appname\>/\<rel_path\> or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/\<appname\>/\<rel_path\> or ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
@@ -283,7 +283,7 @@
  * @fn fs::path pfadfinder::application_environment::user_dir() const
  * @brief Returns the user's home directory.
  * 
- * On Windows, this corresponds to %USERPROFILE%.
+ * On Windows, this corresponds to \%USERPROFILE\%.
  * On Linux and macOS, this corresponds to $HOME.
  * 
  * @return fs::path The user's home directory.

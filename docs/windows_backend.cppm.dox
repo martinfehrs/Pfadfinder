@@ -32,7 +32,7 @@
  * @brief Returns the shared data directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The shared data directory (%ALLUSERSAPPDATA%/&lt;appname&gt;).
+ * @return fs::path The shared data directory (\%ALLUSERSAPPDATA\%/\<appname\>).
  * @throws environment_variable_not_set When the ALLUSERSAPPDATA environment variable is not set.
  */
 
@@ -41,7 +41,7 @@
  * @brief Returns the user data directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The user data directory (%APPDATA%/&lt;appname&gt;).
+ * @return fs::path The user data directory (\%APPDATA\%/\<appname\>).
  * @throws environment_variable_not_set When the APPDATA environment variable is not set.
  */
 
@@ -50,7 +50,7 @@
  * @brief Returns the user-specific configuration directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The user-specific configuration directory (%APPDATA%/&lt;appname&gt;).
+ * @return fs::path The user-specific configuration directory (\%APPDATA\%/\<appname\>).
  * @throws environment_variable_not_set When the APPDATA environment variable is not set.
  */
 
@@ -59,7 +59,7 @@
  * @brief Returns the user-specific cache directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The user-specific cache directory (%LOCALAPPDATA%/&lt;appname&gt;/Cache).
+ * @return fs::path The user-specific cache directory (\%LOCALAPPDATA\%/\<appname\>/Cache).
  * @throws environment_variable_not_set When the LOCALAPPDATA environment variable is not set.
  */
 
@@ -68,7 +68,7 @@
  * @brief Returns the user-specific log directory.
  * @param exe_dir The directory of the executable file (not used on Windows).
  * @param app_name The name of the application.
- * @return fs::path The user-specific log directory (%LOCALAPPDATA%/&lt;appname&gt;/Logs).
+ * @return fs::path The user-specific log directory (\%LOCALAPPDATA\%/\<appname\>/Logs).
  * @throws environment_variable_not_set When the LOCALAPPDATA environment variable is not set.
  */
 
@@ -76,14 +76,14 @@
  * @fn fs::path pfadfinder::windows_system_environment::temp_dir(const std::string&) const
  * @brief Returns the temporary directory.
  * @param app_name The name of the application.
- * @return fs::path The temporary directory (%TEMP%/&lt;appname&gt;).
+ * @return fs::path The temporary directory (\%TEMP\%/\<appname\>).
  * @throws environment_variable_not_set When the TEMP environment variable is not set.
  */
 
 /**
  * @fn fs::path pfadfinder::windows_system_environment::user_dir() const
  * @brief Returns the user's home directory.
- * @return fs::path The user's home directory (%USERPROFILE%).
+ * @return fs::path The user's home directory (\%USERPROFILE\%).
  * @throws environment_variable_not_set When the USERPROFILE environment variable is not set.
  */
 
@@ -91,7 +91,7 @@
  * @fn fs::path pfadfinder::windows_system_environment::shared_cache_dir(const std::string&) const
  * @brief Returns the shared cache directory.
  * @param app_name The name of the application.
- * @return fs::path The shared cache directory (%ALLUSERSAPPDATA%/&lt;appname&gt;/Cache).
+ * @return fs::path The shared cache directory (\%ALLUSERSAPPDATA\%/\<appname\>/Cache).
  * @throws environment_variable_not_set When the ALLUSERSAPPDATA environment variable is not set.
  */
 
@@ -99,7 +99,7 @@
  * @fn fs::path pfadfinder::windows_system_environment::shared_log_dir(const std::string&) const
  * @brief Returns the shared log directory.
  * @param app_name The name of the application.
- * @return fs::path The shared log directory (%ALLUSERSAPPDATA%/&lt;appname&gt;/Logs).
+ * @return fs::path The shared log directory (\%ALLUSERSAPPDATA\%/\<appname\>/Logs).
  * @throws environment_variable_not_set When the ALLUSERSAPPDATA environment variable is not set.
  */
 
@@ -107,6 +107,6 @@
  * @fn fs::path pfadfinder::windows_system_environment::shared_config_dir(const std::string&) const
  * @brief Returns the shared configuration directory.
  * @param app_name The name of the application.
- * @return fs::path The shared configuration directory (%ALLUSERSAPPDATA%/&lt;appname&gt;).
+ * @return fs::path The shared configuration directory (\%ALLUSERSAPPDATA\%/\<appname\>).
  * @throws environment_variable_not_set When the ALLUSERSAPPDATA environment variable is not set.
  */

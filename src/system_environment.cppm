@@ -40,7 +40,7 @@ namespace pfadfinder
         /**
          * @brief Gibt das statische Datenverzeichnis zurück.
          * 
-         * Unter Linux: /usr/share/<appname> (abgeleitet vom Binärverzeichnis).
+         * Unter Linux: /usr/share/\<appname\> (abgeleitet vom Binärverzeichnis).
          * Unter macOS: Resources-Verzeichnis bei gebündelten Anwendungen, sonst share-Verzeichnis.
          * Unter Windows: Gleich dem Binärverzeichnis.
          * 
@@ -53,9 +53,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Datenverzeichnis zurück.
          * 
-         * Unter Linux: /var/lib/<appname>.
-         * Unter macOS: /Library/Application Support/<appname>.
-         * Unter Windows: %ALLUSERSAPPDATA%/<appname>.
+         * Unter Linux: /var/lib/\<appname\>.
+         * Unter macOS: /Library/Application Support/\<appname\>.
+         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
@@ -66,9 +66,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das Benutzer-Datenverzeichnis zurück.
          * 
-         * Unter Linux: ~/.local/share/<appname>.
-         * Unter macOS: ~/Library/Application Support/<appname> (Bundle) oder ~/.local/share/<appname> (CLI).
-         * Unter Windows: %APPDATA%/<appname>.
+         * Unter Linux: ~/.local/share/\<appname\>.
+         * Unter macOS: ~/Library/Application Support/\<appname\> (Bundle) oder ~/.local/share/\<appname\> (CLI).
+         * Unter Windows: \%APPDATA\%/\<appname\>.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
@@ -80,9 +80,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * 
-         * Unter Linux: ~/.config/<appname> (XDG-Standard).
-         * Unter macOS: ~/Library/Preferences/<appname> (Bundle) oder ~/.config/<appname> (CLI).
-         * Unter Windows: %APPDATA%/<appname>.
+         * Unter Linux: ~/.config/\<appname\> (XDG-Standard).
+         * Unter macOS: ~/Library/Preferences/\<appname\> (Bundle) oder ~/.config/\<appname\> (CLI).
+         * Unter Windows: \%APPDATA\%/\<appname\>.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
@@ -94,9 +94,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * 
-         * Unter Linux: ~/.cache/<appname> (XDG-Standard).
-         * Unter macOS: ~/Library/Caches/<appname> (Bundle) oder ~/.cache/<appname> (CLI).
-         * Unter Windows: %LOCALAPPDATA%/<appname>/Cache.
+         * Unter Linux: ~/.cache/\<appname\> (XDG-Standard).
+         * Unter macOS: ~/Library/Caches/\<appname\> (Bundle) oder ~/.cache/\<appname\> (CLI).
+         * Unter Windows: \%LOCALAPPDATA\%/\<appname\>/Cache.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
@@ -108,9 +108,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * 
-         * Unter Linux: ~/.local/state/<appname>/log (XDG Base Directory Specification).
-         * Unter macOS: ~/Library/Logs/<appname> (Bundle) oder ~/.local/state/<appname>/log (CLI).
-         * Unter Windows: %LOCALAPPDATA%/<appname>/Logs.
+         * Unter Linux: ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+         * Unter macOS: ~/Library/Logs/\<appname\> (Bundle) oder ~/.local/state/\<appname\>/log (CLI).
+         * Unter Windows: \%LOCALAPPDATA\%/\<appname\>/Logs.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
@@ -122,9 +122,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.
          * 
-         * Unter Linux: /tmp/<appname> oder systemweites Temp-Verzeichnis.
-         * Unter macOS: /tmp/<appname> oder ~/Library/Caches/TemporaryItems/<appname>.
-         * Unter Windows: %TEMP%/<appname>.
+         * Unter Linux: /tmp/\<appname\> oder systemweites Temp-Verzeichnis.
+         * Unter macOS: /tmp/\<appname\> oder ~/Library/Caches/TemporaryItems/\<appname\>.
+         * Unter Windows: \%TEMP\%/\<appname\>.
          * 
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das temporäre Verzeichnis.
@@ -142,9 +142,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Cache-Verzeichnis zurück.
          * 
-         * Unter Linux: /var/cache/<appname>.
-         * Unter macOS: /Library/Caches/<appname>.
-         * Unter Windows: %ALLUSERSAPPDATA%/<appname>/Cache.
+         * Unter Linux: /var/cache/\<appname\>.
+         * Unter macOS: /Library/Caches/\<appname\>.
+         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>/Cache.
          * 
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Cache-Verzeichnis.
@@ -155,9 +155,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Log-Verzeichnis zurück.
          * 
-         * Unter Linux: /var/log/<appname>.
-         * Unter macOS: /Library/Logs/<appname>.
-         * Unter Windows: %ALLUSERSAPPDATA%/<appname>/Logs.
+         * Unter Linux: /var/log/\<appname\>.
+         * Unter macOS: /Library/Logs/\<appname\>.
+         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>/Logs.
          * 
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Log-Verzeichnis.
@@ -167,9 +167,9 @@ namespace pfadfinder
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.
          * 
-         * Unter Linux: /etc/<appname>.
-         * Unter macOS: /Library/Preferences/<appname>.
-         * Unter Windows: %ALLUSERSAPPDATA%/<appname>.
+         * Unter Linux: /etc/\<appname\>.
+         * Unter macOS: /Library/Preferences/\<appname\>.
+         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>.
          * 
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das geteilte Konfigurationsverzeichnis.
