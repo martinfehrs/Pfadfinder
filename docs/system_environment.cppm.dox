@@ -1,105 +1,149 @@
 /**
  * @file system_environment.cppm
- * @brief Abstract base class for system backends (pfadfinder:system_environment)
+ * @brief Abstract base class for system environment path determination (pfadfinder:system_environment)
  * @author Martin Fehrs
  */
 
 /**
  * @class pfadfinder::system_environment
- * @brief Abstract base class for system environment backends.
+ * @brief Class for system environment path determination.
  *
- * This class defines the interface for platform-specific
- * implementations for path determination. All concrete backends
- * (Linux, Windows, macOS) must inherit from this class and
- * implement all virtual methods.
- *
- * The class is designed as an interface - all methods are
- * pure virtual (since C++20 with = 0) and there is no state.
- * This enables simple mock implementations for tests.
+ * This class provides the interface for platform-specific path determination.
+ * The concrete method definitions are provided by implementation modules
+ * that are selected by CMake based on the target platform.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::executable_path() const
  * @brief Returns the full path to the executable file.
  * @return fs::path The absolute path to the executable file.
+ * @throws indeterminable_exe_path When the path to the executable cannot be determined.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::static_data_dir(const fs::path&, const std::string&) const
  * @brief Returns the static data directory of the application.
+ *
+ * On Linux: /usr/share/\<appname\> (derived from the binary directory).
+ * On macOS: Resources directory for bundled applications, otherwise share directory.
+ * On Windows: Same as the binary directory.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The static data directory (base or base + rel_path).
- * @throws directory_not_found If the directory does not exist.
+ * @return fs::path The static data directory.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::shared_data_dir(const fs::path&, const std::string&) const
  * @brief Returns the shared data directory of the application.
+ *
+ * On Linux: /var/lib/\<appname\>.
+ * On macOS: /Library/Application Support/\<appname\>.
+ * On Windows: %ALLUSERSAPPDATA%/\<appname\>.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The shared data directory (base or base + rel_path).
- * @throws directory_not_found If the directory does not exist.
+ * @return fs::path The shared data directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_data_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific data directory of the application.
+ *
+ * On Linux: ~/.local/share/\<appname\>.
+ * On macOS: ~/Library/Application Support/\<appname\> (Bundle) or ~/.local/share/\<appname\> (CLI).
+ * On Windows: %APPDATA%/\<appname\>.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user data directory.
+ * @return fs::path The user-specific data directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_config_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific configuration directory of the application.
+ *
+ * On Linux: ~/.config/\<appname\> (XDG standard).
+ * On macOS: ~/Library/Preferences/\<appname\> (Bundle) or ~/.config/\<appname\> (CLI).
+ * On Windows: %APPDATA%/\<appname\>.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific configuration directory (base + rel_path).
- * @throws directory_not_found If the directory does not exist.
+ * @return fs::path The user-specific configuration directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_cache_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific cache directory of the application.
+ *
+ * On Linux: ~/.cache/\<appname\> (XDG standard).
+ * On macOS: ~/Library/Caches/\<appname\> (Bundle) or ~/.cache/\<appname\> (CLI).
+ * On Windows: %LOCALAPPDATA%/\<appname\>/Cache.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
  * @return fs::path The user-specific cache directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_log_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific log directory of the application.
+ *
+ * On Linux: ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+ * On macOS: ~/Library/Logs/\<appname\> (Bundle) or ~/.local/state/\<appname\>/log (CLI).
+ * On Windows: %LOCALAPPDATA%/\<appname\>/Logs.
+ *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific log directory of the application (base + rel_path).
- * @throws directory_not_found If the directory does not exist.
+ * @return fs::path The user-specific log directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::temp_dir(const std::string&) const
  * @brief Returns the temporary directory of the application.
+ *
+ * On Linux: /tmp/\<appname\> or system-wide temp directory.
+ * On macOS: /tmp/\<appname\> or ~/Library/Caches/TemporaryItems/\<appname\>.
+ * On Windows: %TEMP%/\<appname\>.
+ *
  * @param app_name The name of the application.
- * @return fs::path The temporary directory of the application.
- * @throws directory_not_found If the directory does not exist.
+ * @return fs::path The temporary directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_dir() const
  * @brief Returns the user's home directory.
  * @return fs::path The user's home directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::shared_cache_dir(const std::string&) const
  * @brief Returns the shared cache directory.
+ *
+ * On Linux: /var/cache/\<appname\>.
+ * On macOS: /Library/Caches/\<appname\>.
+ * On Windows: %ALLUSERSAPPDATA%/\<appname\>/Cache.
+ *
  * @param app_name The name of the application.
  * @return fs::path The shared cache directory.
+ * @throws environment_variable_not_set When a required environment variable is not set.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::shared_log_dir(const std::string&) const
  * @brief Returns the shared log directory.
+ *
+ * On Linux: /var/log/\<appname\>.
+ * On macOS: /Library/Logs/\<appname\>.
+ * On Windows: %ALLUSERSAPPDATA%/\<appname\>/Logs.
+ *
  * @param app_name The name of the application.
  * @return fs::path The shared log directory.
  */
@@ -107,6 +151,13 @@
 /**
  * @fn virtual fs::path pfadfinder::system_environment::shared_config_dir(const std::string&) const
  * @brief Returns the shared configuration directory.
+ *
+ * On Linux: /etc/\<appname\>.
+ * On macOS: /Library/Preferences/\<appname\>.
+ * On Windows: %ALLUSERSAPPDATA%/\<appname\>.
+ *
  * @param app_name The name of the application.
  * @return fs::path The shared configuration directory.
+ *
+ * @note Linux backend only allows reading from /etc (least common denominator).
  */

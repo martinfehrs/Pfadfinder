@@ -73,7 +73,7 @@ WARN_LOGFILE           = ""
 # Input configuration options
 INPUT                  = @CMAKE_CURRENT_BINARY_DIR@/src_filtered_en @CMAKE_CURRENT_SOURCE_DIR@/docs @CMAKE_CURRENT_BINARY_DIR@/README_doxygen.md
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = *.cppm *.cppm.dox *.dox *.md
+FILE_PATTERNS          = *.cppm *.cppm.dox *.dox *.md *.hpp *.h
 RECURSIVE              = NO
 # Treat .cppm files as C++ source for English documentation
 EXTENSION_MAPPING      = dox=C++ cppm=C++

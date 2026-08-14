@@ -20,15 +20,9 @@
  */
 
 /**
- * @typedef pfadfinder::default_system_environment
- * @brief The system environment of the current system (Windows, Linux, macOS).
- * @see windows_system_environment, macos_system_environment, linux_system_environment
- */
-
-/**
  * @class pfadfinder::application_environment
  * @brief Provides methods for determining various directories of an application.
- * @tparam SystemEnvironment Type of the backend implementation, by default pfadfinder::default_system_environment.
+ * @tparam SystemEnvironment Type of the backend implementation, by default pfadfinder::system_environment.
  *
  * This class encapsulates the logic for determining paths such as the executable path,
  * data directory, configuration directory, and cache directory for different
@@ -52,7 +46,7 @@
  * @fn fs::path pfadfinder::application_environment::executable_path() const
  * @brief Returns the full path to the executable file.
  * @return fs::path The full path to the executable file.
- * @throws Exceptions depending on platform (e.g. readlink_failed, get_module_file_name_failed)
+ * @throws indeterminable_exe_path When the path to the executable cannot be determined.
  */
 
 /**
@@ -115,9 +109,6 @@
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The shared log directory of the application (base or base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
- * 
- * @note Unlike most other methods, this method does not have a create_dir option,
- * as the Linux backend only allows read access to /etc (least common denominator).
  */
 
 /**
