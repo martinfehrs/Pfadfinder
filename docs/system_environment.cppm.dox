@@ -1,6 +1,6 @@
 /**
  * @file system_environment.cppm
- * @brief Abstract base class for system environment path determination (pfadfinder:system_environment)
+ * @brief Class for system environment path determination (pfadfinder:system_environment)
  * @author Martin Fehrs
  */
 
