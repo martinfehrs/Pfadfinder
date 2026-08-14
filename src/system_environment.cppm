@@ -21,8 +21,7 @@ namespace pfadfinder
      * @brief Klasse für Systemumgebungs-Pfadermittlung.
      *
      * Diese Klasse bietet plattformspezifische Implementierungen zur Pfadermittlung.
-     * Die konkreten Methodendefinitionen werden durch Implementierungsmodule bereitgestellt,
-     * die von CMake basierend auf der Zielplattform ausgewählt werden.
+     * Die konkreten Methodendefinitionen werden durch plattformspezifische Implementierungsmodule bereitgestellt.
      */
     export class system_environment
     {

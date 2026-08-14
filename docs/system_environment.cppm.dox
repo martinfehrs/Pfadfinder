@@ -9,8 +9,7 @@
  * @brief Class for system environment path determination.
  *
  * This class provides the interface for platform-specific path determination.
- * The concrete method definitions are provided by implementation modules
- * that are selected by CMake based on the target platform.
+ * The concrete method definitions are provided by platform-specific implementation modules.
  */
 
 /**
