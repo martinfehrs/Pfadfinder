@@ -22,6 +22,14 @@ namespace pfadfinder
      *
      * Diese Klasse bietet plattformspezifische Implementierungen zur Pfadermittlung.
      * Die konkreten Methodendefinitionen werden durch plattformspezifische Implementierungsmodule bereitgestellt.
+     *
+     * @note Unter Linux folgen die Pfade user_data_dir (~/.local/share), user_config_dir (~/.config),
+     *       user_cache_dir (~/.cache) und user_log_dir (~/.local/state)
+     *       den XDG-Konventionen.
+     *       Die Pfade static_data_dir, shared_data_dir, temp_dir,
+     *       shared_cache_dir, shared_log_dir und shared_config_dir
+     *       weichen von den XDG-Konventionen ab.
+     *       Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
      */
     export class system_environment
     {
@@ -73,6 +81,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-Datenverzeichnis.
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual fs::path user_data_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
@@ -87,6 +96,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis.
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual fs::path user_config_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
@@ -101,13 +111,14 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis.
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual fs::path user_cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * 
-         * Unter Linux: ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+         * Unter Linux: ~/.local/state/\<appname\>/log (XDG-Standard).
          * Unter macOS: ~/Library/Logs/\<appname\> (Bundle) oder ~/.local/state/\<appname\>/log (CLI).
          * Unter Windows: \%LOCALAPPDATA\%/\<appname\>/Logs.
          * 
@@ -115,6 +126,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis.
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual fs::path user_log_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
@@ -128,6 +140,7 @@ namespace pfadfinder
          * @param app_name Der Name der Anwendung.
          * @return fs::path Das temporäre Verzeichnis.
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual fs::path temp_dir(const std::string& app_name) const;
 

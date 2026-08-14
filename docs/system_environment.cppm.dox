@@ -10,6 +10,14 @@
  *
  * This class provides the interface for platform-specific path determination.
  * The concrete method definitions are provided by platform-specific implementation modules.
+ *
+ * @note On Linux, the paths user_data_dir (~/.local/share), user_config_dir (~/.config),
+ *       user_cache_dir (~/.cache), and user_log_dir (~/.local/state)
+ *       follow the XDG conventions.
+ *       The paths static_data_dir, shared_data_dir, temp_dir,
+ *       shared_cache_dir, shared_log_dir, and shared_config_dir
+ *       deviate from the XDG conventions.
+ *       The XDG environment variables are not respected.
  */
 
 /**
@@ -58,6 +66,7 @@
  * @param app_name The name of the application.
  * @return fs::path The user-specific data directory.
  * @throws environment_variable_not_set When a required environment variable is not set.
+ * @note The XDG environment variables are not respected.
  */
 
 /**
@@ -72,6 +81,7 @@
  * @param app_name The name of the application.
  * @return fs::path The user-specific configuration directory.
  * @throws environment_variable_not_set When a required environment variable is not set.
+ * @note The XDG environment variables are not respected.
  */
 
 /**
@@ -86,13 +96,14 @@
  * @param app_name The name of the application.
  * @return fs::path The user-specific cache directory.
  * @throws environment_variable_not_set When a required environment variable is not set.
+ * @note The XDG environment variables are not respected.
  */
 
 /**
  * @fn virtual fs::path pfadfinder::system_environment::user_log_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific log directory of the application.
  *
- * On Linux: ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+ * On Linux: ~/.local/state/\<appname\>/log (XDG standard).
  * On macOS: ~/Library/Logs/\<appname\> (Bundle) or ~/.local/state/\<appname\>/log (CLI).
  * On Windows: %LOCALAPPDATA%/\<appname\>/Logs.
  *
@@ -100,6 +111,7 @@
  * @param app_name The name of the application.
  * @return fs::path The user-specific log directory.
  * @throws environment_variable_not_set When a required environment variable is not set.
+ * @note The XDG environment variables are not respected.
  */
 
 /**
@@ -113,6 +125,7 @@
  * @param app_name The name of the application.
  * @return fs::path The temporary directory.
  * @throws environment_variable_not_set When a required environment variable is not set.
+ * @note The XDG environment variables are not respected.
  */
 
 /**
