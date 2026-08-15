@@ -2,7 +2,7 @@
 catch2/3.6.0
 
 [tool_requires]
-cmake/4.3.3
+cmake/4.4.2
 ninja/1.13.2
 doxygen/1.17.0
 
