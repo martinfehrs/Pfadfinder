@@ -14,6 +14,8 @@ module;
 
 module pfadfinder;
 
+import :unix;
+
 namespace fs = std::filesystem;
 
 namespace pfadfinder
@@ -33,7 +35,7 @@ namespace pfadfinder
 
     fs::path system_environment::static_data_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
-        return exe_dir.parent_path() / "share" / app_name;
+        return get_xdg_static_data_dir(exe_dir, app_name);
     }
 
     fs::path system_environment::shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
@@ -43,57 +45,32 @@ namespace pfadfinder
 
     fs::path system_environment::user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* home = std::getenv("HOME");
-
-        if (!home)
-            throw environment_variable_not_set{ "HOME" };
-
-        return fs::path{ home } / ".local" / "share" / app_name;
+        return get_xdg_user_data_dir(app_name);
     }
 
     fs::path system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* home = std::getenv("HOME");
-
-        if (!home)
-            throw environment_variable_not_set{ "HOME" };
-
-        return fs::path{ home } / ".config" / app_name;
+        return get_xdg_user_config_dir(app_name);
     }
 
     fs::path system_environment::user_cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* home = std::getenv("HOME");
-
-        if (!home)
-            throw environment_variable_not_set{ "HOME" };
-
-        return fs::path{ home } / ".cache" / app_name;
+        return get_xdg_user_cache_dir(app_name);
     }
 
     fs::path system_environment::user_log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* home = std::getenv("HOME");
-
-        if (!home)
-            throw environment_variable_not_set{ "HOME" };
-
-        return fs::path{ home } / ".local" / "state" / app_name / "log";
+        return get_xdg_user_log_dir(app_name);
     }
 
     fs::path system_environment::temp_dir(const std::string& app_name) const
     {
-        return fs::temp_directory_path() / app_name;
+        return get_temp_dir(app_name);
     }
 
     fs::path system_environment::user_dir() const
     {
-        const char* home = std::getenv("HOME");
-
-        if (!home)
-            throw environment_variable_not_set{ "HOME" };
-
-        return fs::path{ home };
+        return get_home_dir();
     }
 
     fs::path system_environment::shared_cache_dir(const std::string& app_name) const
