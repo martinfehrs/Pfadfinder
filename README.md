@@ -69,30 +69,70 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 
 ## Requirements
 
-- C++23
+- C++20
 - CMake 3.28 or higher
 - Compiler with C++ module support (GCC 15, Clang 19, MSVC 19.40+)
 
 ## Build
 
-### On macOS and Linux:
+First, create Conan profile:
 
 ```bash
+conan profile detect --force
+```
+
+Then install dependencies and build the project:
+
+### On macOS with Clang:
+
+**Note:** Apple Clang currently does not have sufficient C++ module support. Therefore, LLVM Clang is used.
+
+First, install LLVM:
+
+```bash
+brew install llvm@22
+```
+
+Then set environment variables:
+
+```bash
+LLVM_PREFIX=$(brew --prefix llvm@22)
+export CC=$LLVM_PREFIX/bin/clang
+export CXX=$LLVM_PREFIX/bin/clang++
+export PATH="$LLVM_PREFIX/bin:$PATH"
+```
+
+Then run Conan and CMake:
+
+```bash
+conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 cd Pfadfinder
 mkdir -p build
 cd build
-cmake -G "Ninja Multi-Config" ..
-cmake --build . --config Release
+cmake --preset=conan-default
+cmake --build --preset=conan-release
+```
+
+### On Linux:
+
+```bash
+conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
+cd Pfadfinder
+mkdir -p build
+cd build
+cmake --preset=conan-default
+cmake --build --preset=conan-release
 ```
 
 ### On Windows with Visual Studio 2022:
 
 ```bash
+conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Visual Studio 17 2022"
 cd Pfadfinder
 mkdir -p build
 cd build
-cmake -G "Visual Studio 17 2022" -A x64 ..
-cmake --build . --config Release
+cmake --preset=conan-default
+cmake --build --preset=conan-release
 ```
 
 ## Usage examples

@@ -68,30 +68,70 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 
 ## Voraussetzungen
 
-- C++23
+- C++20
 - CMake 3.28 oder höher
 - Compiler mit C++-Modul-Unterstützung (GCC 15, Clang 19, MSVC 19.40+)
 
 ## Erstellung
 
-### Unter MacOS und Linux:
+Zuerst das Conan-Profil erstellen:
 
 ```bash
+conan profile detect --force
+```
+
+Dann die Abhängigkeiten installieren und das Projekt bauen:
+
+### Unter MacOS mit Clang:
+
+**Hinweis:** Apple Clang unterstützt aktuell keine ausreichende C++-Modulunterstützung. Daher wird LLVM Clang verwendet.
+
+Zuerst LLVM installieren:
+
+```bash
+brew install llvm@22
+```
+
+Dann die Umgebungsvariablen setzen:
+
+```bash
+LLVM_PREFIX=$(brew --prefix llvm@22)
+export CC=$LLVM_PREFIX/bin/clang
+export CXX=$LLVM_PREFIX/bin/clang++
+export PATH="$LLVM_PREFIX/bin:$PATH"
+```
+
+Dann Conan und CMake ausführen:
+
+```bash
+conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 cd Pfadfinder
 mkdir -p build
 cd build
-cmake -G "Ninja Multi-Config" ..
-cmake --build . --config Release
+cmake --preset=conan-default
+cmake --build --preset=conan-release
+```
+
+### Unter Linux:
+
+```bash
+conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
+cd Pfadfinder
+mkdir -p build
+cd build
+cmake --preset=conan-default
+cmake --build --preset=conan-release
 ```
 
 ### Unter Windows mit Visual Studio 2022:
 
 ```bash
+conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Visual Studio 17 2022"
 cd Pfadfinder
 mkdir -p build
 cd build
-cmake -G "Visual Studio 17 2022" -A x64 ..
-cmake --build . --config Release
+cmake --preset=conan-default
+cmake --build --preset=conan-release
 ```
 
 ## Verwendungsbeispiele
