@@ -3,7 +3,18 @@ include(Catch)
 enable_testing()
 
 # Test-Executable erstellen
-add_executable(test_pfadfinder test_pfadfinder.cpp)
+add_executable(test_pfadfinder)
+
+# Modul-Quellen hinzufügen
+# Nur Modul-Schnittstellen-Einheiten (export module) müssen im FILE_SET CXX_MODULES stehen
+target_sources(test_pfadfinder
+    PRIVATE
+        FILE_SET CXX_MODULES
+        FILES
+            scoped_environment.cppm
+)
+
+target_sources(test_pfadfinder PRIVATE test_pfadfinder.cpp)
 
 # CTest-Integration für Catch2
 catch_discover_tests(test_pfadfinder)
