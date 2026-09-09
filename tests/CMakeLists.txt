@@ -2,17 +2,13 @@ find_package(Catch2 REQUIRED)
 include(Catch)
 enable_testing()
 
-# Plattform-spezifische Variablen für config.cppm.in
-set(IS_WINDOWS false)
-set(IS_LINUX false)
-set(IS_MACOS false)
-
+# Plattform-spezifische Variable für config.cppm
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(IS_WINDOWS true)
+    set(CURRENT_SYSTEM windows)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(IS_LINUX true)
+    set(CURRENT_SYSTEM linux)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(IS_MACOS true)
+    set(CURRENT_SYSTEM macos)
 endif()
 
 # Konfigurationsdatei generieren
@@ -26,7 +22,6 @@ configure_file(
 add_executable(test_pfadfinder)
 
 # Modul-Quellen hinzufügen
-# BASE_DIRS muss alle Verzeichnisse enthalten, in denen die Dateien liegen
 target_sources(test_pfadfinder
     PRIVATE
         FILE_SET CXX_MODULES

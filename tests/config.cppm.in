@@ -8,16 +8,16 @@
 export module config;
 
 /**
- * @brief Compile-Zeit-Konstante: Gibt an, ob auf Windows kompiliert wird
+ * @brief Aufzählung der unterstützten Betriebssysteme
  */
-export constexpr bool is_windows = @IS_WINDOWS@;
+export enum class system
+{
+    windows,
+    linux,
+    macos
+};
 
 /**
- * @brief Compile-Zeit-Konstante: Gibt an, ob auf Linux kompiliert wird
+ * @brief Aktuelles Betriebssystem, zur Compile-Zeit bestimmt
  */
-export constexpr bool is_linux = @IS_LINUX@;
-
-/**
- * @brief Compile-Zeit-Konstante: Gibt an, ob auf macOS kompiliert wird
- */
-export constexpr bool is_macos = @IS_MACOS@;
+export inline constexpr system current_system = system::@CURRENT_SYSTEM@;
