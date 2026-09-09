@@ -1,6 +1,6 @@
 /**
- * @file scoped_environment.cppm
- * @brief Modul mit RAII-Klasse zum temporären Umleiten von Umgebungsvariablen für Tests.
+ * @file
+ * @brief RAII-Klasse zum temporären Umleiten von Umgebungsvariablen für Tests.
  * @author Martin Fehrs
  */
 
@@ -11,13 +11,10 @@ module;
 #include <utility>
 #include <vector>
 
-#if defined(_WIN32)
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
 export module scoped_environment;
+
+// Import des plattformspezifischen Moduls
+import platform;
 
 /**
  * @brief RAII-Klasse zum temporären Ändern von Umgebungsvariablen.
@@ -47,11 +44,7 @@ public:
         original_values_.emplace_back(name, old_value);
         
         // neuen Wert setzen
-#if defined(_WIN32)
-        SetEnvironmentVariableA(name.c_str(), value.c_str());
-#else
-        setenv(name.c_str(), value.c_str(), 1);
-#endif
+        platform::setenv(name, value);
     }
 
     /**
@@ -64,19 +57,11 @@ public:
             const auto& [name, old_value] = *it;
             if (old_value)
             {
-#if defined(_WIN32)
-                SetEnvironmentVariableA(name.c_str(), old_value);
-#else
-                setenv(name.c_str(), old_value, 1);
-#endif
+                platform::setenv(name, old_value);
             }
             else
             {
-#if defined(_WIN32)
-                SetEnvironmentVariableA(name.c_str(), nullptr);
-#else
-                unsetenv(name.c_str());
-#endif
+                platform::unsetenv(name);
             }
         }
     }
