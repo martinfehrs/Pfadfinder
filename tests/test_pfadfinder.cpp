@@ -8,6 +8,9 @@
 #include <filesystem>
 #include <string>
 
+// Import der Konfigurationskonstanten
+import config;
+
 // CATCH2 Header (single-include version)
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_all.hpp>

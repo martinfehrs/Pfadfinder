@@ -1,0 +1,23 @@
+/**
+ * @file config.cppm
+ * @brief Plattform-spezifische Compile-Zeit-Konstanten für Tests
+ * @author Martin Fehrs
+ * @note Diese Datei wird von CMake generiert - nicht manuell bearbeiten!
+ */
+
+export module config;
+
+/**
+ * @brief Compile-Zeit-Konstante: Gibt an, ob auf Windows kompiliert wird
+ */
+export constexpr bool is_windows = @IS_WINDOWS@;
+
+/**
+ * @brief Compile-Zeit-Konstante: Gibt an, ob auf Linux kompiliert wird
+ */
+export constexpr bool is_linux = @IS_LINUX@;
+
+/**
+ * @brief Compile-Zeit-Konstante: Gibt an, ob auf macOS kompiliert wird
+ */
+export constexpr bool is_macos = @IS_MACOS@;
