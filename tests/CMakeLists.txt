@@ -26,10 +26,13 @@ configure_file(
 add_executable(test_pfadfinder)
 
 # Modul-Quellen hinzufügen
-# Die generierte config.cppm muss im FILE_SET CXX_MODULES stehen
+# BASE_DIRS muss alle Verzeichnisse enthalten, in denen die Dateien liegen
 target_sources(test_pfadfinder
     PRIVATE
         FILE_SET CXX_MODULES
+        BASE_DIRS 
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_BINARY_DIR}
         FILES
             ${CMAKE_CURRENT_BINARY_DIR}/config.cppm
             scoped_environment.cppm
