@@ -9,9 +9,9 @@ set(IS_MACOS false)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(IS_WINDOWS true)
-elif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(IS_LINUX true)
-elif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(IS_MACOS true)
 endif()
 
