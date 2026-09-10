@@ -7,6 +7,8 @@
 module;
 
 #include <cstdlib>
+#include <filesystem>
+#include <stdexcept>
 #include <string>
 
 export module platform;
@@ -30,5 +32,20 @@ namespace platform
     export void unsetenv(const std::string& name)
     {
         ::unsetenv(name.c_str());
+    }
+
+    /**
+     * @brief Gibt das Benutzerverzeichnis zurück
+     * @return std::filesystem::path Das Benutzerverzeichnis
+     * @throws std::runtime_error falls die Umgebungsvariable HOME nicht gesetzt ist
+     */
+    [[nodiscard]] export std::filesystem::path home_dir()
+    {
+        const char* home = std::getenv("HOME");
+
+        if (!home)
+            throw std::runtime_error{ "HOME environment variable not set" };
+
+        return std::filesystem::path{ home };
     }
 }

@@ -6,6 +6,8 @@
 
 module;
 
+#include <filesystem>
+#include <stdexcept>
 #include <string>
 #include <windows.h>
 
@@ -30,5 +32,20 @@ namespace platform
     export void unsetenv(const std::string& name)
     {
         SetEnvironmentVariableA(name.c_str(), nullptr);
+    }
+
+    /**
+     * @brief Gibt das Benutzerverzeichnis zurück
+     * @return std::filesystem::path Das Benutzerverzeichnis
+     * @throws std::runtime_error falls die Umgebungsvariable USERPROFILE nicht gesetzt ist
+     */
+    [[nodiscard]] export std::filesystem::path home_dir()
+    {
+        const char* home = std::getenv("USERPROFILE");
+
+        if (!home)
+            throw std::runtime_error{ "USERPROFILE environment variable not set" };
+
+        return std::filesystem::path{ home };
     }
 }
