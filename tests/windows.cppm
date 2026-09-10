@@ -39,7 +39,7 @@ namespace platform
      * @return std::filesystem::path Das Benutzerverzeichnis
      * @throws std::runtime_error falls die Umgebungsvariable USERPROFILE nicht gesetzt ist
      */
-    [[nodiscard]] export std::filesystem::path home_dir()
+    export [[nodiscard]] std::filesystem::path home_dir()
     {
         const char* home = std::getenv("USERPROFILE");
 
