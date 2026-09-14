@@ -10,7 +10,6 @@
  *    - executable_path()      : Full path to the executable file
  *    - executable_dir()       : Directory of the executable file
  *    - static_data_dir()      : System-wide static data directory
- *    - shared_data_dir()      : System-wide shared data directory
  *    - user_data_dir()        : User-specific data directory (with create_dir parameter)
  *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
  *    - user_cache_dir()       : User-specific cache directory (with create_dir parameter)
@@ -246,12 +245,6 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_shared_data_dir() const
- * @brief Returns the cached shared data directory.
- * @return fs::path The cached shared data directory.
- */
-
-/**
  * @fn fs::path pfadfinder::application_environment::get_user_data_dir() const
  * @brief Returns the cached user data directory.
  * @return fs::path The cached user data directory.
@@ -282,18 +275,6 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_shared_cache_dir() const
- * @brief Returns the cached shared cache directory.
- * @return fs::path The cached shared cache directory.
- */
-
-/**
- * @fn fs::path pfadfinder::application_environment::get_shared_log_dir() const
- * @brief Returns the cached shared log directory.
- * @return fs::path The cached shared log directory.
- */
-
-/**
  * @fn fs::path pfadfinder::application_environment::get_shared_config_dir() const
  * @brief Returns the cached shared configuration directory.
  * @return fs::path The cached shared configuration directory.
@@ -315,9 +296,6 @@
 /** @var pfadfinder::application_environment::cached_static_data_dir_
  * @brief Cached static data directory. */
 
-/** @var pfadfinder::application_environment::cached_shared_data_dir_
- * @brief Cached shared data directory. */
-
 /** @var pfadfinder::application_environment::cached_user_data_dir_
  * @brief Cached user data directory. */
 
@@ -335,12 +313,6 @@
 
 /** @var pfadfinder::application_environment::cached_user_dir_
  * @brief Cached user directory (Home). */
-
-/** @var pfadfinder::application_environment::cached_shared_cache_dir_
- * @brief Cached shared cache directory. */
-
-/** @var pfadfinder::application_environment::cached_shared_log_dir_
- * @brief Cached shared log directory. */
 
 /** @var pfadfinder::application_environment::cached_shared_config_dir_
  * @brief Cached shared configuration directory. */

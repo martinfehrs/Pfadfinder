@@ -267,7 +267,7 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
 
 // Tests mit Mock-Backend
 /**
- * @brief Unit-Tests für static_data_dir und shared_data_dir mit Mock-Backend.
+ * @brief Unit-Tests für static_data_dir mit Mock-Backend.
  * 
  * Diese Tests verwenden ein Mock-Backend, das alle Pfade in ein temporäres Verzeichnis
  * umleitet, damit wir die Funktionen ohne Admin-Rechte testen können.

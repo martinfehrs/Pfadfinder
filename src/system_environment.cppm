@@ -26,8 +26,7 @@ namespace pfadfinder
      * @note Unter Linux folgen die Pfade user_data_dir (~/.local/share), user_config_dir (~/.config),
      *       user_cache_dir (~/.cache) und user_log_dir (~/.local/state)
      *       den XDG-Konventionen.
-     *       Die Pfade static_data_dir, shared_data_dir, temp_dir,
-     *       shared_cache_dir, shared_log_dir und shared_config_dir
+     *       Die Pfade static_data_dir, temp_dir und shared_config_dir
      *       weichen von den XDG-Konventionen ab.
      *       Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
      */
