@@ -33,16 +33,6 @@ namespace pfadfinder
         return exe_dir;
     }
 
-    fs::path system_environment::shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
-    {
-        const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
-
-        if (!allusersappdata)
-            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
-
-        return fs::path{ allusersappdata } / app_name;
-    }
-
     fs::path system_environment::user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         const char* appdata = std::getenv("APPDATA");
