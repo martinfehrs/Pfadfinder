@@ -38,11 +38,6 @@ namespace pfadfinder
         return get_xdg_static_data_dir(exe_dir, app_name);
     }
 
-    fs::path system_environment::shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
-    {
-        return fs::path{ "/var/lib" } / app_name;
-    }
-
     fs::path system_environment::user_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         return get_xdg_user_data_dir(app_name);
@@ -71,16 +66,6 @@ namespace pfadfinder
     fs::path system_environment::user_dir() const
     {
         return get_home_dir();
-    }
-
-    fs::path system_environment::shared_cache_dir(const std::string& app_name) const
-    {
-        return fs::path{ "/var/cache" } / app_name;
-    }
-
-    fs::path system_environment::shared_log_dir(const std::string& app_name) const
-    {
-        return fs::path{ "/var/log" } / app_name;
     }
 
     fs::path system_environment::shared_config_dir(const std::string& app_name) const

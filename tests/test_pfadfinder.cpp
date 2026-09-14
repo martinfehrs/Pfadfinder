@@ -49,11 +49,6 @@ namespace test_backend
             return base_temp_dir / "share" / app_name;
         }
         
-        [[nodiscard]] fs::path shared_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
-        {
-            return base_temp_dir / "var" / "lib" / app_name;
-        }
-        
         [[nodiscard]] fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "share" / app_name;
@@ -82,17 +77,6 @@ namespace test_backend
         [[nodiscard]] fs::path user_dir() const override
         {
             return base_temp_dir / "home";
-        }
-        
-        // Neue Methoden für geteilte Verzeichnisse
-        [[nodiscard]] fs::path shared_cache_dir(const std::string& app_name) const override
-        {
-            return base_temp_dir / "var" / "cache" / app_name;
-        }
-        
-        [[nodiscard]] fs::path shared_log_dir(const std::string& app_name) const override
-        {
-            return base_temp_dir / "var" / "log" / app_name;
         }
         
         [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override
@@ -326,36 +310,6 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         REQUIRE_THROWS_AS(env.static_data_dir(), pfadfinder::directory_not_found);
     }
     
-    SECTION("shared_data_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert") {
-        // Verzeichnis erstellen
-        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name;
-        fs::create_directories(expected_path);
-        
-        auto shared_dir = env.shared_data_dir();
-        REQUIRE(shared_dir == expected_path);
-        REQUIRE(fs::exists(shared_dir));
-        REQUIRE(fs::is_directory(shared_dir));
-    }
-    
-    SECTION("shared_data_dir mit rel_path gibt gültigen Pfad zurück") {
-        // Verzeichnis erstellen
-        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name / "shared";
-        fs::create_directories(expected_path);
-        
-        auto shared_dir = env.shared_data_dir("shared");
-        REQUIRE(shared_dir == expected_path);
-        REQUIRE(fs::exists(shared_dir));
-        REQUIRE(fs::is_directory(shared_dir));
-    }
-    
-    SECTION("shared_data_dir wirft wenn Verzeichnis nicht existiert") {
-        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name;
-        // Sicherstellen, dass Verzeichnis nicht existiert
-        fs::remove_all(expected_path);
-        
-        REQUIRE_THROWS_AS(env.shared_data_dir(), pfadfinder::directory_not_found);
-    }
-    
     // Tests für andere Verzeichnismethoden mit Mock-Backend
     SECTION("user_data_dir mit rel_path erstellt Verzeichnis") {
         auto user_dir = env.user_data_dir("subdir", true);
@@ -417,10 +371,6 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         REQUIRE_THROWS_AS(env.static_data_dir(), pfadfinder::directory_not_found);
     }
     
-    SECTION("shared_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
-        REQUIRE_THROWS_AS(env.shared_data_dir(), pfadfinder::directory_not_found);
-    }
-    
     // Caching-Verhalten prüfen (Wert bleibt konsistent)
     SECTION("executable_path gibt konsistente Werte zurück") {
         auto path1 = env.executable_path();
@@ -438,43 +388,6 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         auto dir1 = env.user_dir();
         auto dir2 = env.user_dir();
         REQUIRE(dir1 == dir2);
-    }
-
-    // Tests für die neuen Methoden
-    SECTION("shared_cache_dir gibt gültigen Pfad zurück") {
-        auto expected_path = backend.base_temp_dir / "var" / "cache" / test_app_name;
-        fs::create_directories(expected_path);
-        
-        auto cache_dir = env.shared_cache_dir();
-        REQUIRE(cache_dir == expected_path);
-        REQUIRE(fs::exists(cache_dir));
-        REQUIRE(fs::is_directory(cache_dir));
-    }
-
-    SECTION("shared_cache_dir erstellt Verzeichnis") {
-        auto cache_dir = env.shared_cache_dir("", true);
-        auto expected = backend.base_temp_dir / "var" / "cache" / test_app_name;
-        REQUIRE(cache_dir == expected);
-        REQUIRE(fs::exists(cache_dir));
-        REQUIRE(fs::is_directory(cache_dir));
-    }
-
-    SECTION("shared_cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
-        test_env_type env_no_create("nonexistent_shared_cache", backend);
-        REQUIRE_THROWS_AS(env_no_create.shared_cache_dir("", false), pfadfinder::directory_not_found);
-    }
-
-    SECTION("shared_log_dir erstellt Verzeichnis") {
-        auto log_dir = env.shared_log_dir("", true);
-        auto expected = backend.base_temp_dir / "var" / "log" / test_app_name;
-        REQUIRE(log_dir == expected);
-        REQUIRE(fs::exists(log_dir));
-        REQUIRE(fs::is_directory(log_dir));
-    }
-
-    SECTION("shared_log_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
-        test_env_type env_no_create("nonexistent_shared_log", backend);
-        REQUIRE_THROWS_AS(env_no_create.shared_log_dir("", false), pfadfinder::directory_not_found);
     }
 
     SECTION("shared_config_dir wirft immer") {

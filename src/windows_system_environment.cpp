@@ -103,26 +103,6 @@ namespace pfadfinder
         return fs::path{ userprofile };
     }
 
-    fs::path system_environment::shared_cache_dir(const std::string& app_name) const
-    {
-        const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
-
-        if (!allusersappdata)
-            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
-
-        return fs::path{ allusersappdata } / app_name / "Cache";
-    }
-
-    fs::path system_environment::shared_log_dir(const std::string& app_name) const
-    {
-        const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
-
-        if (!allusersappdata)
-            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
-
-        return fs::path{ allusersappdata } / app_name / "Logs";
-    }
-
     fs::path system_environment::shared_config_dir(const std::string& app_name) const
     {
         const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");

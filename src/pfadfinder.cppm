@@ -10,7 +10,6 @@
  *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
- *    - shared_data_dir()      : Systemweites geteiltes Datenverzeichnis
  *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis (mit create_dir Parameter)
  *    - user_cache_dir()       : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
@@ -117,75 +116,6 @@ namespace pfadfinder
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
-            return path;
-        }
-
-        /**
-         * @brief Gibt das geteilte Datenverzeichnis der Anwendung zurück.
-         * 
-         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>.
-         * Unter Linux entspricht dies /var/lib/\<appname\>.
-         * Unter macOS entspricht dies /Library/Application Support/\<appname\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
-         * @return fs::path Das geteilte Datenverzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
-         */
-        [[nodiscard]] fs::path shared_data_dir(const fs::path& rel_path = "") const
-        {
-            auto path = get_shared_data_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
-            return path;
-        }
-
-        /**
-         * @brief Gibt das geteilte Cache-Verzeichnis der Anwendung zurück.
-         * 
-         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>/Cache.
-         * Unter Linux entspricht dies /var/cache/\<appname\>.
-         * Unter macOS entspricht dies /Library/Caches/\<appname\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
-         * @return fs::path Das geteilte Cache-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
-         */
-        [[nodiscard]] fs::path shared_cache_dir(const fs::path& rel_path = "", bool create_dir = true) const
-        {
-            auto path = get_shared_cache_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (create_dir)
-                fs::create_directories(path);
-            else if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
-            return path;
-        }
-
-        /**
-         * @brief Gibt das geteilte Log-Verzeichnis der Anwendung zurück.
-         * 
-         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>/Logs.
-         * Unter Linux entspricht dies /var/log/\<appname\>.
-         * Unter macOS entspricht dies /Library/Logs/\<appname\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
-         * @return fs::path Das geteilte Log-Verzeichnis der Anwendung (Basis oder Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
-         */
-        [[nodiscard]] fs::path shared_log_dir(const fs::path& rel_path = "", bool create_dir = true) const
-        {
-            auto path = get_shared_log_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (create_dir)
-                fs::create_directories(path);
-            else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
         }
@@ -477,17 +407,6 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das gecachte geteilte Datenverzeichnis zurück.
-         * @return fs::path Das gecachte geteilte Datenverzeichnis.
-         */
-        [[nodiscard]] fs::path get_shared_data_dir() const
-        {
-            if (!cached_shared_data_dir_.has_value())
-                cached_shared_data_dir_ = system_env_.shared_data_dir(executable_dir(), app_name_);
-            return *cached_shared_data_dir_;
-        }
-
-        /**
          * @brief Gibt das gecachte Benutzer-Datenverzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-Datenverzeichnis.
          */
@@ -543,28 +462,6 @@ namespace pfadfinder
         }
 
         /**
-         * @brief Gibt das gecachte geteilte Cache-Verzeichnis zurück.
-         * @return fs::path Das gecachte geteilte Cache-Verzeichnis.
-         */
-        [[nodiscard]] fs::path get_shared_cache_dir() const
-        {
-            if (!cached_shared_cache_dir_.has_value())
-                cached_shared_cache_dir_ = system_env_.shared_cache_dir(app_name_);
-            return *cached_shared_cache_dir_;
-        }
-
-        /**
-         * @brief Gibt das gecachte geteilte Log-Verzeichnis zurück.
-         * @return fs::path Das gecachte geteilte Log-Verzeichnis.
-         */
-        [[nodiscard]] fs::path get_shared_log_dir() const
-        {
-            if (!cached_shared_log_dir_.has_value())
-                cached_shared_log_dir_ = system_env_.shared_log_dir(app_name_);
-            return *cached_shared_log_dir_;
-        }
-
-        /**
          * @brief Gibt das gecachte geteilte Konfigurationsverzeichnis zurück.
          * @return fs::path Das gecachte geteilte Konfigurationsverzeichnis.
          */
@@ -588,8 +485,6 @@ namespace pfadfinder
         mutable std::optional<fs::path> cached_executable_dir_;
         /** @brief Gecachtes statisches Datenverzeichnis. */
         mutable std::optional<fs::path> cached_static_data_dir_;
-        /** @brief Gecachtes geteiltes Datenverzeichnis. */
-        mutable std::optional<fs::path> cached_shared_data_dir_;
         /** @brief Gecachtes Benutzer-Datenverzeichnis. */
         mutable std::optional<fs::path> cached_user_data_dir_;
         /** @brief Gecachtes Benutzer-spezifische Konfigurationsverzeichnis. */
@@ -602,10 +497,6 @@ namespace pfadfinder
         mutable std::optional<fs::path> cached_temp_dir_;
         /** @brief Gecachtes Benutzerverzeichnis (Home). */
         mutable std::optional<fs::path> cached_user_dir_;
-        /** @brief Gecachtes geteiltes Cache-Verzeichnis. */
-        mutable std::optional<fs::path> cached_shared_cache_dir_;
-        /** @brief Gecachtes geteiltes Log-Verzeichnis. */
-        mutable std::optional<fs::path> cached_shared_log_dir_;
         /** @brief Gecachtes geteiltes Konfigurationsverzeichnis. */
         mutable std::optional<fs::path> cached_shared_config_dir_;
     };

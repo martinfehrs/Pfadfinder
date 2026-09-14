@@ -71,47 +71,6 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::shared_data_dir(const fs::path&) const
- * @brief Returns the shared data directory of the application.
- * 
- * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>.
- * On Linux, this corresponds to /var/lib/\<appname\>.
- * On macOS, this corresponds to /Library/Application Support/\<appname\>.
- * 
- * @param rel_path Relative path to the base directory (optional).
- * @return fs::path The shared data directory of the application (base or base + rel_path).
- * @throws directory_not_found If the directory does not exist.
- */
-
-/**
- * @fn fs::path pfadfinder::application_environment::shared_cache_dir(const fs::path&, bool) const
- * @brief Returns the shared cache directory of the application.
- * 
- * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>/Cache.
- * On Linux, this corresponds to /var/cache/\<appname\>.
- * On macOS, this corresponds to /Library/Caches/\<appname\>.
- * 
- * @param rel_path Relative path to the base directory (optional).
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The shared cache directory of the application (base or base + rel_path).
- * @throws directory_not_found If the directory does not exist and create_dir is false.
- */
-
-/**
- * @fn fs::path pfadfinder::application_environment::shared_log_dir(const fs::path&, bool) const
- * @brief Returns the shared log directory of the application.
- * 
- * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>/Logs.
- * On Linux, this corresponds to /var/log/\<appname\>.
- * On macOS, this corresponds to /Library/Logs/\<appname\>.
- * 
- * @param rel_path Relative path to the base directory (optional).
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
- * @return fs::path The shared log directory of the application (base or base + rel_path).
- * @throws directory_not_found If the directory does not exist and create_dir is false.
- */
-
-/**
  * @fn fs::path pfadfinder::application_environment::shared_config_dir(const fs::path&) const
  * @brief Returns the shared configuration directory of the application.
  * 

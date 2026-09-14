@@ -14,10 +14,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | Binärverzeichnis |
-| `shared_data_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
-| `shared_cache_dir()` | `%ALLUSERSAPPDATA%\<appname>\Cache` |
-| `shared_log_dir()` | `%ALLUSERSAPPDATA%\<appname>\Logs` |
 | `user_data_dir()` | `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
 | `user_cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
@@ -32,10 +29,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei | Vollständiger Pfad zur ausführbaren Datei |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | `Resources`-Verzeichnis | Abgeleitet vom Binärpfad |
-| `shared_data_dir()` | `/Library/Application Support/<appname>` | `/Library/Application Support/<appname>` |
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
-| `shared_cache_dir()` | `/Library/Caches/<appname>` | `/Library/Caches/<appname>` |
-| `shared_log_dir()` | `/Library/Logs/<appname>` | `/Library/Logs/<appname>` |
 | `user_data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
 | `user_cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
@@ -50,10 +44,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | Abgeleitet vom Binärpfad (z. B. `/usr/bin/myapp` → `/usr/share/myapp`) |
-| `shared_data_dir()` | `/var/lib/<appname>` |
 | `shared_config_dir()` | `/etc/<appname>` |
-| `shared_cache_dir()` | `/var/cache/<appname>` |
-| `shared_log_dir()` | `/var/log/<appname>` |
 | `user_data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG-Standard) |
 | `user_cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |

@@ -58,19 +58,6 @@ namespace pfadfinder
         [[nodiscard]] virtual fs::path static_data_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
-         * @brief Gibt das geteilte Datenverzeichnis zurück.
-         * 
-         * Unter Linux: /var/lib/\<appname\>.
-         * Unter macOS: /Library/Application Support/\<appname\>.
-         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>.
-         * 
-         * @param exe_dir Das Verzeichnis der ausführbaren Datei.
-         * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Datenverzeichnis.
-         */
-        [[nodiscard]] virtual fs::path shared_data_dir(const fs::path& exe_dir, const std::string& app_name) const;
-
-        /**
          * @brief Gibt das Benutzer-Datenverzeichnis zurück.
          * 
          * Unter Linux: ~/.local/share/\<appname\>.
@@ -150,31 +137,6 @@ namespace pfadfinder
          * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
         [[nodiscard]] virtual fs::path user_dir() const;
-
-        /**
-         * @brief Gibt das geteilte Cache-Verzeichnis zurück.
-         * 
-         * Unter Linux: /var/cache/\<appname\>.
-         * Unter macOS: /Library/Caches/\<appname\>.
-         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>/Cache.
-         * 
-         * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Cache-Verzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
-         */
-        [[nodiscard]] virtual fs::path shared_cache_dir(const std::string& app_name) const;
-
-        /**
-         * @brief Gibt das geteilte Log-Verzeichnis zurück.
-         * 
-         * Unter Linux: /var/log/\<appname\>.
-         * Unter macOS: /Library/Logs/\<appname\>.
-         * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>/Logs.
-         * 
-         * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Log-Verzeichnis.
-         */
-        [[nodiscard]] virtual fs::path shared_log_dir(const std::string& app_name) const;
 
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.

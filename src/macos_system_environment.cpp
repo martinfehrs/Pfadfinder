@@ -74,11 +74,6 @@ namespace pfadfinder
             : get_xdg_static_data_dir(exe_dir, app_name);
     }
 
-    fs::path system_environment::shared_data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
-    {
-        return fs::path{ "/Library/Application Support" } / app_name;
-    }
-
     fs::path system_environment::user_data_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return is_macos_bundle(exe_dir)
@@ -115,16 +110,6 @@ namespace pfadfinder
     fs::path system_environment::user_dir() const
     {
         return get_home_dir();
-    }
-
-    fs::path system_environment::shared_cache_dir(const std::string& app_name) const
-    {
-        return fs::path{ "/Library/Caches" } / app_name;
-    }
-
-    fs::path system_environment::shared_log_dir(const std::string& app_name) const
-    {
-        return fs::path{ "/Library/Logs" } / app_name;
     }
 
     fs::path system_environment::shared_config_dir(const std::string& app_name) const
