@@ -97,9 +97,6 @@ Then run Conan and CMake:
 
 ```bash
 conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
-cd Pfadfinder
-mkdir -p build
-cd build
 cmake --preset=conan-default
 cmake --build --preset=conan-release
 ```
@@ -108,9 +105,6 @@ cmake --build --preset=conan-release
 
 ```bash
 conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
-cd Pfadfinder
-mkdir -p build
-cd build
 cmake --preset=conan-default
 cmake --build --preset=conan-release
 ```
@@ -119,9 +113,6 @@ cmake --build --preset=conan-release
 
 ```bash
 conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Visual Studio 17 2022"
-cd Pfadfinder
-mkdir -p build
-cd build
 cmake --preset=conan-default
 cmake --build --preset=conan-release
 ```
@@ -226,8 +217,7 @@ catch(const pfadfinder::error& e)
 ## Run tests
 
 ```bash
-cd build
-./tests/test_pfadfinder
+./build/tests/Release/test_pfadfinder
 ```
 
 ## Author
