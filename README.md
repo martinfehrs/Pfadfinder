@@ -217,7 +217,7 @@ catch(const pfadfinder::error& e)
 ## Run tests
 
 ```bash
-./build/Release/tests/test_pfadfinder
+cmake --build --preset=conan-release --target test
 ```
 
 ## Author
