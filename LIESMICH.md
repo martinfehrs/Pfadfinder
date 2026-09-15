@@ -95,16 +95,16 @@ export PATH="$LLVM_PREFIX/bin:$PATH"
 Dann Conan und CMake ausführen:
 
 ```bash
-conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
-cmake --preset=conan-default
+conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -s:a build_type=Release -c tools.cmake.cmaketoolchain:generator="Ninja"
+cmake --preset=conan-release
 cmake --build --preset=conan-release
 ```
 
 ### Unter Linux:
 
 ```bash
-conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
-cmake --preset=conan-default
+conan install . --build=missing -s:a compiler.cppstd=20 -s:a build_type=Release -c tools.cmake.cmaketoolchain:generator="Ninja"
+cmake --preset=conan-release
 cmake --build --preset=conan-release
 ```
 
@@ -217,7 +217,7 @@ catch(const pfadfinder::error& e)
 ## Testausführung 
 
 ```bash
-./build/tests/Release/test_pfadfinder
+./build/Release/tests/test_pfadfinder
 ```
 
 ## Autor
