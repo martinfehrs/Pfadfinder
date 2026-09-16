@@ -49,7 +49,7 @@ namespace test_backend
             return base_temp_dir / "share" / app_name;
         }
         
-        [[nodiscard]] fs::path user_data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "share" / app_name;
         }
@@ -59,12 +59,12 @@ namespace test_backend
             return base_temp_dir / "home" / ".config" / app_name;
         }
         
-        [[nodiscard]] fs::path user_cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".cache" / app_name;
         }
         
-        [[nodiscard]] fs::path user_log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "state" / app_name / "log";
         }
@@ -74,7 +74,7 @@ namespace test_backend
             return base_temp_dir / "tmp" / app_name;
         }
         
-        [[nodiscard]] fs::path user_dir() const override
+        [[nodiscard]] fs::path home_dir() const override
         {
             return base_temp_dir / "home";
         }
@@ -129,16 +129,16 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
     }
 #endif
 
-    SECTION("user_dir gibt einen gültigen Pfad zurück") {
-        auto user_dir = env.user_dir();
-        REQUIRE_FALSE(user_dir.empty());
-        REQUIRE(user_dir.is_absolute());
-        REQUIRE(fs::exists(user_dir));
-        REQUIRE(fs::is_directory(user_dir));
+    SECTION("home_dir gibt einen gültigen Pfad zurück") {
+        auto home_dir = env.home_dir();
+        REQUIRE_FALSE(home_dir.empty());
+        REQUIRE(home_dir.is_absolute());
+        REQUIRE(fs::exists(home_dir));
+        REQUIRE(fs::is_directory(home_dir));
     }
 
-    SECTION("user_dir entspricht HOME oder USERPROFILE") {
-        auto user_dir = env.user_dir();
+    SECTION("home_dir entspricht HOME oder USERPROFILE") {
+        auto home_dir = env.home_dir();
         
 #if defined(_WIN32)
         const char* expected_home = std::getenv("USERPROFILE");
@@ -147,28 +147,28 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
 #endif
         
         if (expected_home)
-            REQUIRE(user_dir == fs::path(expected_home));
+            REQUIRE(home_dir == fs::path(expected_home));
     }
     
-    SECTION("user_data_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto user_dir = env.user_data_dir(true);
-        REQUIRE_FALSE(user_dir.empty());
-        REQUIRE(user_dir.is_absolute());
-        REQUIRE(user_dir.filename() == test_app_name);
-        REQUIRE(fs::exists(user_dir));
-        REQUIRE(fs::is_directory(user_dir));
+    SECTION("data_dir erstellt Verzeichnis und gibt Pfad zurück") {
+        auto home_dir = env.data_dir(true);
+        REQUIRE_FALSE(home_dir.empty());
+        REQUIRE(home_dir.is_absolute());
+        REQUIRE(home_dir.filename() == test_app_name);
+        REQUIRE(fs::exists(home_dir));
+        REQUIRE(fs::is_directory(home_dir));
         // Aufräumen
-        fs::remove_all(user_dir);
+        fs::remove_all(home_dir);
     }
     
-    SECTION("user_data_dir mit rel_path erstellt Verzeichnis") {
-        auto user_dir = env.user_data_dir("subdir", true);
-        REQUIRE_FALSE(user_dir.empty());
-        REQUIRE(user_dir.filename() == "subdir");
-        REQUIRE(fs::exists(user_dir));
-        REQUIRE(fs::is_directory(user_dir));
+    SECTION("data_dir mit rel_path erstellt Verzeichnis") {
+        auto home_dir = env.data_dir("subdir", true);
+        REQUIRE_FALSE(home_dir.empty());
+        REQUIRE(home_dir.filename() == "subdir");
+        REQUIRE(fs::exists(home_dir));
+        REQUIRE(fs::is_directory(home_dir));
         // Aufräumen
-        fs::remove_all(user_dir.parent_path());
+        fs::remove_all(home_dir.parent_path());
     }
     
     SECTION("user_config_dir erstellt Verzeichnis und gibt Pfad zurück") {
@@ -182,8 +182,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
         fs::remove_all(config_dir);
     }
     
-    SECTION("user_cache_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto cache_dir = env.user_cache_dir(true);
+    SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück") {
+        auto cache_dir = env.cache_dir(true);
         REQUIRE_FALSE(cache_dir.empty());
         REQUIRE(cache_dir.is_absolute());
         REQUIRE(fs::exists(cache_dir));
@@ -192,8 +192,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
         fs::remove_all(cache_dir);
     }
     
-    SECTION("user_log_dir erstellt Verzeichnis und gibt Pfad zurück") {
-        auto log_dir = env.user_log_dir(true);
+    SECTION("log_dir erstellt Verzeichnis und gibt Pfad zurück") {
+        auto log_dir = env.log_dir(true);
         REQUIRE_FALSE(log_dir.empty());
         REQUIRE(log_dir.is_absolute());
         REQUIRE(fs::exists(log_dir));
@@ -225,8 +225,8 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
         pfadfinder::application_environment env1("app1");
         pfadfinder::application_environment env2("app2");
         
-        auto dir1 = env1.user_data_dir();
-        auto dir2 = env2.user_data_dir();
+        auto dir1 = env1.data_dir();
+        auto dir2 = env2.data_dir();
         
         // Die Verzeichnisse sollten unterschiedlich sein
         REQUIRE(dir1 != dir2);
@@ -239,9 +239,9 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
     }
     
     // Tests für create_dir=false - Verzeichnis existiert nicht
-    SECTION("user_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+    SECTION("data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
         pfadfinder::application_environment env_unique("test_app_unique_12345");
-        REQUIRE_THROWS_AS(env_unique.user_data_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.data_dir(false), pfadfinder::directory_not_found);
     }
     
     SECTION("user_config_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
@@ -249,14 +249,14 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
         REQUIRE_THROWS_AS(env_unique.user_config_dir(false), pfadfinder::directory_not_found);
     }
     
-    SECTION("user_cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+    SECTION("cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
         pfadfinder::application_environment env_unique("test_app_unique_12345");
-        REQUIRE_THROWS_AS(env_unique.user_cache_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.cache_dir(false), pfadfinder::directory_not_found);
     }
     
-    SECTION("user_log_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+    SECTION("log_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
         pfadfinder::application_environment env_unique("test_app_unique_12345");
-        REQUIRE_THROWS_AS(env_unique.user_log_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.log_dir(false), pfadfinder::directory_not_found);
     }
     
     SECTION("temp_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
@@ -311,12 +311,12 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
     }
     
     // Tests für andere Verzeichnismethoden mit Mock-Backend
-    SECTION("user_data_dir mit rel_path erstellt Verzeichnis") {
-        auto user_dir = env.user_data_dir("subdir", true);
+    SECTION("data_dir mit rel_path erstellt Verzeichnis") {
+        auto home_dir = env.data_dir("subdir", true);
         auto expected = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name / "subdir";
-        REQUIRE(user_dir == expected);
-        REQUIRE(fs::exists(user_dir));
-        REQUIRE(fs::is_directory(user_dir));
+        REQUIRE(home_dir == expected);
+        REQUIRE(fs::exists(home_dir));
+        REQUIRE(fs::is_directory(home_dir));
     }
     
     SECTION("user_config_dir mit rel_path erstellt Verzeichnis") {
@@ -327,16 +327,16 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         REQUIRE(fs::is_directory(config_dir));
     }
     
-    SECTION("user_cache_dir mit rel_path erstellt Verzeichnis") {
-        auto cache_dir = env.user_cache_dir("subdir", true);
+    SECTION("cache_dir mit rel_path erstellt Verzeichnis") {
+        auto cache_dir = env.cache_dir("subdir", true);
         auto expected = backend.base_temp_dir / "home" / ".cache" / test_app_name / "subdir";
         REQUIRE(cache_dir == expected);
         REQUIRE(fs::exists(cache_dir));
         REQUIRE(fs::is_directory(cache_dir));
     }
     
-    SECTION("user_log_dir mit rel_path erstellt Verzeichnis") {
-        auto log_dir = env.user_log_dir("subdir", true);
+    SECTION("log_dir mit rel_path erstellt Verzeichnis") {
+        auto log_dir = env.log_dir("subdir", true);
         auto expected = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log" / "subdir";
         REQUIRE(log_dir == expected);
         REQUIRE(fs::exists(log_dir));
@@ -352,9 +352,9 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
     }
     
     // Tests für create_dir=false mit nicht existierenden Verzeichnissen
-    SECTION("user_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+    SECTION("data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
         pfadfinder::application_environment<test_backend::test_system_environment> env_no_create("nonexistent_app", backend);
-        REQUIRE_THROWS_AS(env_no_create.user_data_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_no_create.data_dir(false), pfadfinder::directory_not_found);
     }
     
     SECTION("user_config_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
@@ -362,9 +362,9 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         REQUIRE_THROWS_AS(env_no_create.user_config_dir(false), pfadfinder::directory_not_found);
     }
     
-    SECTION("user_cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
+    SECTION("cache_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
         pfadfinder::application_environment<test_backend::test_system_environment> env_no_create("nonexistent_app", backend);
-        REQUIRE_THROWS_AS(env_no_create.user_cache_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_no_create.cache_dir(false), pfadfinder::directory_not_found);
     }
     
     SECTION("static_data_dir wirft wenn create_dir=false und Verzeichnis nicht existiert") {
@@ -384,9 +384,9 @@ TEST_CASE("pfadfinder: Mock-Backend Tests", "[unit]") {
         REQUIRE(dir1 == dir2);
     }
     
-    SECTION("user_dir gibt konsistente Werte zurück") {
-        auto dir1 = env.user_dir();
-        auto dir2 = env.user_dir();
+    SECTION("home_dir gibt konsistente Werte zurück") {
+        auto dir1 = env.home_dir();
+        auto dir2 = env.home_dir();
         REQUIRE(dir1 == dir2);
     }
 

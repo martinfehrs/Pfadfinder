@@ -16,12 +16,12 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable |
 | `static_data_dir()` | Binary directory |
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
-| `user_data_dir()` | `%APPDATA%\<appname>` |
+| `data_dir()` | `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
-| `user_cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
-| `user_log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
-| `user_dir()` | `%USERPROFILE%` |
+| `home_dir()` | `%USERPROFILE%` |
 
 ### macOS
 
@@ -31,12 +31,12 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable | Directory containing the executable |
 | `static_data_dir()` | `Resources` directory | Derived from binary path |
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
-| `user_data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
-| `user_cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
-| `user_log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
-| `user_dir()` | `$HOME` | `$HOME` |
+| `home_dir()` | `$HOME` | `$HOME` |
 
 ### Linux
 
@@ -46,12 +46,12 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable |
 | `static_data_dir()` | Derived from binary path (e.g., `/usr/bin/myapp` → `/usr/share/myapp`) |
 | `shared_config_dir()` | `/etc/<appname>` |
-| `user_data_dir()` | `~/.local/share/<appname>` (XDG standard) |
+| `data_dir()` | `~/.local/share/<appname>` (XDG standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG standard) |
-| `user_cache_dir()` | `~/.cache/<appname>` (XDG standard) |
-| `user_log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
+| `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` or system temp directory |
-| `user_dir()` | `$HOME` |
+| `home_dir()` | `$HOME` |
 
 ## Documentation in different languages
 
@@ -130,10 +130,10 @@ int main() try
     pfadfinder::application_environment env{};
 
     std::println("Executable:    {}", env.executable_path().string());
-    std::println("User Dir:      {}", env.user_dir().string());
-    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Home Dir:      {}", env.home_dir().string());
+    std::println("Data Dir:      {}", env.data_dir().string());
     std::println("Config Dir:    {}", env.user_config_dir().string());
-    std::println("Cache Dir:     {}", env.user_cache_dir().string());
+    std::println("Cache Dir:     {}", env.cache_dir().string());
  
     return 0;
 }
@@ -155,10 +155,10 @@ int main() try
     pfadfinder::application_environment env{ "my_app" };
 
     std::println("Executable:    {}", env.executable_path().string());
-    std::println("User Dir:      {}", env.user_dir().string());
-    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Home Dir:      {}", env.home_dir().string());
+    std::println("Data Dir:      {}", env.data_dir().string());
     std::println("Config Dir:    {}", env.user_config_dir().string());
-    std::println("Cache Dir:     {}", env.user_cache_dir().string());
+    std::println("Cache Dir:     {}", env.cache_dir().string());
  
     return 0;
 }
@@ -181,17 +181,17 @@ struct my_custom_environment : pfadfinder::default_system_environment
 {
     [[nodiscard]] fs::path user_config_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::user_dir()/std::format(".{}", app_name);
+        return default_system_environment::home_dir()/std::format(".{}", app_name);
     }
 
-    [[nodiscard]] fs::path user_data_dir(const fs::path&, const std::string& app_name) const override
+    [[nodiscard]] fs::path data_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::user_dir()/std::format(".{}", app_name);
+        return default_system_environment::home_dir()/std::format(".{}", app_name);
     }
 
-    [[nodiscard]] fs::path user_cache_dir(const fs::path&, const std::string& app_name) const override
+    [[nodiscard]] fs::path cache_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::user_dir()/std::format(".{}", app_name);
+        return default_system_environment::home_dir()/std::format(".{}", app_name);
     }
 };
 
@@ -200,10 +200,10 @@ int main() try
     pfadfinder::application_environment env{ my_custom_environment{} };
 
     std::println("Executable:    {}", env.executable_path().string());
-    std::println("User Dir:      {}", env.user_dir().string());
-    std::println("User Data Dir: {}", env.user_data_dir().string());
+    std::println("Home Dir:      {}", env.home_dir().string());
+    std::println("Data Dir:      {}", env.data_dir().string());
     std::println("Config Dir:    {}", env.user_config_dir().string());
-    std::println("Cache Dir:     {}", env.user_cache_dir().string());
+    std::println("Cache Dir:     {}", env.cache_dir().string());
  
     return 0;
 }

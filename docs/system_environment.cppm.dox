@@ -11,8 +11,8 @@
  * This class provides the interface for platform-specific path determination.
  * The concrete method definitions are provided by platform-specific implementation modules.
  *
- * @note On Linux, the paths user_data_dir (~/.local/share), user_config_dir (~/.config),
- *       user_cache_dir (~/.cache), and user_log_dir (~/.local/state)
+ * @note On Linux, the paths data_dir (~/.local/share), user_config_dir (~/.config),
+ *       cache_dir (~/.cache), and log_dir (~/.local/state)
  *       follow the XDG conventions.
  *       The paths static_data_dir, temp_dir, and shared_config_dir
  *       deviate from the XDG conventions.
@@ -40,7 +40,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::user_data_dir(const fs::path&, const std::string&) const
+ * @fn virtual fs::path pfadfinder::system_environment::data_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific data directory of the application.
  *
  * On Linux: ~/.local/share/\<appname\>.
@@ -70,7 +70,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::user_cache_dir(const fs::path&, const std::string&) const
+ * @fn virtual fs::path pfadfinder::system_environment::cache_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific cache directory of the application.
  *
  * On Linux: ~/.cache/\<appname\> (XDG standard).
@@ -85,7 +85,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::user_log_dir(const fs::path&, const std::string&) const
+ * @fn virtual fs::path pfadfinder::system_environment::log_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific log directory of the application.
  *
  * On Linux: ~/.local/state/\<appname\>/log (XDG standard).
@@ -114,7 +114,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::user_dir() const
+ * @fn virtual fs::path pfadfinder::system_environment::home_dir() const
  * @brief Returns the user's home directory.
  * @return fs::path The user's home directory.
  * @throws environment_variable_not_set When a required environment variable is not set.

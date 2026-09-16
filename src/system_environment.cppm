@@ -23,8 +23,8 @@ namespace pfadfinder
      * Diese Klasse bietet plattformspezifische Implementierungen zur Pfadermittlung.
      * Die konkreten Methodendefinitionen werden durch plattformspezifische Implementierungsmodule bereitgestellt.
      *
-     * @note Unter Linux folgen die Pfade user_data_dir (~/.local/share), user_config_dir (~/.config),
-     *       user_cache_dir (~/.cache) und user_log_dir (~/.local/state)
+     * @note Unter Linux folgen die Pfade data_dir (~/.local/share), user_config_dir (~/.config),
+     *       cache_dir (~/.cache) und log_dir (~/.local/state)
      *       den XDG-Konventionen.
      *       Die Pfade static_data_dir, temp_dir und shared_config_dir
      *       weichen von den XDG-Konventionen ab.
@@ -69,7 +69,7 @@ namespace pfadfinder
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path user_data_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual fs::path data_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
@@ -99,7 +99,7 @@ namespace pfadfinder
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path user_cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual fs::path cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
@@ -114,7 +114,7 @@ namespace pfadfinder
          * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path user_log_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual fs::path log_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.
@@ -135,7 +135,7 @@ namespace pfadfinder
          * @return fs::path Das Home-Verzeichnis.
          * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
          */
-        [[nodiscard]] virtual fs::path user_dir() const;
+        [[nodiscard]] virtual fs::path home_dir() const;
 
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.

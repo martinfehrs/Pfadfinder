@@ -10,12 +10,12 @@
  *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
- *    - user_data_dir()        : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
+ *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis (mit create_dir Parameter)
- *    - user_cache_dir()       : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
- *    - user_log_dir()         : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
+ *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
+ *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
- *    - user_dir()             : Home-Verzeichnis des Benutzers
+ *    - home_dir()             : Home-Verzeichnis des Benutzers
  */
 
 module;
@@ -156,9 +156,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_data_dir(bool create_dir = true) const
+        [[nodiscard]] fs::path data_dir(bool create_dir = true) const
         {
-            auto path = get_user_data_dir();
+            auto path = get_data_dir();
             if (create_dir)
                 fs::create_directories(path);
             else if (!fs::exists(path) || !fs::is_directory(path))
@@ -179,9 +179,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_data_dir(const fs::path& rel_path, bool create_dir = true) const
+        [[nodiscard]] fs::path data_dir(const fs::path& rel_path, bool create_dir = true) const
         {
-            auto path = get_user_data_dir();
+            auto path = get_data_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (create_dir)
@@ -250,9 +250,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_cache_dir(bool create_dir = true) const
+        [[nodiscard]] fs::path cache_dir(bool create_dir = true) const
         {
-            auto path = get_user_cache_dir();
+            auto path = get_cache_dir();
             if (create_dir)
                 fs::create_directories(path);
             else if (!fs::exists(path) || !fs::is_directory(path))
@@ -273,9 +273,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_cache_dir(const fs::path& rel_path, bool create_dir = true) const
+        [[nodiscard]] fs::path cache_dir(const fs::path& rel_path, bool create_dir = true) const
         {
-            auto path = get_user_cache_dir();
+            auto path = get_cache_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (create_dir)
@@ -297,9 +297,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung.
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_log_dir(bool create_dir = true) const
+        [[nodiscard]] fs::path log_dir(bool create_dir = true) const
         {
-            auto path = get_user_log_dir();
+            auto path = get_log_dir();
             if (create_dir)
                 fs::create_directories(path);
             else if (!fs::exists(path) || !fs::is_directory(path))
@@ -320,9 +320,9 @@ namespace pfadfinder
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
          */
-        [[nodiscard]] fs::path user_log_dir(const fs::path& rel_path, bool create_dir = true) const
+        [[nodiscard]] fs::path log_dir(const fs::path& rel_path, bool create_dir = true) const
         {
-            auto path = get_user_log_dir();
+            auto path = get_log_dir();
             if (!rel_path.empty())
                 path /= rel_path;
             if (create_dir)
@@ -385,12 +385,12 @@ namespace pfadfinder
          * 
          * @return fs::path Das Home-Verzeichnis des Benutzers.
          */
-        [[nodiscard]] fs::path user_dir() const
+        [[nodiscard]] fs::path home_dir() const
         {
-            if (!cached_user_dir_.has_value())
-                cached_user_dir_ = system_env_.user_dir();
+            if (!cached_home_dir_.has_value())
+                cached_home_dir_ = system_env_.home_dir();
 
-            return *cached_user_dir_;
+            return *cached_home_dir_;
         }
 
     private:
@@ -410,11 +410,11 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-Datenverzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-Datenverzeichnis.
          */
-        [[nodiscard]] fs::path get_user_data_dir() const
+        [[nodiscard]] fs::path get_data_dir() const
         {
-            if (!cached_user_data_dir_.has_value())
-                cached_user_data_dir_ = system_env_.user_data_dir(executable_dir(), app_name_);
-            return *cached_user_data_dir_;
+            if (!cached_data_dir_.has_value())
+                cached_data_dir_ = system_env_.data_dir(executable_dir(), app_name_);
+            return *cached_data_dir_;
         }
 
         /**
@@ -432,22 +432,22 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-spezifische Cache-Verzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-spezifische Cache-Verzeichnis.
          */
-        [[nodiscard]] fs::path get_user_cache_dir() const
+        [[nodiscard]] fs::path get_cache_dir() const
         {
-            if (!cached_user_cache_dir_.has_value())
-                cached_user_cache_dir_ = system_env_.user_cache_dir(executable_dir(), app_name_);
-            return *cached_user_cache_dir_;
+            if (!cached_cache_dir_.has_value())
+                cached_cache_dir_ = system_env_.cache_dir(executable_dir(), app_name_);
+            return *cached_cache_dir_;
         }
 
         /**
          * @brief Gibt das gecachte Benutzer-spezifische Log-Verzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-spezifische Log-Verzeichnis.
          */
-        [[nodiscard]] fs::path get_user_log_dir() const
+        [[nodiscard]] fs::path get_log_dir() const
         {
-            if (!cached_user_log_dir_.has_value())
-                cached_user_log_dir_ = system_env_.user_log_dir(executable_dir(), app_name_);
-            return *cached_user_log_dir_;
+            if (!cached_log_dir_.has_value())
+                cached_log_dir_ = system_env_.log_dir(executable_dir(), app_name_);
+            return *cached_log_dir_;
         }
 
         /**
@@ -486,17 +486,17 @@ namespace pfadfinder
         /** @brief Gecachtes statisches Datenverzeichnis. */
         mutable std::optional<fs::path> cached_static_data_dir_;
         /** @brief Gecachtes Benutzer-Datenverzeichnis. */
-        mutable std::optional<fs::path> cached_user_data_dir_;
+        mutable std::optional<fs::path> cached_data_dir_;
         /** @brief Gecachtes Benutzer-spezifische Konfigurationsverzeichnis. */
         mutable std::optional<fs::path> cached_user_config_dir_;
         /** @brief Gecachtes Benutzer-spezifische Cache-Verzeichnis. */
-        mutable std::optional<fs::path> cached_user_cache_dir_;
+        mutable std::optional<fs::path> cached_cache_dir_;
         /** @brief Gecachtes Benutzer-spezifische Log-Verzeichnis. */
-        mutable std::optional<fs::path> cached_user_log_dir_;
+        mutable std::optional<fs::path> cached_log_dir_;
         /** @brief Gecachtes temporäres Verzeichnis. */
         mutable std::optional<fs::path> cached_temp_dir_;
-        /** @brief Gecachtes Benutzerverzeichnis (Home). */
-        mutable std::optional<fs::path> cached_user_dir_;
+        /** @brief Gecachtes Home-Verzeichnis. */
+        mutable std::optional<fs::path> cached_home_dir_;
         /** @brief Gecachtes geteiltes Konfigurationsverzeichnis. */
         mutable std::optional<fs::path> cached_shared_config_dir_;
     };
