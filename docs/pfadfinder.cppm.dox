@@ -12,6 +12,7 @@
  *    - static_data_dir()      : System-wide static data directory
  *    - data_dir()             : User-specific data directory (with create_dir parameter)
  *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
+ *    - user_config_file()     : Path to a user configuration file (with file existence check)
  *    - cache_dir()            : User-specific cache directory (with create_dir parameter)
  *    - log_dir()              : User-specific log directory for application logs (with create_dir parameter)
  *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
@@ -141,6 +142,18 @@
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific configuration directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::user_config_file(const fs::path&) const
+ * @brief Returns the path to a user configuration file.
+ * 
+ * Appends a relative file path to the user configuration directory and checks
+ * if the file exists.
+ * 
+ * @param rel_path Relative path to the configuration file.
+ * @return fs::path The full path to the configuration file.
+ * @throws file_not_found If the file does not exist.
  */
 
 /**
