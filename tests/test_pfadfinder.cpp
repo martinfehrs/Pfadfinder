@@ -7,6 +7,7 @@
 // Standardbibliotheks-Header
 #include <filesystem>
 #include <string>
+#include <fstream>
 
 // CATCH2 Header (single-include version)
 #define CATCH_CONFIG_MAIN
