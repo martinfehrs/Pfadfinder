@@ -7,6 +7,7 @@
 // Standardbibliotheks-Header
 #include <filesystem>
 #include <string>
+#include <fstream>
 
 // CATCH2 Header (single-include version)
 #define CATCH_CONFIG_MAIN
@@ -180,6 +181,28 @@ TEST_CASE("pfadfinder::application_environment: Pfadfunktionen", "[integration]"
         REQUIRE(fs::is_directory(config_dir));
         // Aufräumen
         fs::remove_all(config_dir);
+    }
+    
+    SECTION("user_config_file gibt gültigen Pfad zurück wenn Datei existiert") {
+        auto config_dir = env.user_config_dir(true);
+        auto config_file = config_dir / "test_config.json";
+        
+        // Datei erstellen
+        std::ofstream test_file(config_file);
+        test_file << "{}" << std::endl;
+        test_file.close();
+        
+        auto result = env.user_config_file("test_config.json");
+        REQUIRE(result == config_file);
+        REQUIRE(fs::exists(result));
+        REQUIRE(fs::is_regular_file(result));
+        
+        // Aufräumen
+        fs::remove_all(config_dir);
+    }
+    
+    SECTION("user_config_file wirft wenn Datei nicht existiert") {
+        REQUIRE_THROWS_AS(env.user_config_file("nonexistent_config.json"), pfadfinder::file_not_found);
     }
     
     SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück") {

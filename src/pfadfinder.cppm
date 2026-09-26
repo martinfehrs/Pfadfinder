@@ -12,6 +12,7 @@
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
  *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis (mit create_dir Parameter)
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis (mit create_dir Parameter)
+ *    - user_config_file()     : Pfad zu einer Benutzer-Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
@@ -235,6 +236,24 @@ namespace pfadfinder
                 fs::create_directories(path);
             else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Gibt den Pfad zu einer Benutzer-Konfigurationsdatei zurück.
+         * 
+         * Fügt einen relativen Dateipfad zum Benutzer-Konfigurationsverzeichnis hinzu
+         * und prüft, ob die Datei existiert.
+         * 
+         * @param rel_path Relativer Pfad zur Konfigurationsdatei.
+         * @return fs::path Der vollständige Pfad zur Konfigurationsdatei.
+         * @throws file_not_found Wenn die Datei nicht existiert.
+         */
+        [[nodiscard]] fs::path user_config_file(const fs::path& rel_path) const
+        {
+            auto path = get_user_config_dir() / rel_path;
+            if (!fs::exists(path) || !fs::is_regular_file(path))
+                throw file_not_found(path.string());
             return path;
         }
 
