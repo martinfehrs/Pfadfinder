@@ -5,25 +5,25 @@ enable_testing()
 # Test-Executable erstellen
 add_executable(test_pfadfinder)
 
-target_sources(test_pfadfinder PRIVATE test_pfadfinder.cpp)
-
 target_sources(test_pfadfinder
     PRIVATE
-        FILE_SET CXX_MODULES
-        FILES scoped_environment.cppm
+        test_pfadfinder.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_sources(test_pfadfinder
         PRIVATE
-            FILE_SET CXX_MODULES
-            FILES windows.cppm
+            windows_environment_tests.cpp
     )
-else()
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(test_pfadfinder
         PRIVATE
-            FILE_SET CXX_MODULES
-            FILES unix.cppm
+            linux_environment_tests.cpp
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_sources(test_pfadfinder
+        PRIVATE
+            macos_environment_tests.cpp
     )
 endif()
 
