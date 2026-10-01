@@ -162,12 +162,10 @@ TEST_CASE("windows_system_environment::home_dir throws when USERPROFILE is not s
 {
     // Save original USERPROFILE
     DWORD size = GetEnvironmentVariableA("USERPROFILE", nullptr, 0);
-    std::string original_userprofile;
-    if (size != 0)
-    {
-        original_userprofile.resize(size - 1);
-        GetEnvironmentVariableA("USERPROFILE", original_userprofile.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_userprofile(size - 1, '\0');
+    GetEnvironmentVariableA("USERPROFILE", original_userprofile.data(), size);
     
     // Temporarily unset USERPROFILE
     SetEnvironmentVariableA("USERPROFILE", nullptr);
@@ -184,12 +182,10 @@ TEST_CASE("windows_system_environment::data_dir throws when APPDATA is not set")
 {
     // Save original APPDATA
     DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
-    std::string original_appdata;
-    if (size != 0)
-    {
-        original_appdata.resize(size - 1);
-        GetEnvironmentVariableA("APPDATA", original_appdata.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_appdata(size - 1, '\0');
+    GetEnvironmentVariableA("APPDATA", original_appdata.data(), size);
     
     // Temporarily unset APPDATA
     SetEnvironmentVariableA("APPDATA", nullptr);
@@ -198,20 +194,17 @@ TEST_CASE("windows_system_environment::data_dir throws when APPDATA is not set")
     REQUIRE_THROWS_AS(backend.data_dir(fs::path("C:/Program Files/MyApp"), "test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore APPDATA
-    if (!original_appdata.empty())
-        SetEnvironmentVariableA("APPDATA", original_appdata.c_str());
+    SetEnvironmentVariableA("APPDATA", original_appdata.c_str());
 }
 
 TEST_CASE("windows_system_environment::user_config_dir throws when APPDATA is not set")
 {
     // Save original APPDATA
     DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
-    std::string original_appdata;
-    if (size != 0)
-    {
-        original_appdata.resize(size - 1);
-        GetEnvironmentVariableA("APPDATA", original_appdata.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_appdata(size - 1, '\0');
+    GetEnvironmentVariableA("APPDATA", original_appdata.data(), size);
     
     // Temporarily unset APPDATA
     SetEnvironmentVariableA("APPDATA", nullptr);
@@ -220,20 +213,17 @@ TEST_CASE("windows_system_environment::user_config_dir throws when APPDATA is no
     REQUIRE_THROWS_AS(backend.user_config_dir(fs::path("C:/Program Files/MyApp"), "test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore APPDATA
-    if (!original_appdata.empty())
-        SetEnvironmentVariableA("APPDATA", original_appdata.c_str());
+    SetEnvironmentVariableA("APPDATA", original_appdata.c_str());
 }
 
 TEST_CASE("windows_system_environment::cache_dir throws when LOCALAPPDATA is not set")
 {
     // Save original LOCALAPPDATA
     DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
-    std::string original_localappdata;
-    if (size != 0)
-    {
-        original_localappdata.resize(size - 1);
-        GetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_localappdata(size - 1, '\0');
+    GetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.data(), size);
     
     // Temporarily unset LOCALAPPDATA
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
@@ -242,20 +232,17 @@ TEST_CASE("windows_system_environment::cache_dir throws when LOCALAPPDATA is not
     REQUIRE_THROWS_AS(backend.cache_dir(fs::path("C:/Program Files/MyApp"), "test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore LOCALAPPDATA
-    if (!original_localappdata.empty())
-        SetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.c_str());
+    SetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.c_str());
 }
 
 TEST_CASE("windows_system_environment::log_dir throws when LOCALAPPDATA is not set")
 {
     // Save original LOCALAPPDATA
     DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
-    std::string original_localappdata;
-    if (size != 0)
-    {
-        original_localappdata.resize(size - 1);
-        GetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_localappdata(size - 1, '\0');
+    GetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.data(), size);
     
     // Temporarily unset LOCALAPPDATA
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
@@ -264,20 +251,17 @@ TEST_CASE("windows_system_environment::log_dir throws when LOCALAPPDATA is not s
     REQUIRE_THROWS_AS(backend.log_dir(fs::path("C:/Program Files/MyApp"), "test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore LOCALAPPDATA
-    if (!original_localappdata.empty())
-        SetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.c_str());
+    SetEnvironmentVariableA("LOCALAPPDATA", original_localappdata.c_str());
 }
 
 TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
 {
     // Save original TEMP
     DWORD size = GetEnvironmentVariableA("TEMP", nullptr, 0);
-    std::string original_temp;
-    if (size != 0)
-    {
-        original_temp.resize(size - 1);
-        GetEnvironmentVariableA("TEMP", original_temp.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_temp(size - 1, '\0');
+    GetEnvironmentVariableA("TEMP", original_temp.data(), size);
     
     // Temporarily unset TEMP
     SetEnvironmentVariableA("TEMP", nullptr);
@@ -286,20 +270,17 @@ TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
     REQUIRE_THROWS_AS(backend.temp_dir("test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore TEMP
-    if (!original_temp.empty())
-        SetEnvironmentVariableA("TEMP", original_temp.c_str());
+    SetEnvironmentVariableA("TEMP", original_temp.c_str());
 }
 
 TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPPDATA is not set")
 {
     // Save original ALLUSERSAPPDATA
     DWORD size = GetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr, 0);
-    std::string original_allusersappdata;
-    if (size != 0)
-    {
-        original_allusersappdata.resize(size - 1);
-        GetEnvironmentVariableA("ALLUSERSAPPDATA", original_allusersappdata.data(), size);
-    }
+    if (size == 0)
+        return;
+    std::string original_allusersappdata(size - 1, '\0');
+    GetEnvironmentVariableA("ALLUSERSAPPDATA", original_allusersappdata.data(), size);
     
     // Temporarily unset ALLUSERSAPPDATA
     SetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr);
@@ -308,6 +289,5 @@ TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPP
     REQUIRE_THROWS_AS(backend.shared_config_dir("test_app"), pfadfinder::environment_variable_not_set);
     
     // Restore ALLUSERSAPPDATA
-    if (!original_allusersappdata.empty())
-        SetEnvironmentVariableA("ALLUSERSAPPDATA", original_allusersappdata.c_str());
+    SetEnvironmentVariableA("ALLUSERSAPPDATA", original_allusersappdata.c_str());
 }
