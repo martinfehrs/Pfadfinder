@@ -35,71 +35,99 @@ namespace pfadfinder
 
     fs::path system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* appdata = std::getenv("APPDATA");
+        DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
-        if (!appdata)
+        if (size == 0)
             throw environment_variable_not_set{ "APPDATA" };
 
-        return fs::path{ appdata } / app_name;
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("APPDATA", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "APPDATA" };
+
+        return fs::path{ buffer } / app_name;
     }
 
     fs::path system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* appdata = std::getenv("APPDATA");
+        DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
-        if (!appdata)
+        if (size == 0)
             throw environment_variable_not_set{ "APPDATA" };
 
-        return fs::path{ appdata } / app_name;
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("APPDATA", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "APPDATA" };
+
+        return fs::path{ buffer } / app_name;
     }
 
     fs::path system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* localappdata = std::getenv("LOCALAPPDATA");
+        DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
-        if (!localappdata)
+        if (size == 0)
             throw environment_variable_not_set{ "LOCALAPPDATA" };
 
-        return fs::path{ localappdata } / app_name / "Cache";
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("LOCALAPPDATA", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "LOCALAPPDATA" };
+
+        return fs::path{ buffer } / app_name / "Cache";
     }
 
     fs::path system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        const char* localappdata = std::getenv("LOCALAPPDATA");
+        DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
-        if (!localappdata)
+        if (size == 0)
             throw environment_variable_not_set{ "LOCALAPPDATA" };
 
-        return fs::path{ localappdata } / app_name / "Logs";
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("LOCALAPPDATA", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "LOCALAPPDATA" };
+
+        return fs::path{ buffer } / app_name / "Logs";
     }
 
     fs::path system_environment::temp_dir(const std::string& app_name) const
     {
-        const char* temp = std::getenv("TEMP");
+        DWORD size = GetEnvironmentVariableA("TEMP", nullptr, 0);
 
-        if (!temp)
+        if (size == 0)
             throw environment_variable_not_set{ "TEMP" };
 
-        return fs::path{ temp } / app_name;
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("TEMP", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "TEMP" };
+
+        return fs::path{ buffer } / app_name;
     }
 
     fs::path system_environment::home_dir() const
     {
-        const char* userprofile = std::getenv("USERPROFILE");
+        DWORD size = GetEnvironmentVariableA("USERPROFILE", nullptr, 0);
 
-        if (!userprofile)
+        if (size == 0)
             throw environment_variable_not_set{ "USERPROFILE" };
 
-        return fs::path{ userprofile };
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("USERPROFILE", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "USERPROFILE" };
+
+        return fs::path{ buffer };
     }
 
     fs::path system_environment::shared_config_dir(const std::string& app_name) const
     {
-        const char* allusersappdata = std::getenv("ALLUSERSAPPDATA");
+        DWORD size = GetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr, 0);
 
-        if (!allusersappdata)
+        if (size == 0)
             throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
 
-        return fs::path{ allusersappdata } / app_name;
+        std::string buffer(size - 1, '\0');
+        if (GetEnvironmentVariableA("ALLUSERSAPPDATA", buffer.data(), size) == 0)
+            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+
+        return fs::path{ buffer } / app_name;
     }
 }
