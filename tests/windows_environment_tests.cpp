@@ -160,7 +160,6 @@ TEST_CASE("windows_system_environment::shared_config_dir returns ALLUSERSAPPDATA
 
 TEST_CASE("windows_system_environment::home_dir throws when USERPROFILE is not set")
 {
-    // Save and restore USERPROFILE to avoid affecting other tests
     const char* original = std::getenv("USERPROFILE");
     SetEnvironmentVariableA("USERPROFILE", nullptr);
     
@@ -172,7 +171,6 @@ TEST_CASE("windows_system_environment::home_dir throws when USERPROFILE is not s
 
 TEST_CASE("windows_system_environment::data_dir throws when APPDATA is not set")
 {
-    // Save and restore APPDATA to avoid affecting other tests
     const char* original = std::getenv("APPDATA");
     SetEnvironmentVariableA("APPDATA", nullptr);
     
@@ -184,7 +182,6 @@ TEST_CASE("windows_system_environment::data_dir throws when APPDATA is not set")
 
 TEST_CASE("windows_system_environment::user_config_dir throws when APPDATA is not set")
 {
-    // Save and restore APPDATA to avoid affecting other tests
     const char* original = std::getenv("APPDATA");
     SetEnvironmentVariableA("APPDATA", nullptr);
     
@@ -196,7 +193,6 @@ TEST_CASE("windows_system_environment::user_config_dir throws when APPDATA is no
 
 TEST_CASE("windows_system_environment::cache_dir throws when LOCALAPPDATA is not set")
 {
-    // Save and restore LOCALAPPDATA to avoid affecting other tests
     const char* original = std::getenv("LOCALAPPDATA");
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
     
@@ -208,7 +204,6 @@ TEST_CASE("windows_system_environment::cache_dir throws when LOCALAPPDATA is not
 
 TEST_CASE("windows_system_environment::log_dir throws when LOCALAPPDATA is not set")
 {
-    // Save and restore LOCALAPPDATA to avoid affecting other tests
     const char* original = std::getenv("LOCALAPPDATA");
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
     
@@ -220,7 +215,6 @@ TEST_CASE("windows_system_environment::log_dir throws when LOCALAPPDATA is not s
 
 TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
 {
-    // Save and restore TEMP to avoid affecting other tests
     const char* original = std::getenv("TEMP");
     SetEnvironmentVariableA("TEMP", nullptr);
     
@@ -232,7 +226,6 @@ TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
 
 TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPPDATA is not set")
 {
-    // Save and restore ALLUSERSAPPDATA to avoid affecting other tests
     const char* original = std::getenv("ALLUSERSAPPDATA");
     SetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr);
     
