@@ -48,7 +48,7 @@ namespace pfadfinder
 
     [[nodiscard]] fs::path get_macos_bundle_static_data_dir(const fs::path& exe_dir, const std::string& app_name)
     {
-        return exe_dir.parent_path().parent_path() / "Resources" / app_name;
+        return exe_dir.parent_path() / "Resources" / app_name;
     }
 
     fs::path system_environment::executable_path() const
