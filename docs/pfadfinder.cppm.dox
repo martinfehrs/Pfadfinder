@@ -13,6 +13,8 @@
  *    - data_dir()             : User-specific data directory (with create_dir parameter)
  *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
  *    - user_config_file()     : Path to a user configuration file (with file existence check)
+ *    - shared_config_dir()    : Shared configuration directory (with create_dir parameter)
+ *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
  *    - cache_dir()            : User-specific cache directory (with create_dir parameter)
  *    - log_dir()              : User-specific log directory for application logs (with create_dir parameter)
  *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
@@ -149,6 +151,18 @@
  * @brief Returns the path to a user configuration file.
  * 
  * Appends a relative file path to the user configuration directory and checks
+ * if the file exists.
+ * 
+ * @param rel_path Relative path to the configuration file.
+ * @return fs::path The full path to the configuration file.
+ * @throws file_not_found If the file does not exist.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::shared_config_file(const fs::path&) const
+ * @brief Returns the path to a shared configuration file.
+ * 
+ * Appends a relative file path to the shared configuration directory and checks
  * if the file exists.
  * 
  * @param rel_path Relative path to the configuration file.
