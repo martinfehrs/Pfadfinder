@@ -282,6 +282,31 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env.shared_config_file("nonexistent_shared_config.json"), pfadfinder::file_not_found);
     }
 
+    SECTION("find_shared_config_file gibt gültigen Pfad zurück wenn Datei existiert")
+    {
+        auto config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        auto config_file = config_dir / "shared_config.json";
+        
+        // Verzeichnis und Datei erstellen
+        fs::create_directories(config_dir);
+        std::ofstream test_file(config_file);
+        test_file << "{}" << std::endl;
+        test_file.close();
+        
+        auto result = env.find_shared_config_file("shared_config.json");
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == config_file);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_regular_file(result.value()));
+    }
+
+    SECTION("find_shared_config_file gibt std::nullopt zurück wenn Datei nicht existiert")
+    {
+        auto result = env.find_shared_config_file("nonexistent_shared_config.json");
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     // Test cache_dir
     SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
