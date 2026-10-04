@@ -17,6 +17,7 @@
  *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis (mit create_dir Parameter)
  *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
+ *    - find_config_file()     : Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt std::optional zurück)
  *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
@@ -311,6 +312,24 @@ namespace pfadfinder
             if (fs::exists(path) && fs::is_regular_file(path))
                 return path;
             return std::nullopt;
+        }
+
+        /**
+         * @brief Sucht nach einer Konfigurationsdatei im Benutzer- und dann im geteilten Konfigurationsverzeichnis.
+         * 
+         * Zuerst wird im Benutzer-Konfigurationsverzeichnis nach der Datei gesucht.
+         * Falls diese nicht existiert, wird im geteilten Konfigurationsverzeichnis gesucht.
+         * Falls die Datei in keinem der beiden Verzeichnisse existiert, wird std::nullopt zurückgegeben.
+         * 
+         * @param rel_path Relativer Pfad zur Konfigurationsdatei.
+         * @return std::optional<fs::path> Der vollständige Pfad zur gefundenen Konfigurationsdatei oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_config_file(const fs::path& rel_path) const
+        {
+            auto result = find_user_config_file(rel_path);
+            if (result.has_value())
+                return result;
+            return find_shared_config_file(rel_path);
         }
 
         /**

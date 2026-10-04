@@ -17,6 +17,7 @@
  *    - shared_config_dir()    : Shared configuration directory (with create_dir parameter)
  *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
  *    - find_shared_config_file() : Path to a shared configuration file (returns std::optional)
+ *    - find_config_file()     : Searches user then shared config directory (returns std::optional)
  *    - cache_dir()            : User-specific cache directory (with create_dir parameter)
  *    - log_dir()              : User-specific log directory for application logs (with create_dir parameter)
  *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
@@ -192,6 +193,18 @@
  * 
  * @param rel_path Relative path to the configuration file.
  * @return std::optional<fs::path> The full path to the configuration file or std::nullopt.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_config_file(const fs::path&) const
+ * @brief Searches for a configuration file in user and then shared configuration directory.
+ * 
+ * First searches in the user configuration directory for the file.
+ * If not found, searches in the shared configuration directory.
+ * If the file does not exist in either directory, returns std::nullopt.
+ * 
+ * @param rel_path Relative path to the configuration file.
+ * @return std::optional<fs::path> The full path to the found configuration file or std::nullopt.
  */
 
 /**
