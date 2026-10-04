@@ -236,6 +236,30 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env.user_config_file("nonexistent_config.json"), pfadfinder::file_not_found);
     }
 
+    SECTION("find_user_config_file gibt gültigen Pfad zurück wenn Datei existiert")
+    {
+        auto config_dir = env.user_config_dir(true);
+        auto config_file = config_dir / "test_config.json";
+        
+        // Datei erstellen
+        std::ofstream test_file(config_file);
+        test_file << "{}" << std::endl;
+        test_file.close();
+        
+        auto result = env.find_user_config_file("test_config.json");
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == config_file);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_regular_file(result.value()));
+    }
+
+    SECTION("find_user_config_file gibt std::nullopt zurück wenn Datei nicht existiert")
+    {
+        auto result = env.find_user_config_file("nonexistent_config.json");
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     SECTION("shared_config_file gibt gültigen Pfad zurück wenn Datei existiert")
     {
         auto config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;

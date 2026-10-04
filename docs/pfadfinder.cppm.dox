@@ -13,6 +13,7 @@
  *    - data_dir()             : User-specific data directory (with create_dir parameter)
  *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
  *    - user_config_file()     : Path to a user configuration file (with file existence check)
+ *    - find_user_config_file() : Path to a user configuration file (returns std::optional)
  *    - shared_config_dir()    : Shared configuration directory (with create_dir parameter)
  *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
  *    - cache_dir()            : User-specific cache directory (with create_dir parameter)
@@ -156,6 +157,17 @@
  * @param rel_path Relative path to the configuration file.
  * @return fs::path The full path to the configuration file.
  * @throws file_not_found If the file does not exist.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_user_config_file(const fs::path&) const
+ * @brief Returns the path to a user configuration file or std::nullopt if it does not exist.
+ * 
+ * Appends a relative file path to the user configuration directory and checks
+ * if the file exists. Returns std::nullopt instead of throwing an exception.
+ * 
+ * @param rel_path Relative path to the configuration file.
+ * @return std::optional<fs::path> The full path to the configuration file or std::nullopt.
  */
 
 /**
