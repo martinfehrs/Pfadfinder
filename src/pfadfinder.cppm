@@ -14,6 +14,7 @@
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis (mit create_dir Parameter)
  *    - user_config_file()     : Pfad zu einer Benutzer-Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_user_config_file() : Pfad zu einer Benutzer-Konfigurationsdatei (gibt std::optional zurück)
+ *    - find_user_config_dir()  : Pfad zu einem Benutzer-Konfigurationsverzeichnis (gibt std::optional zurück)
  *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis (mit create_dir Parameter)
  *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
@@ -277,6 +278,25 @@ namespace pfadfinder
         {
             auto path = get_user_config_dir() / rel_path;
             if (fs::exists(path) && fs::is_regular_file(path))
+                return path;
+            return std::nullopt;
+        }
+
+        /**
+         * @brief Gibt den Pfad zu einem Benutzer-Konfigurationsverzeichnis zurück oder std::nullopt, falls dieses nicht existiert.
+         * 
+         * Fügt einen relativen Verzeichnispfad zum Benutzer-Konfigurationsverzeichnis hinzu
+         * und prüft, ob das Verzeichnis existiert. Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         * 
+         * @param rel_path Relativer Pfad zum Konfigurationsverzeichnis.
+         * @return std::optional<fs::path> Der vollständige Pfad zum Konfigurationsverzeichnis oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_user_config_dir(const fs::path& rel_path = "") const
+        {
+            auto path = get_user_config_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
                 return path;
             return std::nullopt;
         }
