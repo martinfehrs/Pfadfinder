@@ -31,6 +31,7 @@ module;
 #include <string>
 #include <optional>
 #include <utility>
+#include <vector>
 
 export module pfadfinder;
 
