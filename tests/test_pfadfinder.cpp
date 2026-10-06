@@ -260,6 +260,44 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(result == std::nullopt);
     }
 
+    SECTION("find_user_config_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto config_dir = env.user_config_dir(true);
+        auto result = env.find_user_config_dir();
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == config_dir);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_directory(result.value()));
+    }
+
+    SECTION("find_user_config_dir gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_no_create("nonexistent_config_dir_app", backend);
+        auto result = env_no_create.find_user_config_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
+    SECTION("find_user_config_dir mit rel_path gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto config_dir = env.user_config_dir(true);
+        auto subdir = config_dir / "subdir";
+        fs::create_directories(subdir);
+        
+        auto result = env.find_user_config_dir("subdir");
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == subdir);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_directory(result.value()));
+    }
+
+    SECTION("find_user_config_dir mit rel_path gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        auto result = env.find_user_config_dir("nonexistent_subdir");
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     SECTION("shared_config_file gibt gültigen Pfad zurück wenn Datei existiert")
     {
         auto config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
