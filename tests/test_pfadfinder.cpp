@@ -471,33 +471,40 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     }
 
     // Test cache_dir
-    SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück")
+    SECTION("cache_dir wirft wenn Verzeichnis nicht existiert")
     {
-        auto cache_dir = env.cache_dir(true);
+        test_env_type env_unique("nonexistent_cache_app", backend);
+        REQUIRE_THROWS_AS(env_unique.cache_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("cache_dir mit rel_path wirft wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_unique("nonexistent_cache_app", backend);
+        REQUIRE_THROWS_AS(env_unique.cache_dir("subdir"), pfadfinder::directory_not_found);
+    }
+
+    // Test create_cache_dir
+    SECTION("create_cache_dir erstellt Verzeichnis und gibt Pfad zurück")
+    {
+        auto cache_dir = env.create_cache_dir();
         auto expected = backend.base_temp_dir / "home" / ".cache" / test_app_name;
         REQUIRE(cache_dir == expected);
         REQUIRE(fs::exists(cache_dir));
         REQUIRE(fs::is_directory(cache_dir));
     }
 
-    SECTION("cache_dir mit rel_path erstellt Verzeichnis")
+    SECTION("create_cache_dir mit rel_path erstellt Verzeichnis")
     {
-        auto cache_dir = env.cache_dir("subdir", true);
+        auto cache_dir = env.create_cache_dir("subdir");
         auto expected = backend.base_temp_dir / "home" / ".cache" / test_app_name / "subdir";
         REQUIRE(cache_dir == expected);
         REQUIRE(fs::exists(cache_dir));
         REQUIRE(fs::is_directory(cache_dir));
     }
 
-    SECTION("cache_dir ohne create_dir wirft wenn Verzeichnis nicht existiert")
-    {
-        test_env_type env_unique("nonexistent_cache_app", backend);
-        REQUIRE_THROWS_AS(env_unique.cache_dir(false), pfadfinder::directory_not_found);
-    }
-
     SECTION("find_cache_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
-        auto cache_dir = env.cache_dir(true);
+        auto cache_dir = env.create_cache_dir();
         auto result = env.find_cache_dir();
         REQUIRE(result.has_value());
         REQUIRE(result.value() == cache_dir);
@@ -515,7 +522,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_cache_dir mit rel_path gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
-        auto cache_dir = env.cache_dir(true);
+        auto cache_dir = env.create_cache_dir();
         auto subdir = cache_dir / "subdir";
         fs::create_directories(subdir);
         
@@ -650,9 +657,11 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("cache_dir gibt konsistente Werte zurück")
     {
+        auto created_dir = env.create_cache_dir();
         auto dir1 = env.cache_dir();
         auto dir2 = env.cache_dir();
         REQUIRE(dir1 == dir2);
+        REQUIRE(dir1 == created_dir);
     }
 
     SECTION("log_dir gibt konsistente Werte zurück")
