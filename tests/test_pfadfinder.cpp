@@ -541,28 +541,35 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     }
 
     // Test log_dir
-    SECTION("log_dir erstellt Verzeichnis und gibt Pfad zurück")
+    SECTION("log_dir wirft wenn Verzeichnis nicht existiert")
     {
-        auto log_dir = env.log_dir(true);
+        test_env_type env_unique("nonexistent_log_app", backend);
+        REQUIRE_THROWS_AS(env_unique.log_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("log_dir mit rel_path wirft wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_unique("nonexistent_log_app", backend);
+        REQUIRE_THROWS_AS(env_unique.log_dir("subdir"), pfadfinder::directory_not_found);
+    }
+
+    // Test create_log_dir
+    SECTION("create_log_dir erstellt Verzeichnis und gibt Pfad zurück")
+    {
+        auto log_dir = env.create_log_dir();
         auto expected = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log";
         REQUIRE(log_dir == expected);
         REQUIRE(fs::exists(log_dir));
         REQUIRE(fs::is_directory(log_dir));
     }
 
-    SECTION("log_dir mit rel_path erstellt Verzeichnis")
+    SECTION("create_log_dir mit rel_path erstellt Verzeichnis")
     {
-        auto log_dir = env.log_dir("subdir", true);
+        auto log_dir = env.create_log_dir("subdir");
         auto expected = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log" / "subdir";
         REQUIRE(log_dir == expected);
         REQUIRE(fs::exists(log_dir));
         REQUIRE(fs::is_directory(log_dir));
-    }
-
-    SECTION("log_dir ohne create_dir wirft wenn Verzeichnis nicht existiert")
-    {
-        test_env_type env_unique("nonexistent_log_app", backend);
-        REQUIRE_THROWS_AS(env_unique.log_dir(false), pfadfinder::directory_not_found);
     }
 
     // Test temp_dir
@@ -666,9 +673,11 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("log_dir gibt konsistente Werte zurück")
     {
+        auto created_dir = env.create_log_dir();
         auto dir1 = env.log_dir();
         auto dir2 = env.log_dir();
         REQUIRE(dir1 == dir2);
+        REQUIRE(dir1 == created_dir);
     }
 
     SECTION("temp_dir gibt konsistente Werte zurück")
