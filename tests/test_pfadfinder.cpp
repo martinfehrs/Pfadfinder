@@ -369,6 +369,69 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(result.value() == user_config_file);
     }
 
+    SECTION("config_files gibt leeren Vektor zurück wenn keine Dateien existieren")
+    {
+        auto result = env.config_files("nonexistent_config.json");
+        REQUIRE(result.empty());
+        REQUIRE(result.size() == 0);
+    }
+
+    SECTION("config_files gibt Benutzer-Konfigurationsdatei zurück wenn nur diese existiert")
+    {
+        auto config_dir = env.user_config_dir(true);
+        auto config_file = config_dir / "test_config.json";
+        
+        // Datei im Benutzer-Konfigurationsverzeichnis erstellen
+        std::ofstream test_file(config_file);
+        test_file << "{}" << std::endl;
+        test_file.close();
+        
+        auto result = env.config_files("test_config.json");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0] == config_file);
+    }
+
+    SECTION("config_files gibt geteilte Konfigurationsdatei zurück wenn nur diese existiert")
+    {
+        auto shared_config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        auto shared_config_file = shared_config_dir / "test_config.json";
+        
+        // Datei nur im geteilten Konfigurationsverzeichnis erstellen
+        fs::create_directories(shared_config_dir);
+        std::ofstream test_file(shared_config_file);
+        test_file << "{}" << std::endl;
+        test_file.close();
+        
+        auto result = env.config_files("test_config.json");
+        REQUIRE(result.size() == 1);
+        REQUIRE(result[0] == shared_config_file);
+    }
+
+    SECTION("config_files gibt beide Konfigurationsdateien zurück wenn beide existieren")
+    {
+        auto user_config_dir = env.user_config_dir(true);
+        auto shared_config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        
+        auto user_config_file = user_config_dir / "test_config.json";
+        auto shared_config_file = shared_config_dir / "test_config.json";
+        
+        // Dateien in beiden Verzeichnissen erstellen
+        fs::create_directories(shared_config_dir);
+        std::ofstream user_file(user_config_file);
+        user_file << "user_config" << std::endl;
+        user_file.close();
+        std::ofstream shared_file(shared_config_file);
+        shared_file << "shared_config" << std::endl;
+        shared_file.close();
+        
+        auto result = env.config_files("test_config.json");
+        REQUIRE(result.size() == 2);
+        // Benutzer-Konfigurationsdatei sollte zuerst sein
+        REQUIRE(result[0] == user_config_file);
+        // Geteilte Konfigurationsdatei sollte zweitens sein
+        REQUIRE(result[1] == shared_config_file);
+    }
+
     // Test cache_dir
     SECTION("cache_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
