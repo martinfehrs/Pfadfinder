@@ -21,6 +21,7 @@
  *    - find_config_file()     : Searches user then shared config directory (returns std::optional)
  *    - config_files()         : Returns all available configuration files (0, 1 or 2 entries)
  *    - cache_dir()            : User-specific cache directory (with create_dir parameter)
+ *    - find_cache_dir()       : Path to a user cache directory (returns std::optional)
  *    - log_dir()              : User-specific log directory for application logs (with create_dir parameter)
  *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
  *    - home_dir()             : User's home directory
@@ -259,6 +260,17 @@
  * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific cache directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist and create_dir is false.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_cache_dir(const fs::path&) const
+ * @brief Returns the path to a user cache directory or std::nullopt if it does not exist.
+ * 
+ * Appends a relative directory path to the user cache directory and checks
+ * if the directory exists. Returns std::nullopt instead of throwing an exception.
+ * 
+ * @param rel_path Relative path to the cache directory (optional, defaults to empty).
+ * @return std::optional<fs::path> The full path to the cache directory or std::nullopt.
  */
 
 /**
