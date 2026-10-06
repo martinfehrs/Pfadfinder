@@ -18,6 +18,7 @@
  *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
  *    - find_config_file()     : Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt std::optional zurück)
+ *    - config_files()         : Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2)
  *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
@@ -330,6 +331,28 @@ namespace pfadfinder
             if (result.has_value())
                 return result;
             return find_shared_config_file(rel_path);
+        }
+
+        /**
+         * @brief Gibt alle verfügbaren Konfigurationsdateien zurück.
+         * 
+         * Durchsucht sowohl das Benutzer-Konfigurationsverzeichnis als auch das geteilte
+         * Konfigurationsverzeichnis nach der angegebenen Konfigurationsdatei.
+         * Gibt einen Vektor mit allen gefundenen Konfigurationsdateien zurück (0, 1 oder 2 Einträge).
+         * 
+         * @param rel_path Relativer Pfad zur Konfigurationsdatei.
+         * @return std::vector<fs::path> Vektor mit allen gefundenen Konfigurationsdateien (Benutzer zuerst, dann geteilt).
+         */
+        [[nodiscard]] std::vector<fs::path> config_files(const fs::path& rel_path) const
+        {
+            std::vector<fs::path> result;
+            auto user_config = find_user_config_file(rel_path);
+            if (user_config.has_value())
+                result.push_back(*user_config);
+            auto shared_config = find_shared_config_file(rel_path);
+            if (shared_config.has_value())
+                result.push_back(*shared_config);
+            return result;
         }
 
         /**
