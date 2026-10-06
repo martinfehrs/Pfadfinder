@@ -21,6 +21,7 @@
  *    - find_config_file()     : Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt std::optional zurück)
  *    - config_files()         : Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2)
  *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis (mit create_dir Parameter)
+ *    - find_cache_dir()       : Pfad zu einem Benutzer-Cache-Verzeichnis (gibt std::optional zurück)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle (mit create_dir Parameter)
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
  *    - home_dir()             : Home-Verzeichnis des Benutzers
@@ -421,6 +422,25 @@ namespace pfadfinder
             else if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
+        }
+
+        /**
+         * @brief Gibt den Pfad zu einem Benutzer-Cache-Verzeichnis zurück oder std::nullopt, falls dieses nicht existiert.
+         * 
+         * Fügt einen relativen Verzeichnispfad zum Benutzer-Cache-Verzeichnis hinzu
+         * und prüft, ob das Verzeichnis existiert. Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         * 
+         * @param rel_path Relativer Pfad zum Cache-Verzeichnis.
+         * @return std::optional<fs::path> Der vollständige Pfad zum Cache-Verzeichnis oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_cache_dir(const fs::path& rel_path = "") const
+        {
+            auto path = get_cache_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
         }
 
         /**

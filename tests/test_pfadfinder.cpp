@@ -495,6 +495,44 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env_unique.cache_dir(false), pfadfinder::directory_not_found);
     }
 
+    SECTION("find_cache_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto cache_dir = env.cache_dir(true);
+        auto result = env.find_cache_dir();
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == cache_dir);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_directory(result.value()));
+    }
+
+    SECTION("find_cache_dir gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_no_create("nonexistent_find_cache_app", backend);
+        auto result = env_no_create.find_cache_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
+    SECTION("find_cache_dir mit rel_path gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto cache_dir = env.cache_dir(true);
+        auto subdir = cache_dir / "subdir";
+        fs::create_directories(subdir);
+        
+        auto result = env.find_cache_dir("subdir");
+        REQUIRE(result.has_value());
+        REQUIRE(result.value() == subdir);
+        REQUIRE(fs::exists(result.value()));
+        REQUIRE(fs::is_directory(result.value()));
+    }
+
+    SECTION("find_cache_dir mit rel_path gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        auto result = env.find_cache_dir("nonexistent_subdir");
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     // Test log_dir
     SECTION("log_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
