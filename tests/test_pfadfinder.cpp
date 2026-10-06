@@ -166,28 +166,35 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     }
 
     // Test data_dir
-    SECTION("data_dir erstellt Verzeichnis und gibt Pfad zurück")
+    SECTION("data_dir wirft wenn Verzeichnis nicht existiert")
     {
-        auto home_dir = env.data_dir(true);
+        test_env_type env_unique("nonexistent_data_app", backend);
+        REQUIRE_THROWS_AS(env_unique.data_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("data_dir mit rel_path wirft wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_unique("nonexistent_data_app", backend);
+        REQUIRE_THROWS_AS(env_unique.data_dir("subdir"), pfadfinder::directory_not_found);
+    }
+
+    // Test create_data_dir
+    SECTION("create_data_dir erstellt Verzeichnis und gibt Pfad zurück")
+    {
+        auto home_dir = env.create_data_dir();
         auto expected = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name;
         REQUIRE(home_dir == expected);
         REQUIRE(fs::exists(home_dir));
         REQUIRE(fs::is_directory(home_dir));
     }
 
-    SECTION("data_dir mit rel_path erstellt Verzeichnis")
+    SECTION("create_data_dir mit rel_path erstellt Verzeichnis")
     {
-        auto home_dir = env.data_dir("subdir", true);
+        auto home_dir = env.create_data_dir("subdir");
         auto expected = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name / "subdir";
         REQUIRE(home_dir == expected);
         REQUIRE(fs::exists(home_dir));
         REQUIRE(fs::is_directory(home_dir));
-    }
-
-    SECTION("data_dir ohne create_dir wirft wenn Verzeichnis nicht existiert")
-    {
-        test_env_type env_unique("nonexistent_data_app", backend);
-        REQUIRE_THROWS_AS(env_unique.data_dir(false), pfadfinder::directory_not_found);
     }
 
     // Test user_config_dir
@@ -650,9 +657,11 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("data_dir gibt konsistente Werte zurück")
     {
+        auto created_dir = env.create_data_dir();
         auto dir1 = env.data_dir();
         auto dir2 = env.data_dir();
         REQUIRE(dir1 == dir2);
+        REQUIRE(dir1 == created_dir);
     }
 
     SECTION("user_config_dir gibt konsistente Werte zurück")
