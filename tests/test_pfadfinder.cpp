@@ -674,20 +674,22 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("cache_dir gibt konsistente Werte zurück")
     {
-        auto created_dir = env.create_cache_dir();
+        auto expected_path = backend.base_temp_dir / "home" / ".cache" / test_app_name;
+        fs::create_directories(expected_path);
         auto dir1 = env.cache_dir();
         auto dir2 = env.cache_dir();
         REQUIRE(dir1 == dir2);
-        REQUIRE(dir1 == created_dir);
+        REQUIRE(dir1 == expected_path);
     }
 
     SECTION("log_dir gibt konsistente Werte zurück")
     {
-        auto created_dir = env.create_log_dir();
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log";
+        fs::create_directories(expected_path);
         auto dir1 = env.log_dir();
         auto dir2 = env.log_dir();
         REQUIRE(dir1 == dir2);
-        REQUIRE(dir1 == created_dir);
+        REQUIRE(dir1 == expected_path);
     }
 
     SECTION("temp_dir gibt konsistente Werte zurück")
