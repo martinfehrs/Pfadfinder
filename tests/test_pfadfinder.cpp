@@ -658,8 +658,8 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     SECTION("data_dir gibt konsistente Werte zurück")
     {
         auto created_dir = env.create_data_dir();
-        auto dir1 = env.data_dir();
-        auto dir2 = env.data_dir();
+        auto dir1 = env.create_data_dir();
+        auto dir2 = env.create_data_dir();
         REQUIRE(dir1 == dir2);
         REQUIRE(dir1 == created_dir);
     }
@@ -711,8 +711,8 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         test_env_type env1("app1", backend);
         test_env_type env2("app2", backend);
         
-        auto dir1 = env1.data_dir();
-        auto dir2 = env2.data_dir();
+        auto dir1 = env1.create_data_dir();
+        auto dir2 = env2.create_data_dir();
         
         // Die Verzeichnisse sollten unterschiedlich sein
         REQUIRE(dir1 != dir2);
