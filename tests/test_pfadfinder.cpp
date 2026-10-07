@@ -712,7 +712,6 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         test_env_type env1("app1", backend);
         test_env_type env2("app2", backend);
         
-<<<<<<< HEAD
         auto expected_path1 = backend.base_temp_dir / "home" / ".local" / "share" / "app1";
         auto expected_path2 = backend.base_temp_dir / "home" / ".local" / "share" / "app2";
         fs::create_directories(expected_path1);
