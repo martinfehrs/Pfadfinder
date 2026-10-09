@@ -21,6 +21,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
 | `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
+| `create_temp_dir()` | Erstellt `%TEMP%\<appname>` |
 | `home_dir()` | `%USERPROFILE%` |
 
 ### macOS
@@ -37,6 +38,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
 | `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
+| `create_temp_dir()` | Erstellt `~/Library/Caches/TemporaryItems/<appname>` | Erstellt `/tmp/<appname>` |
 | `home_dir()` | `$HOME` | `$HOME` |
 
 ### Linux
@@ -53,6 +55,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |
 | `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
+| `create_temp_dir()` | Erstellt `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `home_dir()` | `$HOME` |
 
 ## Verschiedensprachige Dokumentation

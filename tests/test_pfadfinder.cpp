@@ -580,28 +580,35 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     }
 
     // Test temp_dir
-    SECTION("temp_dir erstellt Verzeichnis und gibt Pfad zurück")
+    SECTION("temp_dir wirft wenn Verzeichnis nicht existiert")
     {
-        auto temp_dir = env.temp_dir(true);
+        test_env_type env_unique("nonexistent_temp_app", backend);
+        REQUIRE_THROWS_AS(env_unique.temp_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("temp_dir mit rel_path wirft wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_unique("nonexistent_temp_app", backend);
+        REQUIRE_THROWS_AS(env_unique.temp_dir("subdir"), pfadfinder::directory_not_found);
+    }
+
+    // Test create_temp_dir
+    SECTION("create_temp_dir erstellt Verzeichnis und gibt Pfad zurück")
+    {
+        auto temp_dir = env.create_temp_dir();
         auto expected = backend.base_temp_dir / "tmp" / test_app_name;
         REQUIRE(temp_dir == expected);
         REQUIRE(fs::exists(temp_dir));
         REQUIRE(fs::is_directory(temp_dir));
     }
 
-    SECTION("temp_dir mit rel_path erstellt Verzeichnis")
+    SECTION("create_temp_dir mit rel_path erstellt Verzeichnis")
     {
-        auto temp_dir = env.temp_dir("subdir", true);
+        auto temp_dir = env.create_temp_dir("subdir");
         auto expected = backend.base_temp_dir / "tmp" / test_app_name / "subdir";
         REQUIRE(temp_dir == expected);
         REQUIRE(fs::exists(temp_dir));
         REQUIRE(fs::is_directory(temp_dir));
-    }
-
-    SECTION("temp_dir ohne create_dir wirft wenn Verzeichnis nicht existiert")
-    {
-        test_env_type env_unique("nonexistent_temp_app", backend);
-        REQUIRE_THROWS_AS(env_unique.temp_dir(false), pfadfinder::directory_not_found);
     }
 
     // Test shared_config_dir
@@ -716,9 +723,12 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("temp_dir gibt konsistente Werte zurück")
     {
+        auto expected_path = backend.base_temp_dir / "tmp" / test_app_name;
+        fs::create_directories(expected_path);
         auto dir1 = env.temp_dir();
         auto dir2 = env.temp_dir();
         REQUIRE(dir1 == dir2);
+        REQUIRE(dir1 == expected_path);
     }
 
     SECTION("shared_config_dir gibt konsistente Werte zurück")

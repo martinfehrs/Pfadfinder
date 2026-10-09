@@ -28,7 +28,8 @@
  *    - find_cache_dir()       : Path to a user cache directory (returns std::optional)
  *    - log_dir()              : User-specific log directory for application logs
  *    - create_log_dir()       : Creates user-specific log directory
- *    - temp_dir()             : Temporary directory for the application (with create_dir parameter)
+ *    - temp_dir()             : Temporary directory for the application
+ *    - create_temp_dir()      : Creates temporary directory for the application
  *    - home_dir()             : User's home directory
  */
 
@@ -423,20 +424,30 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::temp_dir(bool) const
+ * @fn fs::path pfadfinder::application_environment::temp_dir() const
  * @brief Returns the temporary directory of the application.
  * 
  * On Windows, this corresponds to \%TEMP\%/\<appname\>.
  * On Linux, this corresponds to /tmp/\<appname\> or the system-wide temp directory.
  * On macOS, this corresponds to /tmp/\<appname\> or ~/Library/Caches/TemporaryItems/\<appname\>.
  * 
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The temporary directory of the application.
- * @throws directory_not_found If the directory does not exist and create_dir is false.
+ * @throws directory_not_found If the directory does not exist.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::temp_dir(const fs::path&, bool) const
+ * @fn fs::path pfadfinder::application_environment::create_temp_dir() const
+ * @brief Creates the temporary directory of the application and returns it.
+ * 
+ * On Windows, this corresponds to \%TEMP\%/\<appname\>.
+ * On Linux, this corresponds to /tmp/\<appname\> or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/\<appname\> or ~/Library/Caches/TemporaryItems/\<appname\>.
+ * 
+ * @return fs::path The temporary directory of the application.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::temp_dir(const fs::path&) const
  * @brief Returns the temporary directory with optional subpath.
  * 
  * On Windows, this corresponds to \%TEMP\%/\<appname\>/\<rel_path\>.
@@ -444,9 +455,20 @@
  * On macOS, this corresponds to /tmp/\<appname\>/\<rel_path\> or ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The temporary directory of the application (base + rel_path).
- * @throws directory_not_found If the directory does not exist and create_dir is false.
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::create_temp_dir(const fs::path&) const
+ * @brief Creates the temporary directory with optional subpath and returns it.
+ * 
+ * On Windows, this corresponds to \%TEMP\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to /tmp/\<appname\>/\<rel_path\> or the system-wide temp directory.
+ * On macOS, this corresponds to /tmp/\<appname\>/\<rel_path\> or ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @return fs::path The temporary directory of the application (base + rel_path).
  */
 
 /**

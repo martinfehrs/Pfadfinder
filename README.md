@@ -22,6 +22,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
 | `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
+| `create_temp_dir()` | Creates `%TEMP%\<appname>` |
 | `home_dir()` | `%USERPROFILE%` |
 
 ### macOS
@@ -38,6 +39,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
 | `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
+| `create_temp_dir()` | Creates `~/Library/Caches/TemporaryItems/<appname>` | Creates `/tmp/<appname>` |
 | `home_dir()` | `$HOME` | `$HOME` |
 
 ### Linux
@@ -54,6 +56,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
 | `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` or system temp directory |
+| `create_temp_dir()` | Creates `/tmp/<appname>` or system temp directory |
 | `home_dir()` | `$HOME` |
 
 ## Documentation in different languages

@@ -28,7 +28,8 @@
  *    - find_cache_dir()       : Pfad zu einem Benutzer-Cache-Verzeichnis (gibt std::optional zurück)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle
  *    - create_log_dir()       : Erstellt Benutzer-spezifisches Log-Verzeichnis
- *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung (mit create_dir Parameter)
+ *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
+ *    - create_temp_dir()      : Erstellt temporäres Verzeichnis für die Anwendung
  *    - home_dir()             : Home-Verzeichnis des Benutzers
  */
 
@@ -661,17 +662,30 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/\<appname\> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/\<appname\> oder ~/Library/Caches/TemporaryItems/\<appname\>.
          * 
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung.
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path temp_dir(bool create_dir = true) const
+        [[nodiscard]] fs::path temp_dir() const
         {
             auto path = get_temp_dir();
-            if (create_dir)
-                fs::create_directories(path);
-            else if (!fs::exists(path) || !fs::is_directory(path))
+            if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das temporäre Verzeichnis der Anwendung und gibt es zurück.
+         * 
+         * Unter Windows entspricht dies \%TEMP\%/\<appname\>.
+         * Unter Linux entspricht dies /tmp/\<appname\> oder dem systemweiten Temp-Verzeichnis.
+         * Unter macOS entspricht dies /tmp/\<appname\> oder ~/Library/Caches/TemporaryItems/\<appname\>.
+         * 
+         * @return fs::path Das temporäre Verzeichnis der Anwendung.
+         */
+        [[nodiscard]] fs::path create_temp_dir() const
+        {
+            auto path = get_temp_dir();
+            fs::create_directories(path);
             return path;
         }
 
@@ -683,19 +697,35 @@ namespace pfadfinder
          * Unter macOS entspricht dies /tmp/\<appname\>/\<rel_path\> oder ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
          * 
          * @param rel_path Relativer Pfad zum Basisverzeichnis.
-         * @param create_dir Legt fest, ob das Verzeichnis erstellt werden soll, falls es nicht existiert (optional, Standardwert: true).
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert und create_dir false ist.
+         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path temp_dir(const fs::path& rel_path, bool create_dir = true) const
+        [[nodiscard]] fs::path temp_dir(const fs::path& rel_path) const
         {
             auto path = get_temp_dir();
             if (!rel_path.empty())
                 path /= rel_path;
-            if (create_dir)
-                fs::create_directories(path);
-            else if (!fs::exists(path) || !fs::is_directory(path))
+            if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das temporäre Verzeichnis mit optionalem Unterpfad und gibt es zurück.
+         * 
+         * Unter Windows entspricht dies \%TEMP\%/\<appname\>/\<rel_path\>.
+         * Unter Linux entspricht dies /tmp/\<appname\>/\<rel_path\> oder dem systemweiten Temp-Verzeichnis.
+         * Unter macOS entspricht dies /tmp/\<appname\>/\<rel_path\> oder ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
+         * 
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
+         */
+        [[nodiscard]] fs::path create_temp_dir(const fs::path& rel_path) const
+        {
+            auto path = get_temp_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
+            fs::create_directories(path);
             return path;
         }
 
