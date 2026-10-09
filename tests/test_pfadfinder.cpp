@@ -198,33 +198,33 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     }
 
     // Test user_config_dir
-    SECTION("user_config_dir erstellt Verzeichnis und gibt Pfad zurück")
+    SECTION("create_user_config_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto expected = backend.base_temp_dir / "home" / ".config" / test_app_name;
         REQUIRE(config_dir == expected);
         REQUIRE(fs::exists(config_dir));
         REQUIRE(fs::is_directory(config_dir));
     }
 
-    SECTION("user_config_dir mit rel_path erstellt Verzeichnis")
+    SECTION("create_user_config_dir mit rel_path erstellt Verzeichnis")
     {
-        auto config_dir = env.user_config_dir("subdir", true);
+        auto config_dir = env.create_user_config_dir("subdir");
         auto expected = backend.base_temp_dir / "home" / ".config" / test_app_name / "subdir";
         REQUIRE(config_dir == expected);
         REQUIRE(fs::exists(config_dir));
         REQUIRE(fs::is_directory(config_dir));
     }
 
-    SECTION("user_config_dir ohne create_dir wirft wenn Verzeichnis nicht existiert")
+    SECTION("user_config_dir wirft wenn Verzeichnis nicht existiert")
     {
         test_env_type env_unique("nonexistent_config_app", backend);
-        REQUIRE_THROWS_AS(env_unique.user_config_dir(false), pfadfinder::directory_not_found);
+        REQUIRE_THROWS_AS(env_unique.user_config_dir(), pfadfinder::directory_not_found);
     }
 
     SECTION("user_config_file gibt gültigen Pfad zurück wenn Datei existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto config_file = config_dir / "test_config.json";
         
         // Datei erstellen
@@ -245,7 +245,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_user_config_file gibt gültigen Pfad zurück wenn Datei existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto config_file = config_dir / "test_config.json";
         
         // Datei erstellen
@@ -269,7 +269,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_user_config_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto result = env.find_user_config_dir();
         REQUIRE(result.has_value());
         REQUIRE(result.value() == config_dir);
@@ -287,7 +287,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_user_config_dir mit rel_path gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto subdir = config_dir / "subdir";
         fs::create_directories(subdir);
         
@@ -354,7 +354,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_config_file gibt Benutzer-Konfigurationsdatei zurück wenn diese existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto config_file = config_dir / "test_config.json";
         
         // Datei im Benutzer-Konfigurationsverzeichnis erstellen
@@ -369,7 +369,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_config_file gibt geteilte Konfigurationsdatei zurück wenn Benutzer-Datei nicht existiert")
     {
-        auto user_config_dir = env.user_config_dir(true);
+        auto user_config_dir = env.create_user_config_dir();
         auto shared_config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
         auto shared_config_file = shared_config_dir / "test_config.json";
         
@@ -393,7 +393,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("find_config_file gibt Benutzer-Datei zurück wenn beide existieren")
     {
-        auto user_config_dir = env.user_config_dir(true);
+        auto user_config_dir = env.create_user_config_dir();
         auto shared_config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
         
         auto user_config_file = user_config_dir / "test_config.json";
@@ -423,7 +423,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("config_files gibt Benutzer-Konfigurationsdatei zurück wenn nur diese existiert")
     {
-        auto config_dir = env.user_config_dir(true);
+        auto config_dir = env.create_user_config_dir();
         auto config_file = config_dir / "test_config.json";
         
         // Datei im Benutzer-Konfigurationsverzeichnis erstellen
@@ -454,7 +454,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("config_files gibt beide Konfigurationsdateien zurück wenn beide existieren")
     {
-        auto user_config_dir = env.user_config_dir(true);
+        auto user_config_dir = env.create_user_config_dir();
         auto shared_config_dir = backend.base_temp_dir / "var" / "lib" / test_app_name;
         
         auto user_config_file = user_config_dir / "test_config.json";
@@ -667,9 +667,12 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
 
     SECTION("user_config_dir gibt konsistente Werte zurück")
     {
+        auto expected_path = backend.base_temp_dir / "home" / ".config" / test_app_name;
+        fs::create_directories(expected_path);
         auto dir1 = env.user_config_dir();
         auto dir2 = env.user_config_dir();
         REQUIRE(dir1 == dir2);
+        REQUIRE(dir1 == expected_path);
     }
 
     SECTION("cache_dir gibt konsistente Werte zurück")

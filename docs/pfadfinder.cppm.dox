@@ -12,7 +12,8 @@
  *    - static_data_dir()      : System-wide static data directory
  *    - data_dir()             : User-specific data directory
  *    - create_data_dir()      : Creates user-specific data directory
- *    - user_config_dir()      : User-specific configuration directory (with create_dir parameter)
+ *    - user_config_dir()      : User-specific configuration directory
+ *    - create_user_config_dir(): Create user-specific configuration directory
  *    - user_config_file()     : Path to a user configuration file (with file existence check)
  *    - find_user_config_file() : Path to a user configuration file (returns std::optional)
  *    - find_user_config_dir()  : Path to a user configuration directory (returns std::optional)
@@ -150,7 +151,7 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::user_config_dir(bool) const
+ * @fn fs::path pfadfinder::application_environment::user_config_dir() const
  * @brief Returns the user-specific configuration directory of the application.
  * 
  * On Windows, this corresponds to \%APPDATA\%/\<appname\>.
@@ -158,13 +159,24 @@
  * On macOS (bundled), this corresponds to ~/Library/Preferences/\<appname\>,
  * otherwise ~/.config/\<appname\>.
  * 
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific configuration directory of the application.
- * @throws directory_not_found If the directory does not exist and create_dir is false.
+ * @throws directory_not_found If the directory does not exist.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::user_config_dir(const fs::path&, bool) const
+ * @fn fs::path pfadfinder::application_environment::create_user_config_dir() const
+ * @brief Creates and returns the user-specific configuration directory of the application.
+ * 
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>.
+ * On Linux, this corresponds to ~/.config/\<appname\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/\<appname\>,
+ * otherwise ~/.config/\<appname\>.
+ * 
+ * @return fs::path The user-specific configuration directory of the application.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::user_config_dir(const fs::path&) const
  * @brief Returns the user-specific configuration directory with optional subpath.
  * 
  * On Windows, this corresponds to \%APPDATA\%/\<appname\>/\<rel_path\>.
@@ -173,9 +185,21 @@
  * otherwise ~/.config/\<appname\>/\<rel_path\>.
  * 
  * @param rel_path Relative path to the base directory.
- * @param create_dir Specifies whether the directory should be created if it does not exist (optional, default: true).
  * @return fs::path The user-specific configuration directory of the application (base + rel_path).
- * @throws directory_not_found If the directory does not exist and create_dir is false.
+ * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::create_user_config_dir(const fs::path&) const
+ * @brief Creates and returns the user-specific configuration directory with optional subpath.
+ * 
+ * On Windows, this corresponds to \%APPDATA\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to ~/.config/\<appname\>/\<rel_path\> (XDG standard).
+ * On macOS (bundled), this corresponds to ~/Library/Preferences/\<appname\>/\<rel_path\>,
+ * otherwise ~/.config/\<appname\>/\<rel_path\>.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @return fs::path The user-specific configuration directory of the application (base + rel_path).
  */
 
 /**
