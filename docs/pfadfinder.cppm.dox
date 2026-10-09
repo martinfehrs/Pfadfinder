@@ -17,7 +17,8 @@
  *    - user_config_file()     : Path to a user configuration file (with file existence check)
  *    - find_user_config_file() : Path to a user configuration file (returns std::optional)
  *    - find_user_config_dir()  : Path to a user configuration directory (returns std::optional)
- *    - shared_config_dir()    : Shared configuration directory (with create_dir parameter)
+ *    - shared_config_dir()    : Shared configuration directory
+ *    - create_shared_config_dir(): Create shared configuration directory
  *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
  *    - find_shared_config_file() : Path to a shared configuration file (returns std::optional)
  *    - find_config_file()     : Searches user then shared config directory (returns std::optional)
@@ -94,8 +95,31 @@
  * @return fs::path The shared configuration directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist.
  * 
- * @note Unlike most other methods, this method does not have a create_dir option,
- * as the Linux backend only allows read access to /etc (least common denominator).
+ * @note Unlike most other methods, this method does not have a create_dir parameter.
+ * Use create_shared_config_dir() to create the directory.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::create_shared_config_dir() const
+ * @brief Creates and returns the shared configuration directory of the application.
+ * 
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>.
+ * On Linux, this corresponds to /etc/\<appname\>.
+ * On macOS, this corresponds to /Library/Preferences/\<appname\>.
+ * 
+ * @return fs::path The shared configuration directory of the application.
+ */
+
+/**
+ * @fn fs::path pfadfinder::application_environment::create_shared_config_dir(const fs::path&) const
+ * @brief Creates and returns the shared configuration directory with optional subpath.
+ * 
+ * On Windows, this corresponds to \%ALLUSERSAPPDATA\%/\<appname\>/\<rel_path\>.
+ * On Linux, this corresponds to /etc/\<appname\>/\<rel_path\>.
+ * On macOS, this corresponds to /Library/Preferences/\<appname\>/\<rel_path\>.
+ * 
+ * @param rel_path Relative path to the base directory.
+ * @return fs::path The shared configuration directory of the application (base + rel_path).
  */
 
 /**

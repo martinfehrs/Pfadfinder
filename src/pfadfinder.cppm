@@ -17,7 +17,8 @@
  *    - user_config_file()     : Pfad zu einer Benutzer-Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_user_config_file() : Pfad zu einer Benutzer-Konfigurationsdatei (gibt std::optional zurück)
  *    - find_user_config_dir()  : Pfad zu einem Benutzer-Konfigurationsverzeichnis (gibt std::optional zurück)
- *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis (mit create_dir Parameter)
+ *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis
+ *    - create_shared_config_dir(): Erstellt geteiltes Konfigurationsverzeichnis
  *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
  *    - find_config_file()     : Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt std::optional zurück)
@@ -145,8 +146,8 @@ namespace pfadfinder
          * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          * 
-         * @note Im Gegensatz zu den meisten anderen Methoden hat diese Methode keine create_dir-Option,
-         * da das Linux-Backend nur Lesezugriff auf /etc erlaubt (kleinster gemeinsamer Nenner).
+         * @note Im Gegensatz zu den meisten anderen Methoden hat diese Methode keinen create_dir-Parameter.
+         * Verwenden Sie stattdessen create_shared_config_dir(), um das Verzeichnis zu erstellen.
          */
         [[nodiscard]] fs::path shared_config_dir(const fs::path& rel_path = "") const
         {
@@ -155,6 +156,41 @@ namespace pfadfinder
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das geteilte Konfigurationsverzeichnis der Anwendung und gibt es zurück.
+         *
+         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>.
+         * Unter Linux entspricht dies /etc/\<appname\>.
+         * Unter macOS entspricht dies /Library/Preferences/\<appname\>.
+         *
+         * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung.
+         */
+        [[nodiscard]] fs::path create_shared_config_dir() const
+        {
+            auto path = get_shared_config_dir();
+            fs::create_directories(path);
+            return path;
+        }
+
+        /**
+         * @brief Erstellt das geteilte Konfigurationsverzeichnis mit optionalem Unterpfad und gibt es zurück.
+         *
+         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>/\<rel_path\>.
+         * Unter Linux entspricht dies /etc/\<appname\>/\<rel_path\>.
+         * Unter macOS entspricht dies /Library/Preferences/\<appname\>/\<rel_path\>.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
+         */
+        [[nodiscard]] fs::path create_shared_config_dir(const fs::path& rel_path) const
+        {
+            auto path = get_shared_config_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
+            fs::create_directories(path);
             return path;
         }
 

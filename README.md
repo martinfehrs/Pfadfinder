@@ -16,6 +16,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable |
 | `static_data_dir()` | Binary directory |
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `create_shared_config_dir()` | Creates `%ALLUSERSAPPDATA%\<appname>` |
 | `data_dir()` | `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
@@ -31,6 +32,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable | Directory containing the executable |
 | `static_data_dir()` | `Resources` directory | Derived from binary path |
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
+| `create_shared_config_dir()` | Creates `/Library/Preferences/<appname>` | Creates `/Library/Preferences/<appname>` |
 | `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
@@ -46,6 +48,7 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `executable_dir()` | Directory containing the executable |
 | `static_data_dir()` | Derived from binary path (e.g., `/usr/bin/myapp` → `/usr/share/myapp`) |
 | `shared_config_dir()` | `/etc/<appname>` |
+| `create_shared_config_dir()` | Creates `/etc/<appname>` |
 | `data_dir()` | `~/.local/share/<appname>` (XDG standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG standard) |
 | `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
