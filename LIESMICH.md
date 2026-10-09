@@ -17,9 +17,13 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
 | `create_shared_config_dir()` | Erstellt `%ALLUSERSAPPDATA%\<appname>` |
 | `data_dir()` | `%APPDATA%\<appname>` |
+| `create_data_dir()` | Erstellt `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
+| `create_user_config_dir()` | Erstellt `%APPDATA%\<appname>` |
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `create_cache_dir()` | Erstellt `%LOCALAPPDATA%\<appname>\Cache` |
 | `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `create_log_dir()` | Erstellt `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
 | `create_temp_dir()` | Erstellt `%TEMP%\<appname>` |
 | `home_dir()` | `%USERPROFILE%` |
@@ -34,9 +38,13 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
 | `create_shared_config_dir()` | Erstellt `/Library/Preferences/<appname>` | Erstellt `/Library/Preferences/<appname>` |
 | `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `create_data_dir()` | Erstellt `~/Library/Application Support/<appname>` | Erstellt `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
+| `create_user_config_dir()` | Erstellt `~/Library/Preferences/<appname>` | Erstellt `~/.config/<appname>` |
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `create_cache_dir()` | Erstellt `~/Library/Caches/<appname>` | Erstellt `~/.cache/<appname>` |
 | `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `create_log_dir()` | Erstellt `~/Library/Logs/<appname>` | Erstellt `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
 | `create_temp_dir()` | Erstellt `~/Library/Caches/TemporaryItems/<appname>` | Erstellt `/tmp/<appname>` |
 | `home_dir()` | `$HOME` | `$HOME` |
@@ -51,9 +59,13 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `shared_config_dir()` | `/etc/<appname>` |
 | `create_shared_config_dir()` | Erstellt `/etc/<appname>` |
 | `data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
+| `create_data_dir()` | Erstellt `~/.local/share/<appname>` (XDG-Standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG-Standard) |
+| `create_user_config_dir()` | Erstellt `~/.config/<appname>` (XDG-Standard) |
 | `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |
+| `create_cache_dir()` | Erstellt `~/.cache/<appname>` (XDG-Standard) |
 | `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_log_dir()` | Erstellt `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `create_temp_dir()` | Erstellt `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `home_dir()` | `$HOME` |

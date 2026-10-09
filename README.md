@@ -18,9 +18,13 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
 | `create_shared_config_dir()` | Creates `%ALLUSERSAPPDATA%\<appname>` |
 | `data_dir()` | `%APPDATA%\<appname>` |
+| `create_data_dir()` | Creates `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
+| `create_user_config_dir()` | Creates `%APPDATA%\<appname>` |
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `create_cache_dir()` | Creates `%LOCALAPPDATA%\<appname>\Cache` |
 | `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `create_log_dir()` | Creates `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
 | `create_temp_dir()` | Creates `%TEMP%\<appname>` |
 | `home_dir()` | `%USERPROFILE%` |
@@ -35,9 +39,13 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
 | `create_shared_config_dir()` | Creates `/Library/Preferences/<appname>` | Creates `/Library/Preferences/<appname>` |
 | `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `create_data_dir()` | Creates `~/Library/Application Support/<appname>` | Creates `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
+| `create_user_config_dir()` | Creates `~/Library/Preferences/<appname>` | Creates `~/.config/<appname>` |
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `create_cache_dir()` | Creates `~/Library/Caches/<appname>` | Creates `~/.cache/<appname>` |
 | `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `create_log_dir()` | Creates `~/Library/Logs/<appname>` | Creates `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
 | `create_temp_dir()` | Creates `~/Library/Caches/TemporaryItems/<appname>` | Creates `/tmp/<appname>` |
 | `home_dir()` | `$HOME` | `$HOME` |
@@ -52,9 +60,13 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `shared_config_dir()` | `/etc/<appname>` |
 | `create_shared_config_dir()` | Creates `/etc/<appname>` |
 | `data_dir()` | `~/.local/share/<appname>` (XDG standard) |
+| `create_data_dir()` | Creates `~/.local/share/<appname>` (XDG standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG standard) |
+| `create_user_config_dir()` | Creates `~/.config/<appname>` (XDG standard) |
 | `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
+| `create_cache_dir()` | Creates `~/.cache/<appname>` (XDG standard) |
 | `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_log_dir()` | Creates `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` or system temp directory |
 | `create_temp_dir()` | Creates `/tmp/<appname>` or system temp directory |
 | `home_dir()` | `$HOME` |
