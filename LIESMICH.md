@@ -15,6 +15,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | Binärverzeichnis |
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `create_shared_config_dir()` | Erstellt `%ALLUSERSAPPDATA%\<appname>` |
 | `data_dir()` | `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
@@ -30,6 +31,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | `Resources`-Verzeichnis | Abgeleitet vom Binärpfad |
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
+| `create_shared_config_dir()` | Erstellt `/Library/Preferences/<appname>` | Erstellt `/Library/Preferences/<appname>` |
 | `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
@@ -45,6 +47,7 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
 | `static_data_dir()` | Abgeleitet vom Binärpfad (z. B. `/usr/bin/myapp` → `/usr/share/myapp`) |
 | `shared_config_dir()` | `/etc/<appname>` |
+| `create_shared_config_dir()` | Erstellt `/etc/<appname>` |
 | `data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG-Standard) |
 | `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |

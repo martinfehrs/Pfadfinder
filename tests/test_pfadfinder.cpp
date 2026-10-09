@@ -633,6 +633,25 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(fs::is_directory(config_dir));
     }
 
+    // Test create_shared_config_dir
+    SECTION("create_shared_config_dir erstellt Verzeichnis und gibt Pfad zurück")
+    {
+        auto config_dir = env.create_shared_config_dir();
+        auto expected = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        REQUIRE(config_dir == expected);
+        REQUIRE(fs::exists(config_dir));
+        REQUIRE(fs::is_directory(config_dir));
+    }
+
+    SECTION("create_shared_config_dir mit rel_path erstellt Verzeichnis")
+    {
+        auto config_dir = env.create_shared_config_dir("subdir");
+        auto expected = backend.base_temp_dir / "var" / "lib" / test_app_name / "subdir";
+        REQUIRE(config_dir == expected);
+        REQUIRE(fs::exists(config_dir));
+        REQUIRE(fs::is_directory(config_dir));
+    }
+
     // Test Caching-Verhalten
     SECTION("executable_path gibt konsistente Werte zurück")
     {
