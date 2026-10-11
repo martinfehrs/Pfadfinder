@@ -21,6 +21,7 @@
  *    - find_user_config_file() : Path to a user configuration file (returns std::optional)
  *    - find_user_config_dir()  : Path to a user configuration directory (returns std::optional)
  *    - shared_config_dir()    : Shared configuration directory
+ *    - find_shared_config_dir(): Shared configuration directory (returns std::optional)
  *    - create_shared_config_dir(): Create shared configuration directory
  *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
  *    - find_shared_config_file() : Path to a shared configuration file (returns std::optional)
@@ -129,6 +130,16 @@
  * 
  * @note Unlike most other methods, this method does not have a create_dir parameter.
  * Use create_shared_config_dir() to create the directory.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_shared_config_dir(const fs::path&) const
+ * @brief Returns the shared configuration directory of the application or std::nullopt if it does not exist.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @param rel_path Relative path to the base directory (optional).
+ * @return std::optional<fs::path> The shared configuration directory of the application (base + rel_path) or std::nullopt.
  */
 
 /**

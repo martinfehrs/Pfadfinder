@@ -21,6 +21,7 @@
  *    - find_user_config_file() : Pfad zu einer Benutzer-Konfigurationsdatei (gibt std::optional zurück)
  *    - find_user_config_dir()  : Pfad zu einem Benutzer-Konfigurationsverzeichnis (gibt std::optional zurück)
  *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis
+ *    - find_shared_config_dir(): Geteiltes Konfigurationsverzeichnis (gibt std::optional zurück)
  *    - create_shared_config_dir(): Erstellt geteiltes Konfigurationsverzeichnis
  *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
  *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
@@ -206,6 +207,27 @@ namespace pfadfinder
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
+        }
+
+        /**
+         * @brief Gibt das geteilte Konfigurationsverzeichnis der Anwendung zurück oder std::nullopt, falls dieses nicht existiert.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return std::optional<fs::path> Das geteilte Konfigurationsverzeichnis der Anwendung (Basis + rel_path) oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_shared_config_dir(const fs::path& rel_path = "") const
+        {
+            auto base = get_shared_config_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
         }
 
         /**
