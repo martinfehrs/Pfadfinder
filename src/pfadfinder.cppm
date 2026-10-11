@@ -229,12 +229,15 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/\<appname\>, ansonsten ~/.config/\<appname\>.
          * 
-         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path user_config_dir() const
+        [[nodiscard]] fs::path user_config_dir(const fs::path& rel_path = "") const
         {
             auto path = get_user_config_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -254,28 +257,6 @@ namespace pfadfinder
         {
             auto path = get_user_config_dir();
             fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis mit optionalem Unterpfad zurück.
-         * 
-         * Unter Windows entspricht dies \%APPDATA\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.config/\<appname\>/\<rel_path\> (XDG-Standard).
-         * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Preferences/\<appname\>/\<rel_path\>, ansonsten ~/.config/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
-         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
-         */
-        [[nodiscard]] fs::path user_config_dir(const fs::path& rel_path) const
-        {
-            auto path = get_user_config_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
             return path;
         }
 
