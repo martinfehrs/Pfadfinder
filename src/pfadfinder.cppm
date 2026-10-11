@@ -8,6 +8,7 @@
  * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
  *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
  *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
+ *    - find_executable_path() : Vollständiger Pfad zur ausführbaren Datei (gibt std::optional zurück)
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
  *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis
@@ -88,20 +89,22 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path executable_path() const
         {
-            if (!cached_executable_path_.has_value())
-            {
-                auto path = system_env_.executable_path();
-                if (!path.has_value())
-                    throw indeterminable_exe_path{};
+            auto path = get_executable_path();
+            if (!path.has_value())
+                throw indeterminable_exe_path{};
+            return *path;
+        }
 
-                // Setze app_name_ auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
-                if (app_name_.empty())
-                    app_name_ = path->stem().string();
-
-                cached_executable_path_ = *path;
-            }
-
-            return *cached_executable_path_;
+        /**
+         * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück oder std::nullopt, falls dieser nicht ermittelt werden kann.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @return std::optional<fs::path> Der vollständige Pfad zur ausführbaren Datei oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_executable_path() const
+        {
+            return get_executable_path();
         }
 
         /**
@@ -621,6 +624,28 @@ namespace pfadfinder
         }
 
     private:
+
+        /**
+         * @brief Gibt den gecachten Pfad zur ausführbaren Datei zurück.
+         * @return std::optional<fs::path> Der gecachte Pfad zur ausführbaren Datei oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> get_executable_path() const
+        {
+            if (!cached_executable_path_.has_value())
+            {
+                auto path = system_env_.executable_path();
+                if (path.has_value())
+                {
+                    // Setze app_name_ auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
+                    if (app_name_.empty())
+                        app_name_ = path->stem().string();
+
+                    cached_executable_path_ = *path;
+                }
+                return path;
+            }
+            return *cached_executable_path_;
+        }
 
         /**
          * @brief Gibt das gecachte statische Datenverzeichnis zurück.

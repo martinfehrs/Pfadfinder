@@ -8,6 +8,7 @@
  * 1. The pfadfinder::application_environment class with methods for determining
  *    platform-specific directory paths for applications (Windows, Linux, macOS):
  *    - executable_path()      : Full path to the executable file
+ *    - find_executable_path() : Full path to the executable file (returns std::optional)
  *    - executable_dir()       : Directory of the executable file
  *    - static_data_dir()      : System-wide static data directory
  *    - data_dir()             : User-specific data directory
@@ -61,6 +62,15 @@
  * @brief Returns the full path to the executable file.
  * @return fs::path The full path to the executable file.
  * @throws indeterminable_exe_path When the path to the executable cannot be determined.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_executable_path() const
+ * @brief Returns the full path to the executable file or std::nullopt if it cannot be determined.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @return std::optional<fs::path> The full path to the executable file or std::nullopt.
  */
 
 /**
@@ -346,6 +356,12 @@
  * 
  * @return fs::path The user's home directory.
  * @throws environment_variable_not_set When the HOME environment variable is not set.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_executable_path() const
+ * @brief Returns the cached path to the executable file.
+ * @return std::optional<fs::path> The cached path to the executable file or std::nullopt.
  */
 
 /**
