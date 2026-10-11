@@ -35,6 +35,7 @@
  *    - find_log_dir()         : Benutzer-spezifisches Log-Verzeichnis (gibt std::optional zurück)
  *    - create_log_dir()       : Erstellt Benutzer-spezifisches Log-Verzeichnis
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
+ *    - find_temp_dir()        : Temporäres Verzeichnis für die Anwendung (gibt std::optional zurück)
  *    - create_temp_dir()      : Erstellt temporäres Verzeichnis für die Anwendung
  *    - home_dir()             : Home-Verzeichnis des Benutzers
  */
@@ -680,6 +681,27 @@ namespace pfadfinder
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
+        }
+
+        /**
+         * @brief Gibt das temporäre Verzeichnis der Anwendung zurück oder std::nullopt, falls dieses nicht existiert.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return std::optional<fs::path> Das temporäre Verzeichnis der Anwendung (Basis + rel_path) oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_temp_dir(const fs::path& rel_path = "") const
+        {
+            auto base = get_temp_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
         }
 
         /**

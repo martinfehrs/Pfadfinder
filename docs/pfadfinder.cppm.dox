@@ -35,6 +35,7 @@
  *    - find_log_dir()         : User-specific log directory (returns std::optional)
  *    - create_log_dir()       : Creates user-specific log directory
  *    - temp_dir()             : Temporary directory for the application
+ *    - find_temp_dir()        : Temporary directory for the application (returns std::optional)
  *    - create_temp_dir()      : Creates temporary directory for the application
  *    - home_dir()             : User's home directory
  */
@@ -387,6 +388,16 @@
  * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The temporary directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_temp_dir(const fs::path&) const
+ * @brief Returns the temporary directory of the application or std::nullopt if it does not exist.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @param rel_path Relative path to the base directory (optional).
+ * @return std::optional<fs::path> The temporary directory of the application (base + rel_path) or std::nullopt.
  */
 
 /**
