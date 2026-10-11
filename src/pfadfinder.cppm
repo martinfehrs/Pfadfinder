@@ -193,7 +193,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_data_dir();
+            auto base = get_data_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -214,7 +217,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_data_dir();
+            auto base = get_data_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -235,7 +241,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path user_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_user_config_dir();
+            auto base = get_user_config_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -256,7 +265,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_user_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_user_config_dir();
+            auto base = get_user_config_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -275,7 +287,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path user_config_file(const fs::path& rel_path) const
         {
-            auto path = get_user_config_dir() / rel_path;
+            auto base = get_user_config_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base / rel_path;
             if (!fs::exists(path) || !fs::is_regular_file(path))
                 throw file_not_found(path.string());
             return path;
@@ -292,7 +307,10 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> find_user_config_file(const fs::path& rel_path) const
         {
-            auto path = get_user_config_dir() / rel_path;
+            auto base = get_user_config_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base / rel_path;
             if (fs::exists(path) && fs::is_regular_file(path))
                 return path;
             return std::nullopt;
@@ -309,7 +327,10 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> find_user_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_user_config_dir();
+            auto base = get_user_config_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (fs::exists(path) && fs::is_directory(path))
@@ -406,7 +427,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path cache_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_cache_dir();
+            auto base = get_cache_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -427,7 +451,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_cache_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_cache_dir();
+            auto base = get_cache_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -445,7 +472,10 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> find_cache_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_cache_dir();
+            auto base = get_cache_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (fs::exists(path) && fs::is_directory(path))
@@ -467,7 +497,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path log_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_log_dir();
+            auto base = get_log_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -488,7 +521,10 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_log_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_log_dir();
+            auto base = get_log_dir();
+            if (!base.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            auto path = *base;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -546,7 +582,13 @@ namespace pfadfinder
         [[nodiscard]] fs::path home_dir() const
         {
             if (!cached_home_dir_.has_value())
-                cached_home_dir_ = system_env_.home_dir();
+            {
+                auto path = system_env_.home_dir();
+                if (!path.has_value())
+                    throw environment_variable_not_set{ "HOME" };
+
+                cached_home_dir_ = *path;
+            }
 
             return *cached_home_dir_;
         }
@@ -568,10 +610,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-Datenverzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-Datenverzeichnis.
          */
-        [[nodiscard]] fs::path get_data_dir() const
+        [[nodiscard]] std::optional<fs::path> get_data_dir() const
         {
             if (!cached_data_dir_.has_value())
-                cached_data_dir_ = system_env_.data_dir(executable_dir(), app_name_);
+            {
+                auto path = system_env_.data_dir(executable_dir(), app_name_);
+                if (path.has_value())
+                    cached_data_dir_ = *path;
+                return path;
+            }
             return *cached_data_dir_;
         }
 
@@ -579,10 +626,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-spezifische Konfigurationsverzeichnis.
          */
-        [[nodiscard]] fs::path get_user_config_dir() const
+        [[nodiscard]] std::optional<fs::path> get_user_config_dir() const
         {
             if (!cached_user_config_dir_.has_value())
-                cached_user_config_dir_ = system_env_.user_config_dir(executable_dir(), app_name_);
+            {
+                auto path = system_env_.user_config_dir(executable_dir(), app_name_);
+                if (path.has_value())
+                    cached_user_config_dir_ = *path;
+                return path;
+            }
             return *cached_user_config_dir_;
         }
 
@@ -590,10 +642,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-spezifische Cache-Verzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-spezifische Cache-Verzeichnis.
          */
-        [[nodiscard]] fs::path get_cache_dir() const
+        [[nodiscard]] std::optional<fs::path> get_cache_dir() const
         {
             if (!cached_cache_dir_.has_value())
-                cached_cache_dir_ = system_env_.cache_dir(executable_dir(), app_name_);
+            {
+                auto path = system_env_.cache_dir(executable_dir(), app_name_);
+                if (path.has_value())
+                    cached_cache_dir_ = *path;
+                return path;
+            }
             return *cached_cache_dir_;
         }
 
@@ -601,10 +658,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte Benutzer-spezifische Log-Verzeichnis zurück.
          * @return fs::path Das gecachte Benutzer-spezifische Log-Verzeichnis.
          */
-        [[nodiscard]] fs::path get_log_dir() const
+        [[nodiscard]] std::optional<fs::path> get_log_dir() const
         {
             if (!cached_log_dir_.has_value())
-                cached_log_dir_ = system_env_.log_dir(executable_dir(), app_name_);
+            {
+                auto path = system_env_.log_dir(executable_dir(), app_name_);
+                if (path.has_value())
+                    cached_log_dir_ = *path;
+                return path;
+            }
             return *cached_log_dir_;
         }
 

@@ -11,6 +11,7 @@ module;
 #include <windows.h>
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 module pfadfinder;
@@ -34,58 +35,58 @@ namespace pfadfinder
         return exe_dir;
     }
 
-    fs::path system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "APPDATA" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("APPDATA", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "APPDATA" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name;
     }
 
-    fs::path system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "APPDATA" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("APPDATA", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "APPDATA" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name;
     }
 
-    fs::path system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "LOCALAPPDATA" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("LOCALAPPDATA", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "LOCALAPPDATA" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name / "Cache";
     }
 
-    fs::path system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "LOCALAPPDATA" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("LOCALAPPDATA", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "LOCALAPPDATA" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name / "Logs";
     }
@@ -104,16 +105,16 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name;
     }
 
-    fs::path system_environment::home_dir() const
+    std::optional<fs::path> system_environment::home_dir() const
     {
         DWORD size = GetEnvironmentVariableA("USERPROFILE", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "USERPROFILE" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("USERPROFILE", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "USERPROFILE" };
+            return std::nullopt;
 
         return fs::path{ buffer };
     }

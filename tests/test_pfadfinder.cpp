@@ -6,6 +6,7 @@
 
 // Standardbibliotheks-Header
 #include <filesystem>
+#include <optional>
 #include <string>
 #include <fstream>
 
@@ -50,22 +51,22 @@ namespace test_backend
             return base_temp_dir / "share" / app_name;
         }
         
-        [[nodiscard]] fs::path data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> data_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "share" / app_name;
         }
         
-        [[nodiscard]] fs::path user_config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> user_config_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".config" / app_name;
         }
         
-        [[nodiscard]] fs::path cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> cache_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".cache" / app_name;
         }
         
-        [[nodiscard]] fs::path log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> log_dir(const fs::path& /*exe_dir*/, const std::string& app_name) const override
         {
             return base_temp_dir / "home" / ".local" / "state" / app_name / "log";
         }
@@ -75,7 +76,7 @@ namespace test_backend
             return base_temp_dir / "tmp" / app_name;
         }
         
-        [[nodiscard]] fs::path home_dir() const override
+        [[nodiscard]] std::optional<fs::path> home_dir() const override
         {
             return base_temp_dir / "home";
         }

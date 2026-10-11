@@ -10,6 +10,7 @@ module;
 
 #include <filesystem>
 #include <climits>
+#include <optional>
 #include <string>
 
 module pfadfinder;
@@ -26,24 +27,40 @@ namespace pfadfinder
         return exe_dir_str.find("Contents/MacOS") != std::string::npos;
     }
 
-    [[nodiscard]] fs::path get_macos_user_data_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_macos_user_data_dir(const std::string& app_name)
     {
-        return get_home_dir() / "Library" / "Application Support" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / "Library" / "Application Support" / app_name;
     }
 
-    [[nodiscard]] fs::path get_macos_user_config_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_macos_user_config_dir(const std::string& app_name)
     {
-        return get_home_dir() / "Library" / "Preferences" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / "Library" / "Preferences" / app_name;
     }
 
-    [[nodiscard]] fs::path get_macos_user_cache_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_macos_user_cache_dir(const std::string& app_name)
     {
-        return get_home_dir() / "Library" / "Caches" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / "Library" / "Caches" / app_name;
     }
 
-    [[nodiscard]] fs::path get_macos_user_log_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_macos_user_log_dir(const std::string& app_name)
     {
-        return get_home_dir() / "Library" / "Logs" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / "Library" / "Logs" / app_name;
     }
 
     [[nodiscard]] fs::path get_macos_bundle_static_data_dir(const fs::path& exe_dir, const std::string& app_name)
@@ -74,28 +91,28 @@ namespace pfadfinder
             : get_xdg_static_data_dir(exe_dir, app_name);
     }
 
-    fs::path system_environment::data_dir(const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::data_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return is_macos_bundle(exe_dir)
             ? get_macos_user_data_dir(app_name)
             : get_xdg_user_data_dir(app_name);
     }
 
-    fs::path system_environment::user_config_dir(const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::user_config_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return is_macos_bundle(exe_dir)
             ? get_macos_user_config_dir(app_name)
             : get_xdg_user_config_dir(app_name);
     }
 
-    fs::path system_environment::cache_dir(const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::cache_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return is_macos_bundle(exe_dir)
             ? get_macos_user_cache_dir(app_name)
             : get_xdg_user_cache_dir(app_name);
     }
 
-    fs::path system_environment::log_dir(const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> system_environment::log_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return is_macos_bundle(exe_dir)
             ? get_macos_user_log_dir(app_name)
@@ -107,7 +124,7 @@ namespace pfadfinder
         return get_temp_dir(app_name);
     }
 
-    fs::path system_environment::home_dir() const
+    std::optional<fs::path> system_environment::home_dir() const
     {
         return get_home_dir();
     }

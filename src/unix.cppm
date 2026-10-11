@@ -10,6 +10,7 @@
 module;
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 #include <unistd.h>
@@ -22,12 +23,12 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    [[nodiscard]] fs::path get_home_dir()
+    [[nodiscard]] std::optional<fs::path> get_home_dir()
     {
         const char* home = std::getenv("HOME");
 
         if (!home)
-            throw environment_variable_not_set{ "HOME" };
+            return std::nullopt;
 
         return fs::path{ home };
     }
@@ -37,24 +38,40 @@ namespace pfadfinder
         return fs::temp_directory_path() / app_name;
     }
 
-    [[nodiscard]] fs::path get_xdg_user_data_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_xdg_user_data_dir(const std::string& app_name)
     {
-        return get_home_dir() / ".local" / "share" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / ".local" / "share" / app_name;
     }
 
-    [[nodiscard]] fs::path get_xdg_user_config_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_xdg_user_config_dir(const std::string& app_name)
     {
-        return get_home_dir() / ".config" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / ".config" / app_name;
     }
 
-    [[nodiscard]] fs::path get_xdg_user_cache_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_xdg_user_cache_dir(const std::string& app_name)
     {
-        return get_home_dir() / ".cache" / app_name;
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / ".cache" / app_name;
     }
 
-    [[nodiscard]] fs::path get_xdg_user_log_dir(const std::string& app_name)
+    [[nodiscard]] std::optional<fs::path> get_xdg_user_log_dir(const std::string& app_name)
     {
-        return get_home_dir() / ".local" / "state" / app_name / "log";
+        auto home = get_home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+
+        return *home / ".local" / "state" / app_name / "log";
     }
 
     [[nodiscard]] fs::path get_xdg_static_data_dir(const fs::path& exe_dir, const std::string& app_name)

@@ -345,6 +345,7 @@
  * On Linux and macOS, this corresponds to $HOME.
  * 
  * @return fs::path The user's home directory.
+ * @throws environment_variable_not_set When the HOME environment variable is not set.
  */
 
 /**
@@ -354,27 +355,27 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_data_dir() const
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_data_dir() const
  * @brief Returns the cached user data directory.
- * @return fs::path The cached user data directory.
+ * @return std::optional<fs::path> The cached user data directory or std::nullopt.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_user_config_dir() const
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_user_config_dir() const
  * @brief Returns the cached user-specific configuration directory.
- * @return fs::path The cached user-specific configuration directory.
+ * @return std::optional<fs::path> The cached user-specific configuration directory or std::nullopt.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_cache_dir() const
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_cache_dir() const
  * @brief Returns the cached user-specific cache directory.
- * @return fs::path The cached user-specific cache directory.
+ * @return std::optional<fs::path> The cached user-specific cache directory or std::nullopt.
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_log_dir() const
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_log_dir() const
  * @brief Returns the cached user-specific log directory.
- * @return fs::path The cached user-specific log directory.
+ * @return std::optional<fs::path> The cached user-specific log directory or std::nullopt.
  */
 
 /**

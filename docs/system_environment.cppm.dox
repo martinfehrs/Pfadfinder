@@ -40,7 +40,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::data_dir(const fs::path&, const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::data_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific data directory of the application.
  *
  * On Linux: ~/.local/share/\<appname\>.
@@ -49,13 +49,12 @@
  *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific data directory.
- * @throws environment_variable_not_set When a required environment variable is not set.
+ * @return std::optional<fs::path> The user-specific data directory or std::nullopt.
  * @note The XDG environment variables are not respected.
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::user_config_dir(const fs::path&, const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::user_config_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific configuration directory of the application.
  *
  * On Linux: ~/.config/\<appname\> (XDG standard).
@@ -64,13 +63,12 @@
  *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific configuration directory.
- * @throws environment_variable_not_set When a required environment variable is not set.
+ * @return std::optional<fs::path> The user-specific configuration directory or std::nullopt.
  * @note The XDG environment variables are not respected.
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::cache_dir(const fs::path&, const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::cache_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific cache directory of the application.
  *
  * On Linux: ~/.cache/\<appname\> (XDG standard).
@@ -79,13 +77,12 @@
  *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific cache directory.
- * @throws environment_variable_not_set When a required environment variable is not set.
+ * @return std::optional<fs::path> The user-specific cache directory or std::nullopt.
  * @note The XDG environment variables are not respected.
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::log_dir(const fs::path&, const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::log_dir(const fs::path&, const std::string&) const
  * @brief Returns the user-specific log directory of the application.
  *
  * On Linux: ~/.local/state/\<appname\>/log (XDG standard).
@@ -94,8 +91,7 @@
  *
  * @param exe_dir The directory of the executable file.
  * @param app_name The name of the application.
- * @return fs::path The user-specific log directory.
- * @throws environment_variable_not_set When a required environment variable is not set.
+ * @return std::optional<fs::path> The user-specific log directory or std::nullopt.
  * @note The XDG environment variables are not respected.
  */
 
@@ -114,10 +110,9 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::home_dir() const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::home_dir() const
  * @brief Returns the user's home directory.
- * @return fs::path The user's home directory.
- * @throws environment_variable_not_set When a required environment variable is not set.
+ * @return std::optional<fs::path> The user's home directory or std::nullopt.
  */
 
 /**
