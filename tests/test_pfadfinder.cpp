@@ -186,6 +186,41 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env.static_data_dir(), pfadfinder::directory_not_found);
     }
 
+    // Test find_static_data_dir
+    SECTION("find_static_data_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "share" / test_app_name;
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_static_data_dir();
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_static_data_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "share" / test_app_name / "data";
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_static_data_dir("data");
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_static_data_dir gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "share" / test_app_name;
+        fs::remove_all(expected_path);
+        
+        auto result = env.find_static_data_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     // Test data_dir
     SECTION("data_dir wirft wenn Verzeichnis nicht existiert")
     {

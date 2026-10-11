@@ -12,6 +12,7 @@
  *    - executable_dir()       : Directory of the executable file
  *    - find_executable_dir()  : Directory of the executable file (returns std::optional)
  *    - static_data_dir()      : System-wide static data directory
+ *    - find_static_data_dir() : System-wide static data directory (returns std::optional)
  *    - data_dir()             : User-specific data directory
  *    - create_data_dir()      : Creates user-specific data directory
  *    - user_config_dir()      : User-specific configuration directory
@@ -102,6 +103,16 @@
  * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The static data directory of the application (base or base + rel_path).
  * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_static_data_dir(const fs::path&) const
+ * @brief Returns the static data directory of the application or std::nullopt if it does not exist.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @param rel_path Relative path to the base directory (optional).
+ * @return std::optional<fs::path> The static data directory of the application (base + rel_path) or std::nullopt.
  */
 
 /**
@@ -381,9 +392,9 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::get_static_data_dir() const
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_static_data_dir() const
  * @brief Returns the cached static data directory.
- * @return fs::path The cached static data directory.
+ * @return std::optional<fs::path> The cached static data directory or std::nullopt.
  */
 
 /**
