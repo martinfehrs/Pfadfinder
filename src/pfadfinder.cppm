@@ -502,12 +502,15 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/\<appname\> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/\<appname\> oder ~/Library/Caches/TemporaryItems/\<appname\>.
          * 
-         * @return fs::path Das temporäre Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path temp_dir() const
+        [[nodiscard]] fs::path temp_dir(const fs::path& rel_path = "") const
         {
             auto path = get_temp_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -526,27 +529,6 @@ namespace pfadfinder
         {
             auto path = get_temp_dir();
             fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Gibt das temporäre Verzeichnis mit optionalem Unterpfad zurück.
-         * 
-         * Unter Windows entspricht dies \%TEMP\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies /tmp/\<appname\>/\<rel_path\> oder dem systemweiten Temp-Verzeichnis.
-         * Unter macOS entspricht dies /tmp/\<appname\>/\<rel_path\> oder ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
-         * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
-         */
-        [[nodiscard]] fs::path temp_dir(const fs::path& rel_path) const
-        {
-            auto path = get_temp_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
             return path;
         }
 
