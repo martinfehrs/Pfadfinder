@@ -127,7 +127,7 @@
  */
 
 /**
- * @fn fs::path pfadfinder::application_environment::create_data_dir() const
+ * @fn fs::path pfadfinder::application_environment::create_data_dir(const fs::path&) const
  * @brief Creates the user-specific data directory and returns it.
  * 
  * On Windows, this corresponds to \%APPDATA\%/\<appname\>.
@@ -135,19 +135,7 @@
  * On macOS (bundled), this corresponds to ~/Library/Application Support/\<appname\>,
  * otherwise ~/.local/share/\<appname\>.
  * 
- * @return fs::path The user data directory of the application.
- */
-
-/**
- * @fn fs::path pfadfinder::application_environment::create_data_dir(const fs::path&) const
- * @brief Creates the user-specific data directory with optional subpath and returns it.
- * 
- * On Windows, this corresponds to \%APPDATA\%/\<appname\>/\<rel_path\>.
- * On Linux, this corresponds to ~/.local/share/\<appname\>/\<rel_path\>.
- * On macOS (bundled), this corresponds to ~/Library/Application Support/\<appname\>/\<rel_path\>,
- * otherwise ~/.local/share/\<appname\>/\<rel_path\>.
- * 
- * @param rel_path Relative path to the base directory.
+ * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The user data directory of the application (base + rel_path).
  */
 
