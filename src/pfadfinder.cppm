@@ -209,27 +209,10 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/\<appname\>, ansonsten ~/.local/share/\<appname\>.
          * 
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_data_dir() const
-        {
-            auto path = get_data_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das Benutzer-spezifische Datenverzeichnis mit optionalem Unterpfad und gibt es zurück.
-         * 
-         * Unter Windows entspricht dies \%APPDATA\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.local/share/\<appname\>/\<rel_path\>.
-         * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Application Support/\<appname\>/\<rel_path\>, ansonsten ~/.local/share/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_data_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_data_dir(const fs::path& rel_path = "") const
         {
             auto path = get_data_dir();
             if (!rel_path.empty())
