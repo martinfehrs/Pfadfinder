@@ -3,42 +3,9 @@
  * @brief Cross-platform determination of application directories
  * @author Martin Fehrs
  *
- * This module provides:
- *
- * 1. The pfadfinder::application_environment class with methods for determining
- *    platform-specific directory paths for applications (Windows, Linux, macOS):
- *    - executable_path()      : Full path to the executable file
- *    - find_executable_path() : Full path to the executable file (returns std::optional)
- *    - executable_dir()       : Directory of the executable file
- *    - find_executable_dir()  : Directory of the executable file (returns std::optional)
- *    - static_data_dir()      : System-wide static data directory
- *    - find_static_data_dir() : System-wide static data directory (returns std::optional)
- *    - data_dir()             : User-specific data directory
- *    - find_data_dir()        : User-specific data directory (returns std::optional)
- *    - create_data_dir()      : Creates user-specific data directory
- *    - user_config_dir()      : User-specific configuration directory
- *    - create_user_config_dir(): Create user-specific configuration directory
- *    - user_config_file()     : Path to a user configuration file (with file existence check)
- *    - find_user_config_file() : Path to a user configuration file (returns std::optional)
- *    - find_user_config_dir()  : Path to a user configuration directory (returns std::optional)
- *    - shared_config_dir()    : Shared configuration directory
- *    - find_shared_config_dir(): Shared configuration directory (returns std::optional)
- *    - create_shared_config_dir(): Create shared configuration directory
- *    - shared_config_file()   : Path to a shared configuration file (with file existence check)
- *    - find_shared_config_file() : Path to a shared configuration file (returns std::optional)
- *    - find_config_file()     : Searches user then shared config directory (returns std::optional)
- *    - config_files()         : Returns all available configuration files (0, 1 or 2 entries)
- *    - cache_dir()            : User-specific cache directory
- *    - create_cache_dir()     : Creates user-specific cache directory
- *    - find_cache_dir()       : Path to a user cache directory (returns std::optional)
- *    - log_dir()              : User-specific log directory for application logs
- *    - find_log_dir()         : User-specific log directory (returns std::optional)
- *    - create_log_dir()       : Creates user-specific log directory
- *    - temp_dir()             : Temporary directory for the application
- *    - find_temp_dir()        : Temporary directory for the application (returns std::optional)
- *    - create_temp_dir()      : Creates temporary directory for the application
- *    - home_dir()             : User's home directory
- *    - find_home_dir()        : User's home directory (returns std::optional)
+ * This module provides the pfadfinder::application_environment class with methods
+ * for determining platform-specific directory paths for applications
+ * (Windows, Linux, macOS).
  */
 
 /**
