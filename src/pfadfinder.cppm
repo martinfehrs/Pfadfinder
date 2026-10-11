@@ -12,6 +12,7 @@
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
  *    - find_executable_dir()  : Verzeichnis der ausführbaren Datei (gibt std::optional zurück)
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
+ *    - find_static_data_dir() : Systemweites statisches Datenverzeichnis (gibt std::optional zurück)
  *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis
  *    - create_data_dir()      : Erstellt Benutzer-spezifisches Datenverzeichnis
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis
@@ -147,12 +148,36 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path static_data_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_static_data_dir();
+            auto opt_path = get_static_data_dir();
+            if (!opt_path.has_value())
+                throw indeterminable_exe_path{};
+            auto path = *opt_path;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
+        }
+
+        /**
+         * @brief Gibt das statische Datenverzeichnis der Anwendung zurück oder std::nullopt, falls dieses nicht existiert.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return std::optional<fs::path> Das statische Datenverzeichnis der Anwendung (Basis + rel_path) oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_static_data_dir(const fs::path& rel_path = "") const
+        {
+            auto base = get_static_data_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
         }
 
         /**
@@ -678,12 +703,17 @@ namespace pfadfinder
 
         /**
          * @brief Gibt das gecachte statische Datenverzeichnis zurück.
-         * @return fs::path Das gecachte statische Datenverzeichnis.
+         * @return std::optional<fs::path> Das gecachte statische Datenverzeichnis oder std::nullopt.
          */
-        [[nodiscard]] fs::path get_static_data_dir() const
+        [[nodiscard]] std::optional<fs::path> get_static_data_dir() const
         {
             if (!cached_static_data_dir_.has_value())
-                cached_static_data_dir_ = system_env_.static_data_dir(executable_dir(), app_name_);
+            {
+                auto exe_dir = get_executable_dir();
+                if (!exe_dir.has_value())
+                    return std::nullopt;
+                cached_static_data_dir_ = system_env_.static_data_dir(*exe_dir, app_name_);
+            }
             return *cached_static_data_dir_;
         }
 
