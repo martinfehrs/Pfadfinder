@@ -59,7 +59,7 @@ namespace pfadfinder
         return get_xdg_user_log_dir(app_name);
     }
 
-    fs::path system_environment::temp_dir(const std::string& app_name) const
+    std::optional<fs::path> system_environment::temp_dir(const std::string& app_name) const
     {
         return get_temp_dir(app_name);
     }

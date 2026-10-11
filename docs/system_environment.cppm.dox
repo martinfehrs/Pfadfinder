@@ -96,7 +96,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::temp_dir(const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::temp_dir(const std::string&) const
  * @brief Returns the temporary directory of the application.
  *
  * On Linux: /tmp/\<appname\> or system-wide temp directory.

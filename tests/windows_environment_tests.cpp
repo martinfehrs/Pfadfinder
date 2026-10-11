@@ -136,7 +136,8 @@ TEST_CASE("windows_system_environment::temp_dir returns TEMP path with app subdi
     GetEnvironmentVariableA("TEMP", buffer.data(), size);
 
     auto expected = fs::path(buffer) / "test_app";
-    REQUIRE(temp_dir == expected);
+    REQUIRE(temp_dir.has_value());
+    REQUIRE(*temp_dir == expected);
 }
 
 TEST_CASE("windows_system_environment::home_dir returns USERPROFILE path")
@@ -223,13 +224,14 @@ TEST_CASE("windows_system_environment::log_dir returns nullopt when LOCALAPPDATA
     REQUIRE_FALSE(result.has_value());
 }
 
-TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
+TEST_CASE("windows_system_environment::temp_dir returns nullopt when TEMP is not set")
 {
     pfadfinder::test::env_guard guard("TEMP");
     guard.unset();
 
     pfadfinder::system_environment backend;
-    REQUIRE_THROWS_AS(backend.temp_dir("test_app"), pfadfinder::environment_variable_not_set);
+    auto result = backend.temp_dir("test_app");
+    REQUIRE_FALSE(result.has_value());
 }
 
 TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPPDATA is not set")

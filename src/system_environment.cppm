@@ -120,11 +120,10 @@ namespace pfadfinder
          * Unter Windows: \%TEMP\%/\<appname\>.
          * 
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das temporäre Verzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das temporäre Verzeichnis oder std::nullopt.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path temp_dir(const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> temp_dir(const std::string& app_name) const;
 
         /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
