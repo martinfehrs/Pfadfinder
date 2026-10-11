@@ -649,6 +649,39 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env_unique.log_dir("subdir"), pfadfinder::directory_not_found);
     }
 
+    // Test find_log_dir
+    SECTION("find_log_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log";
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_log_dir();
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_log_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log" / "subdir";
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_log_dir("subdir");
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_log_dir gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_no_create("nonexistent_find_log_app", backend);
+        auto result = env_no_create.find_log_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     // Test create_log_dir
     SECTION("create_log_dir erstellt Verzeichnis und gibt Pfad zurück")
     {

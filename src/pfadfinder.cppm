@@ -32,6 +32,7 @@
  *    - create_cache_dir()     : Erstellt Benutzer-spezifisches Cache-Verzeichnis
  *    - find_cache_dir()       : Pfad zu einem Benutzer-Cache-Verzeichnis (gibt std::optional zurück)
  *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle
+ *    - find_log_dir()         : Benutzer-spezifisches Log-Verzeichnis (gibt std::optional zurück)
  *    - create_log_dir()       : Erstellt Benutzer-spezifisches Log-Verzeichnis
  *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
  *    - create_temp_dir()      : Erstellt temporäres Verzeichnis für die Anwendung
@@ -613,6 +614,27 @@ namespace pfadfinder
         }
 
         /**
+         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis der Anwendung zurück oder std::nullopt, falls dieses nicht existiert.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return std::optional<fs::path> Das Benutzer-spezifische Log-Verzeichnis der Anwendung (Basis + rel_path) oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_log_dir(const fs::path& rel_path = "") const
+        {
+            auto base = get_log_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
+        }
+
+        /**
          * @brief Erstellt das Benutzer-spezifische Log-Verzeichnis und gibt es zurück.
          * 
          * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Logs.
@@ -820,7 +842,10 @@ namespace pfadfinder
         {
             if (!cached_log_dir_.has_value())
             {
-                auto path = system_env_.log_dir(executable_dir(), app_name_);
+                auto exe_dir = get_executable_dir();
+                if (!exe_dir.has_value())
+                    return std::nullopt;
+                auto path = system_env_.log_dir(*exe_dir, app_name_);
                 if (path.has_value())
                     cached_log_dir_ = *path;
                 return path;
