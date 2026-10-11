@@ -7,6 +7,7 @@
 module;
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 export module pfadfinder:system_environment;
@@ -65,11 +66,10 @@ namespace pfadfinder
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-Datenverzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das Benutzer-Datenverzeichnis oder std::nullopt.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path data_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> data_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
@@ -80,11 +80,10 @@ namespace pfadfinder
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das Benutzer-spezifische Konfigurationsverzeichnis oder std::nullopt.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path user_config_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> user_config_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
@@ -95,11 +94,10 @@ namespace pfadfinder
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das Benutzer-spezifische Cache-Verzeichnis oder std::nullopt.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
@@ -110,11 +108,10 @@ namespace pfadfinder
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis.
-         * @throws environment_variable_not_set Wenn eine benötigte Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das Benutzer-spezifische Log-Verzeichnis oder std::nullopt.
          * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
-        [[nodiscard]] virtual fs::path log_dir(const fs::path& exe_dir, const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> log_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das temporäre Verzeichnis zurück.
@@ -132,10 +129,9 @@ namespace pfadfinder
 
         /**
          * @brief Gibt das Home-Verzeichnis des Benutzers zurück.
-         * @return fs::path Das Home-Verzeichnis.
-         * @throws environment_variable_not_set Wenn die HOME-Umgebungsvariable nicht gesetzt ist.
+         * @return std::optional<fs::path> Das Home-Verzeichnis oder std::nullopt.
          */
-        [[nodiscard]] virtual fs::path home_dir() const;
+        [[nodiscard]] virtual std::optional<fs::path> home_dir() const;
 
         /**
          * @brief Gibt das geteilte Konfigurationsverzeichnis zurück.

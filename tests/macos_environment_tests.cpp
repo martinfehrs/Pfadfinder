@@ -5,6 +5,7 @@
  */
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 #include <unistd.h>
@@ -62,7 +63,8 @@ TEST_CASE("macos_system_environment::data_dir returns correct path for CLI")
 
     // Für CLI-Apps: ~/.local/share/app_name
     auto expected = fs::path(home) / ".local" / "share" / "test_app";
-    REQUIRE(data_dir == expected);
+    REQUIRE(data_dir.has_value());
+    REQUIRE(*data_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::data_dir returns correct path for bundle")
@@ -78,7 +80,8 @@ TEST_CASE("macos_system_environment::data_dir returns correct path for bundle")
 
     // Für Bundles: ~/Library/Application Support/app_name
     auto expected = fs::path(home) / "Library" / "Application Support" / "test_app";
-    REQUIRE(data_dir == expected);
+    REQUIRE(data_dir.has_value());
+    REQUIRE(*data_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::user_config_dir returns correct path for CLI")
@@ -94,7 +97,8 @@ TEST_CASE("macos_system_environment::user_config_dir returns correct path for CL
 
     // Für CLI-Apps: ~/.config/app_name
     auto expected = fs::path(home) / ".config" / "test_app";
-    REQUIRE(config_dir == expected);
+    REQUIRE(config_dir.has_value());
+    REQUIRE(*config_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::user_config_dir returns correct path for bundle")
@@ -110,7 +114,8 @@ TEST_CASE("macos_system_environment::user_config_dir returns correct path for bu
 
     // Für Bundles: ~/Library/Preferences/app_name
     auto expected = fs::path(home) / "Library" / "Preferences" / "test_app";
-    REQUIRE(config_dir == expected);
+    REQUIRE(config_dir.has_value());
+    REQUIRE(*config_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::cache_dir returns correct path for CLI")
@@ -126,7 +131,8 @@ TEST_CASE("macos_system_environment::cache_dir returns correct path for CLI")
 
     // Für CLI-Apps: ~/.cache/app_name
     auto expected = fs::path(home) / ".cache" / "test_app";
-    REQUIRE(cache_dir == expected);
+    REQUIRE(cache_dir.has_value());
+    REQUIRE(*cache_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::cache_dir returns correct path for bundle")
@@ -142,7 +148,8 @@ TEST_CASE("macos_system_environment::cache_dir returns correct path for bundle")
 
     // Für Bundles: ~/Library/Caches/app_name
     auto expected = fs::path(home) / "Library" / "Caches" / "test_app";
-    REQUIRE(cache_dir == expected);
+    REQUIRE(cache_dir.has_value());
+    REQUIRE(*cache_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::log_dir returns correct path for CLI")
@@ -158,7 +165,8 @@ TEST_CASE("macos_system_environment::log_dir returns correct path for CLI")
 
     // Für CLI-Apps: ~/.local/state/app_name/log
     auto expected = fs::path(home) / ".local" / "state" / "test_app" / "log";
-    REQUIRE(log_dir == expected);
+    REQUIRE(log_dir.has_value());
+    REQUIRE(*log_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::log_dir returns correct path for bundle")
@@ -174,7 +182,8 @@ TEST_CASE("macos_system_environment::log_dir returns correct path for bundle")
 
     // Für Bundles: ~/Library/Logs/app_name
     auto expected = fs::path(home) / "Library" / "Logs" / "test_app";
-    REQUIRE(log_dir == expected);
+    REQUIRE(log_dir.has_value());
+    REQUIRE(*log_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::temp_dir returns correct path")
@@ -196,7 +205,8 @@ TEST_CASE("macos_system_environment::home_dir returns correct path")
     const char* home = std::getenv("HOME");
     REQUIRE(home != nullptr);
 
-    REQUIRE(home_dir == fs::path(home));
+    REQUIRE(home_dir.has_value());
+    REQUIRE(*home_dir == fs::path(home));
 }
 
 TEST_CASE("macos_system_environment::shared_config_dir returns /Library/Preferences path")
@@ -208,7 +218,7 @@ TEST_CASE("macos_system_environment::shared_config_dir returns /Library/Preferen
     REQUIRE(shared_config_dir == fs::path("/Library/Preferences/test_app"));
 }
 
-TEST_CASE("macos_system_environment::home_dir throws when HOME is not set")
+TEST_CASE("macos_system_environment::home_dir returns nullopt when HOME is not set")
 {
     // Save original HOME
     const char* original_home = std::getenv("HOME");
@@ -217,7 +227,8 @@ TEST_CASE("macos_system_environment::home_dir throws when HOME is not set")
     unsetenv("HOME");
     
     pfadfinder::system_environment backend;
-    REQUIRE_THROWS_AS(backend.home_dir(), pfadfinder::environment_variable_not_set);
+    auto result = backend.home_dir();
+    REQUIRE_FALSE(result.has_value());
     
     // Restore HOME
     if (original_home)
