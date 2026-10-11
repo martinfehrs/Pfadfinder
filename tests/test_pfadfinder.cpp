@@ -41,7 +41,7 @@ namespace test_backend
             fs::remove_all(base_temp_dir);
         }
         
-        [[nodiscard]] fs::path executable_path() const override
+        [[nodiscard]] std::optional<fs::path> executable_path() const override
         {
             return base_temp_dir / "bin" / "test_app";
         }

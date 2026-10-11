@@ -20,7 +20,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::executable_path() const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::executable_path() const
  * @brief Returns the full path to the executable file.
  * @return fs::path The absolute path to the executable file.
  * @throws indeterminable_exe_path When the path to the executable cannot be determined.

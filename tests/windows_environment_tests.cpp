@@ -24,9 +24,10 @@ TEST_CASE("windows_system_environment::executable_path returns correct path")
     pfadfinder::system_environment backend;
     auto exe_path = backend.executable_path();
 
-    REQUIRE_FALSE(exe_path.empty());
-    REQUIRE(exe_path.is_absolute());
-    REQUIRE(exe_path.filename() == "test_pfadfinder.exe");
+    REQUIRE(exe_path.has_value());
+    REQUIRE_FALSE(exe_path->empty());
+    REQUIRE(exe_path->is_absolute());
+    REQUIRE(exe_path->filename() == "test_pfadfinder.exe");
 }
 
 TEST_CASE("windows_system_environment::static_data_dir returns executable directory")
