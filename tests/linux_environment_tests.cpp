@@ -12,6 +12,8 @@
 
 #include <catch2/catch_all.hpp>
 
+#include "env_guard.hpp"
+
 import pfadfinder;
 
 namespace fs = std::filesystem;
@@ -134,110 +136,50 @@ TEST_CASE("linux_system_environment::shared_config_dir returns /etc path")
 
 TEST_CASE("linux_system_environment::home_dir returns nullopt when HOME is not set")
 {
-    const char* original_home = std::getenv("HOME");
-    unsetenv("HOME");
+    pfadfinder::test::env_guard home_guard("HOME");
+    home_guard.unset();
 
-    try
-    {
-        pfadfinder::system_environment backend;
-        auto result = backend.home_dir();
-        REQUIRE_FALSE(result.has_value());
-    }
-    catch (...)
-    {
-        if (original_home)
-            setenv("HOME", original_home, 1);
-        throw;
-    }
-
-    if (original_home)
-        setenv("HOME", original_home, 1);
+    pfadfinder::system_environment backend;
+    auto result = backend.home_dir();
+    REQUIRE_FALSE(result.has_value());
 }
 
 TEST_CASE("linux_system_environment::data_dir returns nullopt when HOME is not set")
 {
-    const char* original_home = std::getenv("HOME");
-    unsetenv("HOME");
+    pfadfinder::test::env_guard home_guard("HOME");
+    home_guard.unset();
 
-    try
-    {
-        pfadfinder::system_environment backend;
-        auto result = backend.data_dir(fs::path("/usr/bin"), "test_app");
-        REQUIRE_FALSE(result.has_value());
-    }
-    catch (...)
-    {
-        if (original_home)
-            setenv("HOME", original_home, 1);
-        throw;
-    }
-
-    if (original_home)
-        setenv("HOME", original_home, 1);
+    pfadfinder::system_environment backend;
+    auto result = backend.data_dir(fs::path("/usr/bin"), "test_app");
+    REQUIRE_FALSE(result.has_value());
 }
 
 TEST_CASE("linux_system_environment::user_config_dir returns nullopt when HOME is not set")
 {
-    const char* original_home = std::getenv("HOME");
-    unsetenv("HOME");
+    pfadfinder::test::env_guard home_guard("HOME");
+    home_guard.unset();
 
-    try
-    {
-        pfadfinder::system_environment backend;
-        auto result = backend.user_config_dir(fs::path("/usr/bin"), "test_app");
-        REQUIRE_FALSE(result.has_value());
-    }
-    catch (...)
-    {
-        if (original_home)
-            setenv("HOME", original_home, 1);
-        throw;
-    }
-
-    if (original_home)
-        setenv("HOME", original_home, 1);
+    pfadfinder::system_environment backend;
+    auto result = backend.user_config_dir(fs::path("/usr/bin"), "test_app");
+    REQUIRE_FALSE(result.has_value());
 }
 
 TEST_CASE("linux_system_environment::cache_dir returns nullopt when HOME is not set")
 {
-    const char* original_home = std::getenv("HOME");
-    unsetenv("HOME");
+    pfadfinder::test::env_guard home_guard("HOME");
+    home_guard.unset();
 
-    try
-    {
-        pfadfinder::system_environment backend;
-        auto result = backend.cache_dir(fs::path("/usr/bin"), "test_app");
-        REQUIRE_FALSE(result.has_value());
-    }
-    catch (...)
-    {
-        if (original_home)
-            setenv("HOME", original_home, 1);
-        throw;
-    }
-
-    if (original_home)
-        setenv("HOME", original_home, 1);
+    pfadfinder::system_environment backend;
+    auto result = backend.cache_dir(fs::path("/usr/bin"), "test_app");
+    REQUIRE_FALSE(result.has_value());
 }
 
 TEST_CASE("linux_system_environment::log_dir returns nullopt when HOME is not set")
 {
-    const char* original_home = std::getenv("HOME");
-    unsetenv("HOME");
+    pfadfinder::test::env_guard home_guard("HOME");
+    home_guard.unset();
 
-    try
-    {
-        pfadfinder::system_environment backend;
-        auto result = backend.log_dir(fs::path("/usr/bin"), "test_app");
-        REQUIRE_FALSE(result.has_value());
-    }
-    catch (...)
-    {
-        if (original_home)
-            setenv("HOME", original_home, 1);
-        throw;
-    }
-
-    if (original_home)
-        setenv("HOME", original_home, 1);
+    pfadfinder::system_environment backend;
+    auto result = backend.log_dir(fs::path("/usr/bin"), "test_app");
+    REQUIRE_FALSE(result.has_value());
 }

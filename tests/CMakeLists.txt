@@ -13,16 +13,19 @@ target_sources(test_pfadfinder
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_sources(test_pfadfinder
         PRIVATE
+            env_guard_windows.cpp
             windows_environment_tests.cpp
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(test_pfadfinder
         PRIVATE
+            env_guard_posix.cpp
             linux_environment_tests.cpp
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_sources(test_pfadfinder
         PRIVATE
+            env_guard_posix.cpp
             macos_environment_tests.cpp
     )
 endif()
