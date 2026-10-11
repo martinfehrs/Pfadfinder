@@ -3,42 +3,9 @@
  * @brief  Plattformübergreifende Bestimmung von Anwendungsverzeichnissen
  * @author Martin Fehrs
  *
- * Dieses Modul bietet:
- * 
- * 1. Die Klasse pfadfinder::application_environment mit Methoden zur Ermittlung
- *    plattformspezifischer Verzeichnispfade für Anwendungen (Windows, Linux, macOS):
- *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
- *    - find_executable_path() : Vollständiger Pfad zur ausführbaren Datei (gibt std::optional zurück)
- *    - executable_dir()       : Verzeichnis der ausführbaren Datei
- *    - find_executable_dir()  : Verzeichnis der ausführbaren Datei (gibt std::optional zurück)
- *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
- *    - find_static_data_dir() : Systemweites statisches Datenverzeichnis (gibt std::optional zurück)
- *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis
- *    - find_data_dir()        : Benutzer-spezifisches Datenverzeichnis (gibt std::optional zurück)
- *    - create_data_dir()      : Erstellt Benutzer-spezifisches Datenverzeichnis
- *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis
- *    - create_user_config_dir(): Erstellt Benutzer-spezifisches Konfigurationsverzeichnis
- *    - user_config_file()     : Pfad zu einer Benutzer-Konfigurationsdatei (mit Dateiexistenzprüfung)
- *    - find_user_config_file() : Pfad zu einer Benutzer-Konfigurationsdatei (gibt std::optional zurück)
- *    - find_user_config_dir()  : Pfad zu einem Benutzer-Konfigurationsverzeichnis (gibt std::optional zurück)
- *    - shared_config_dir()    : Geteiltes Konfigurationsverzeichnis
- *    - find_shared_config_dir(): Geteiltes Konfigurationsverzeichnis (gibt std::optional zurück)
- *    - create_shared_config_dir(): Erstellt geteiltes Konfigurationsverzeichnis
- *    - shared_config_file()   : Pfad zu einer geteilten Konfigurationsdatei (mit Dateiexistenzprüfung)
- *    - find_shared_config_file(): Pfad zu einer geteilten Konfigurationsdatei (gibt std::optional zurück)
- *    - find_config_file()     : Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt std::optional zurück)
- *    - config_files()         : Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2)
- *    - cache_dir()            : Benutzer-spezifisches Cache-Verzeichnis
- *    - create_cache_dir()     : Erstellt Benutzer-spezifisches Cache-Verzeichnis
- *    - find_cache_dir()       : Pfad zu einem Benutzer-Cache-Verzeichnis (gibt std::optional zurück)
- *    - log_dir()              : Benutzer-spezifisches Log-Verzeichnis für Anwendungsprotokolle
- *    - find_log_dir()         : Benutzer-spezifisches Log-Verzeichnis (gibt std::optional zurück)
- *    - create_log_dir()       : Erstellt Benutzer-spezifisches Log-Verzeichnis
- *    - temp_dir()             : Temporäres Verzeichnis für die Anwendung
- *    - find_temp_dir()        : Temporäres Verzeichnis für die Anwendung (gibt std::optional zurück)
- *    - create_temp_dir()      : Erstellt temporäres Verzeichnis für die Anwendung
- *    - home_dir()             : Home-Verzeichnis des Benutzers
- *    - find_home_dir()        : Home-Verzeichnis des Benutzers (gibt std::optional zurück)
+ * Dieses Modul bietet die Klasse pfadfinder::application_environment mit Methoden
+ * zur Ermittlung plattformspezifischer Verzeichnispfade für Anwendungen
+ * (Windows, Linux, macOS).
  */
 
 module;
