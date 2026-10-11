@@ -218,7 +218,8 @@ TEST_CASE("macos_system_environment::shared_config_dir returns /Library/Preferen
     auto app_name = std::string("test_app");
 
     auto shared_config_dir = backend.shared_config_dir(app_name);
-    REQUIRE(shared_config_dir == fs::path("/Library/Preferences/test_app"));
+    REQUIRE(shared_config_dir.has_value());
+    REQUIRE(*shared_config_dir == fs::path("/Library/Preferences/test_app"));
 }
 
 TEST_CASE("macos_system_environment::home_dir returns nullopt when HOME is not set")

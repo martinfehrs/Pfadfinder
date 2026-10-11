@@ -116,7 +116,7 @@
  */
 
 /**
- * @fn virtual fs::path pfadfinder::system_environment::shared_config_dir(const std::string&) const
+ * @fn virtual std::optional<fs::path> pfadfinder::system_environment::shared_config_dir(const std::string&) const
  * @brief Returns the shared configuration directory.
  *
  * On Linux: /etc/\<appname\>.

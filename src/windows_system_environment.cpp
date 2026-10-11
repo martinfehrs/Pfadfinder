@@ -119,16 +119,16 @@ namespace pfadfinder
         return fs::path{ buffer };
     }
 
-    fs::path system_environment::shared_config_dir(const std::string& app_name) const
+    std::optional<fs::path> system_environment::shared_config_dir(const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("ALLUSERSAPPDATA", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name;
     }
