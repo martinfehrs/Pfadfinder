@@ -422,27 +422,10 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/\<appname\>, ansonsten ~/.cache/\<appname\>.
          * 
-         * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_cache_dir() const
-        {
-            auto path = get_cache_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das Benutzer-spezifische Cache-Verzeichnis mit optionalem Unterpfad und gibt es zurück.
-         * 
-         * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Cache/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.cache/\<appname\>/\<rel_path\> (XDG-Standard).
-         * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Caches/\<appname\>/\<rel_path\>, ansonsten ~/.cache/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das Benutzer-spezifische Cache-Verzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_cache_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_cache_dir(const fs::path& rel_path = "") const
         {
             auto path = get_cache_dir();
             if (!rel_path.empty())
