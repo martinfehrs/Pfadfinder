@@ -32,6 +32,7 @@
  *    - create_cache_dir()     : Creates user-specific cache directory
  *    - find_cache_dir()       : Path to a user cache directory (returns std::optional)
  *    - log_dir()              : User-specific log directory for application logs
+ *    - find_log_dir()         : User-specific log directory (returns std::optional)
  *    - create_log_dir()       : Creates user-specific log directory
  *    - temp_dir()             : Temporary directory for the application
  *    - create_temp_dir()      : Creates temporary directory for the application
@@ -350,6 +351,16 @@
  * @param rel_path Relative path to the base directory (optional).
  * @return fs::path The user-specific log directory of the application (base + rel_path).
  * @throws directory_not_found If the directory does not exist.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_log_dir(const fs::path&) const
+ * @brief Returns the user-specific log directory of the application or std::nullopt if it does not exist.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @param rel_path Relative path to the base directory (optional).
+ * @return std::optional<fs::path> The user-specific log directory of the application (base + rel_path) or std::nullopt.
  */
 
 /**
