@@ -167,26 +167,10 @@ namespace pfadfinder
          * Unter Linux entspricht dies /etc/\<appname\>.
          * Unter macOS entspricht dies /Library/Preferences/\<appname\>.
          *
-         * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_shared_config_dir() const
-        {
-            auto path = get_shared_config_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das geteilte Konfigurationsverzeichnis mit optionalem Unterpfad und gibt es zurück.
-         *
-         * Unter Windows entspricht dies \%ALLUSERSAPPDATA\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies /etc/\<appname\>/\<rel_path\>.
-         * Unter macOS entspricht dies /Library/Preferences/\<appname\>/\<rel_path\>.
-         *
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das geteilte Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_shared_config_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_shared_config_dir(const fs::path& rel_path = "") const
         {
             auto path = get_shared_config_dir();
             if (!rel_path.empty())
