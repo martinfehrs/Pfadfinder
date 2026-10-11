@@ -187,12 +187,15 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Application Support/\<appname\>, ansonsten ~/.local/share/\<appname\>.
          * 
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path data_dir() const
+        [[nodiscard]] fs::path data_dir(const fs::path& rel_path = "") const
         {
             auto path = get_data_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -212,28 +215,6 @@ namespace pfadfinder
         {
             auto path = get_data_dir();
             fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Gibt das benutzerspezifische Datenverzeichnis mit optionalem Unterpfad zurück.
-         * 
-         * Unter Windows entspricht dies \%APPDATA\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.local/share/\<appname\>/\<rel_path\>.
-         * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Application Support/\<appname\>/\<rel_path\>, ansonsten ~/.local/share/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
-         * @return fs::path Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
-         */
-        [[nodiscard]] fs::path data_dir(const fs::path& rel_path) const
-        {
-            auto path = get_data_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
             return path;
         }
 
