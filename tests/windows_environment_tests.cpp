@@ -175,11 +175,19 @@ TEST_CASE("windows_system_environment::home_dir returns nullopt when USERPROFILE
 {
     const char* original = std::getenv("USERPROFILE");
     SetEnvironmentVariableA("USERPROFILE", nullptr);
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.home_dir();
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.home_dir();
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("USERPROFILE", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("USERPROFILE", original);
 }
 
@@ -187,11 +195,19 @@ TEST_CASE("windows_system_environment::data_dir returns nullopt when APPDATA is 
 {
     const char* original = std::getenv("APPDATA");
     SetEnvironmentVariableA("APPDATA", nullptr);
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.data_dir(fs::path("C:/Program Files/MyApp"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.data_dir(fs::path("C:/Program Files/MyApp"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("APPDATA", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("APPDATA", original);
 }
 
@@ -199,11 +215,19 @@ TEST_CASE("windows_system_environment::user_config_dir returns nullopt when APPD
 {
     const char* original = std::getenv("APPDATA");
     SetEnvironmentVariableA("APPDATA", nullptr);
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.user_config_dir(fs::path("C:/Program Files/MyApp"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.user_config_dir(fs::path("C:/Program Files/MyApp"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("APPDATA", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("APPDATA", original);
 }
 
@@ -211,11 +235,19 @@ TEST_CASE("windows_system_environment::cache_dir returns nullopt when LOCALAPPDA
 {
     const char* original = std::getenv("LOCALAPPDATA");
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.cache_dir(fs::path("C:/Program Files/MyApp"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.cache_dir(fs::path("C:/Program Files/MyApp"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("LOCALAPPDATA", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("LOCALAPPDATA", original);
 }
 
@@ -223,11 +255,19 @@ TEST_CASE("windows_system_environment::log_dir returns nullopt when LOCALAPPDATA
 {
     const char* original = std::getenv("LOCALAPPDATA");
     SetEnvironmentVariableA("LOCALAPPDATA", nullptr);
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.log_dir(fs::path("C:/Program Files/MyApp"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.log_dir(fs::path("C:/Program Files/MyApp"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("LOCALAPPDATA", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("LOCALAPPDATA", original);
 }
 
@@ -235,10 +275,18 @@ TEST_CASE("windows_system_environment::temp_dir throws when TEMP is not set")
 {
     const char* original = std::getenv("TEMP");
     SetEnvironmentVariableA("TEMP", nullptr);
-    
-    pfadfinder::system_environment backend;
-    REQUIRE_THROWS_AS(backend.temp_dir("test_app"), pfadfinder::environment_variable_not_set);
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        REQUIRE_THROWS_AS(backend.temp_dir("test_app"), pfadfinder::environment_variable_not_set);
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("TEMP", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("TEMP", original);
 }
 
@@ -246,9 +294,17 @@ TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPP
 {
     const char* original = std::getenv("ALLUSERSAPPDATA");
     SetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr);
-    
-    pfadfinder::system_environment backend;
-    REQUIRE_THROWS_AS(backend.shared_config_dir("test_app"), pfadfinder::environment_variable_not_set);
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        REQUIRE_THROWS_AS(backend.shared_config_dir("test_app"), pfadfinder::environment_variable_not_set);
+    }
+    catch (...)
+    {
+        SetEnvironmentVariableA("ALLUSERSAPPDATA", original);
+        throw;
+    }
+
     SetEnvironmentVariableA("ALLUSERSAPPDATA", original);
 }

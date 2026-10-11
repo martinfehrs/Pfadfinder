@@ -220,17 +220,22 @@ TEST_CASE("macos_system_environment::shared_config_dir returns /Library/Preferen
 
 TEST_CASE("macos_system_environment::home_dir returns nullopt when HOME is not set")
 {
-    // Save original HOME
     const char* original_home = std::getenv("HOME");
-    
-    // Temporarily unset HOME
     unsetenv("HOME");
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.home_dir();
-    REQUIRE_FALSE(result.has_value());
-    
-    // Restore HOME
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.home_dir();
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        if (original_home)
+            setenv("HOME", original_home, 1);
+        throw;
+    }
+
     if (original_home)
         setenv("HOME", original_home, 1);
 }
@@ -239,11 +244,20 @@ TEST_CASE("macos_system_environment::data_dir returns nullopt when HOME is not s
 {
     const char* original_home = std::getenv("HOME");
     unsetenv("HOME");
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.data_dir(fs::path("/usr/local/bin"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.data_dir(fs::path("/usr/local/bin"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        if (original_home)
+            setenv("HOME", original_home, 1);
+        throw;
+    }
+
     if (original_home)
         setenv("HOME", original_home, 1);
 }
@@ -252,11 +266,20 @@ TEST_CASE("macos_system_environment::user_config_dir returns nullopt when HOME i
 {
     const char* original_home = std::getenv("HOME");
     unsetenv("HOME");
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.user_config_dir(fs::path("/usr/local/bin"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.user_config_dir(fs::path("/usr/local/bin"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        if (original_home)
+            setenv("HOME", original_home, 1);
+        throw;
+    }
+
     if (original_home)
         setenv("HOME", original_home, 1);
 }
@@ -265,11 +288,20 @@ TEST_CASE("macos_system_environment::cache_dir returns nullopt when HOME is not 
 {
     const char* original_home = std::getenv("HOME");
     unsetenv("HOME");
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.cache_dir(fs::path("/usr/local/bin"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.cache_dir(fs::path("/usr/local/bin"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        if (original_home)
+            setenv("HOME", original_home, 1);
+        throw;
+    }
+
     if (original_home)
         setenv("HOME", original_home, 1);
 }
@@ -278,11 +310,20 @@ TEST_CASE("macos_system_environment::log_dir returns nullopt when HOME is not se
 {
     const char* original_home = std::getenv("HOME");
     unsetenv("HOME");
-    
-    pfadfinder::system_environment backend;
-    auto result = backend.log_dir(fs::path("/usr/local/bin"), "test_app");
-    REQUIRE_FALSE(result.has_value());
-    
+
+    try
+    {
+        pfadfinder::system_environment backend;
+        auto result = backend.log_dir(fs::path("/usr/local/bin"), "test_app");
+        REQUIRE_FALSE(result.has_value());
+    }
+    catch (...)
+    {
+        if (original_home)
+            setenv("HOME", original_home, 1);
+        throw;
+    }
+
     if (original_home)
         setenv("HOME", original_home, 1);
 }
