@@ -38,6 +38,7 @@
  *    - find_temp_dir()        : Temporäres Verzeichnis für die Anwendung (gibt std::optional zurück)
  *    - create_temp_dir()      : Erstellt temporäres Verzeichnis für die Anwendung
  *    - home_dir()             : Home-Verzeichnis des Benutzers
+ *    - find_home_dir()        : Home-Verzeichnis des Benutzers (gibt std::optional zurück)
  */
 
 module;
@@ -737,16 +738,22 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path home_dir() const
         {
-            if (!cached_home_dir_.has_value())
-            {
-                auto path = system_env_.home_dir();
-                if (!path.has_value())
-                    throw environment_variable_not_set{ "HOME" };
+            auto path = get_home_dir();
+            if (!path.has_value())
+                throw environment_variable_not_set{ "HOME" };
+            return *path;
+        }
 
-                cached_home_dir_ = *path;
-            }
-
-            return *cached_home_dir_;
+        /**
+         * @brief Gibt das Home-Verzeichnis des Benutzers zurück oder std::nullopt, falls dieses nicht ermittelt werden kann.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @return std::optional<fs::path> Das Home-Verzeichnis des Benutzers oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_home_dir() const
+        {
+            return get_home_dir();
         }
 
     private:
@@ -905,6 +912,22 @@ namespace pfadfinder
                 return path;
             }
             return *cached_shared_config_dir_;
+        }
+
+        /**
+         * @brief Gibt das gecachte Home-Verzeichnis des Benutzers zurück.
+         * @return std::optional<fs::path> Das gecachte Home-Verzeichnis oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> get_home_dir() const
+        {
+            if (!cached_home_dir_.has_value())
+            {
+                auto path = system_env_.home_dir();
+                if (path.has_value())
+                    cached_home_dir_ = *path;
+                return path;
+            }
+            return *cached_home_dir_;
         }
 
         /** @brief Der Name der Anwendung. */

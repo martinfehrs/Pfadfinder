@@ -152,6 +152,16 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(home_dir == backend.base_temp_dir / "home");
     }
 
+    // Test find_home_dir
+    SECTION("find_home_dir gibt gültigen Pfad zurück")
+    {
+        auto result = env.find_home_dir();
+        REQUIRE(result.has_value());
+        REQUIRE_FALSE(result->empty());
+        REQUIRE(result->is_absolute());
+        REQUIRE(*result == backend.base_temp_dir / "home");
+    }
+
     // Test static_data_dir mit existierendem Verzeichnis
     SECTION("static_data_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
