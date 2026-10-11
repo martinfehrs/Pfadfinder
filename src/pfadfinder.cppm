@@ -839,7 +839,10 @@ namespace pfadfinder
         {
             if (!cached_user_config_dir_.has_value())
             {
-                auto path = system_env_.user_config_dir(executable_dir(), app_name_);
+                auto exe_dir = get_executable_dir();
+                if (!exe_dir.has_value())
+                    return std::nullopt;
+                auto path = system_env_.user_config_dir(*exe_dir, app_name_);
                 if (path.has_value())
                     cached_user_config_dir_ = *path;
                 return path;
