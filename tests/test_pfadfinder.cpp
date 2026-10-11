@@ -696,6 +696,39 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(fs::is_directory(config_dir));
     }
 
+    // Test find_shared_config_dir
+    SECTION("find_shared_config_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_shared_config_dir();
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_shared_config_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name / "config";
+        fs::create_directories(expected_path);
+        
+        auto result = env.find_shared_config_dir("config");
+        REQUIRE(result.has_value());
+        REQUIRE(*result == expected_path);
+        REQUIRE(fs::exists(*result));
+        REQUIRE(fs::is_directory(*result));
+    }
+
+    SECTION("find_shared_config_dir gibt std::nullopt zurück wenn Verzeichnis nicht existiert")
+    {
+        test_env_type env_no_create("nonexistent_find_shared_config", backend);
+        auto result = env_no_create.find_shared_config_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
     // Test create_shared_config_dir
     SECTION("create_shared_config_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
