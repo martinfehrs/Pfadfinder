@@ -461,12 +461,15 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log.
          * 
-         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung (Basis + rel_path).
          * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
          */
-        [[nodiscard]] fs::path log_dir() const
+        [[nodiscard]] fs::path log_dir(const fs::path& rel_path = "") const
         {
             auto path = get_log_dir();
+            if (!rel_path.empty())
+                path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
@@ -486,28 +489,6 @@ namespace pfadfinder
         {
             auto path = get_log_dir();
             fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Gibt das Benutzer-spezifische Log-Verzeichnis mit optionalem Unterpfad zurück.
-         * 
-         * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Logs/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log/\<rel_path\> (XDG Base Directory Specification).
-         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>/\<rel_path\>.
-         * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
-         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung (Basis + rel_path).
-         * @throws directory_not_found Wenn das Verzeichnis nicht existiert.
-         */
-        [[nodiscard]] fs::path log_dir(const fs::path& rel_path) const
-        {
-            auto path = get_log_dir();
-            if (!rel_path.empty())
-                path /= rel_path;
-            if (!fs::exists(path) || !fs::is_directory(path))
-                throw directory_not_found(path.string());
             return path;
         }
 
