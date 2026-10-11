@@ -12,8 +12,7 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "env_guard.hpp"
-
+import env_guard;
 import pfadfinder;
 
 namespace fs = std::filesystem;

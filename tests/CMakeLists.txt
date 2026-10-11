@@ -7,6 +7,13 @@ add_executable(test_pfadfinder)
 
 target_sources(test_pfadfinder
     PRIVATE
+        FILE_SET CXX_MODULES
+        FILES
+            env_guard.cppm
+)
+
+target_sources(test_pfadfinder
+    PRIVATE
         test_pfadfinder.cpp
 )
 

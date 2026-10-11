@@ -4,11 +4,13 @@
  * @author Martin Fehrs
  */
 
-#include "env_guard.hpp"
+module;
 
 #include <cstdlib>
 
 #include <unistd.h>
+
+module env_guard;
 
 namespace pfadfinder::test
 {

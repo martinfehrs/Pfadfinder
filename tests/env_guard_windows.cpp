@@ -4,11 +4,13 @@
  * @author Martin Fehrs
  */
 
-#include "env_guard.hpp"
+module;
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
+
+module env_guard;
 
 namespace pfadfinder::test
 {

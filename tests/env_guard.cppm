@@ -1,15 +1,16 @@
 /**
- * @file env_guard.hpp
+ * @file env_guard.cppm
  * @brief RAII-Hilfsklasse zum Sichern und Wiederherstellen von Umgebungsvariablen in Tests
  * @author Martin Fehrs
  */
 
-#ifndef PFADFINDER_TESTS_ENV_GUARD_HPP
-#define PFADFINDER_TESTS_ENV_GUARD_HPP
+module;
 
 #include <string>
 
-namespace pfadfinder::test
+export module env_guard;
+
+export namespace pfadfinder::test
 {
     class env_guard
     {
@@ -25,5 +26,3 @@ namespace pfadfinder::test
         bool was_set_ = false;
     };
 }
-
-#endif
