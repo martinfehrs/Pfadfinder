@@ -68,19 +68,19 @@ namespace pfadfinder
         return exe_dir.parent_path() / "Resources" / app_name;
     }
 
-    fs::path system_environment::executable_path() const
+    std::optional<fs::path> system_environment::executable_path() const
     {
         char path[PATH_MAX]{};
         uint32_t size = sizeof(path);
 
         if (_NSGetExecutablePath(path, &size) != 0)
-            throw indeterminable_exe_path{};
-        
+            return std::nullopt;
+
         char real_path[PATH_MAX]{};
 
         if (realpath(path, real_path) == nullptr)
-            throw indeterminable_exe_path{};
-        
+            return std::nullopt;
+
         return fs::path{ real_path };
     }
 

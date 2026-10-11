@@ -21,13 +21,13 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    fs::path system_environment::executable_path() const
+    std::optional<fs::path> system_environment::executable_path() const
     {
         char path[PATH_MAX]{};
         ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
 
         if (len == -1)
-            throw indeterminable_exe_path{};
+            return std::nullopt;
 
         path[len] = '\0';
 

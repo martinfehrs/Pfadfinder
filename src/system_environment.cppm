@@ -39,10 +39,9 @@ namespace pfadfinder
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
-         * @return fs::path Der absolute Pfad zur ausführbaren Datei.
-         * @throws indeterminable_exe_path Wenn der Pfad zur ausführbaren Datei nicht ermittelt werden kann.
+         * @return std::optional<fs::path> Der absolute Pfad zur ausführbaren Datei oder std::nullopt.
          */
-        [[nodiscard]] virtual fs::path executable_path() const;
+        [[nodiscard]] virtual std::optional<fs::path> executable_path() const;
 
         /**
          * @brief Gibt das statische Datenverzeichnis zurück.

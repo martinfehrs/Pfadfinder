@@ -20,12 +20,12 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    fs::path system_environment::executable_path() const
+    std::optional<fs::path> system_environment::executable_path() const
     {
         wchar_t path[MAX_PATH]{};
 
         if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0)
-            throw indeterminable_exe_path{};
+            return std::nullopt;
 
         return fs::path{ path };
     }

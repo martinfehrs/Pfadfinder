@@ -91,11 +91,14 @@ namespace pfadfinder
             if (!cached_executable_path_.has_value())
             {
                 auto path = system_env_.executable_path();
+                if (!path.has_value())
+                    throw indeterminable_exe_path{};
+
                 // Setze app_name_ auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
                 if (app_name_.empty())
-                    app_name_ = path.stem().string();
+                    app_name_ = path->stem().string();
 
-                cached_executable_path_ = path;
+                cached_executable_path_ = *path;
             }
 
             return *cached_executable_path_;
