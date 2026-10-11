@@ -14,6 +14,7 @@
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
  *    - find_static_data_dir() : Systemweites statisches Datenverzeichnis (gibt std::optional zurück)
  *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis
+ *    - find_data_dir()        : Benutzer-spezifisches Datenverzeichnis (gibt std::optional zurück)
  *    - create_data_dir()      : Erstellt Benutzer-spezifisches Datenverzeichnis
  *    - user_config_dir()      : Benutzer-spezifisches Konfigurationsverzeichnis
  *    - create_user_config_dir(): Erstellt Benutzer-spezifisches Konfigurationsverzeichnis
@@ -276,6 +277,27 @@ namespace pfadfinder
             if (!fs::exists(path) || !fs::is_directory(path))
                 throw directory_not_found(path.string());
             return path;
+        }
+
+        /**
+         * @brief Gibt das Benutzer-spezifische Datenverzeichnis der Anwendung zurück oder std::nullopt, falls dieses nicht existiert.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
+         * @return std::optional<fs::path> Das Benutzer-Datenverzeichnis der Anwendung (Basis + rel_path) oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_data_dir(const fs::path& rel_path = "") const
+        {
+            auto base = get_data_dir();
+            if (!base.has_value())
+                return std::nullopt;
+            auto path = *base;
+            if (!rel_path.empty())
+                path /= rel_path;
+            if (fs::exists(path) && fs::is_directory(path))
+                return path;
+            return std::nullopt;
         }
 
         /**
@@ -747,7 +769,10 @@ namespace pfadfinder
         {
             if (!cached_data_dir_.has_value())
             {
-                auto path = system_env_.data_dir(executable_dir(), app_name_);
+                auto exe_dir = get_executable_dir();
+                if (!exe_dir.has_value())
+                    return std::nullopt;
+                auto path = system_env_.data_dir(*exe_dir, app_name_);
                 if (path.has_value())
                     cached_data_dir_ = *path;
                 return path;
