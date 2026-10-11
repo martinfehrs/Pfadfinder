@@ -251,27 +251,10 @@ namespace pfadfinder
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/\<appname\>, ansonsten ~/.config/\<appname\>.
          * 
-         * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_user_config_dir() const
-        {
-            auto path = get_user_config_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das Benutzer-spezifische Konfigurationsverzeichnis mit optionalem Unterpfad und gibt es zurück.
-         * 
-         * Unter Windows entspricht dies \%APPDATA\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.config/\<appname\>/\<rel_path\> (XDG-Standard).
-         * Unter macOS entspricht dies bei gebündelten Anwendungen
-         * ~/Library/Preferences/\<appname\>/\<rel_path\>, ansonsten ~/.config/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_user_config_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_user_config_dir(const fs::path& rel_path = "") const
         {
             auto path = get_user_config_dir();
             if (!rel_path.empty())
