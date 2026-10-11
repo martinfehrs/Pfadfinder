@@ -10,6 +10,7 @@
  *    - executable_path()      : Full path to the executable file
  *    - find_executable_path() : Full path to the executable file (returns std::optional)
  *    - executable_dir()       : Directory of the executable file
+ *    - find_executable_dir()  : Directory of the executable file (returns std::optional)
  *    - static_data_dir()      : System-wide static data directory
  *    - data_dir()             : User-specific data directory
  *    - create_data_dir()      : Creates user-specific data directory
@@ -77,6 +78,15 @@
  * @fn fs::path pfadfinder::application_environment::executable_dir() const
  * @brief Returns the directory of the executable file.
  * @return fs::path The directory that contains the executable file.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::find_executable_dir() const
+ * @brief Returns the directory of the executable file or std::nullopt if it cannot be determined.
+ *
+ * Returns std::nullopt instead of throwing an exception.
+ *
+ * @return std::optional<fs::path> The directory of the executable file or std::nullopt.
  */
 
 /**
@@ -362,6 +372,12 @@
  * @fn std::optional<fs::path> pfadfinder::application_environment::get_executable_path() const
  * @brief Returns the cached path to the executable file.
  * @return std::optional<fs::path> The cached path to the executable file or std::nullopt.
+ */
+
+/**
+ * @fn std::optional<fs::path> pfadfinder::application_environment::get_executable_dir() const
+ * @brief Returns the cached directory of the executable file.
+ * @return std::optional<fs::path> The cached directory of the executable file or std::nullopt.
  */
 
 /**

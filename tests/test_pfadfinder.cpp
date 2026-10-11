@@ -117,6 +117,16 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(*result == backend.base_temp_dir / "bin" / "test_app");
     }
 
+    // Test find_executable_dir
+    SECTION("find_executable_dir gibt gültiges Verzeichnis zurück")
+    {
+        auto result = env.find_executable_dir();
+        REQUIRE(result.has_value());
+        REQUIRE_FALSE(result->empty());
+        REQUIRE(result->is_absolute());
+        REQUIRE(*result == backend.base_temp_dir / "bin");
+    }
+
     // Test executable_dir
     SECTION("executable_dir gibt gültiges Verzeichnis zurück")
     {

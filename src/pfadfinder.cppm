@@ -10,6 +10,7 @@
  *    - executable_path()      : Vollständiger Pfad zur ausführbaren Datei
  *    - find_executable_path() : Vollständiger Pfad zur ausführbaren Datei (gibt std::optional zurück)
  *    - executable_dir()       : Verzeichnis der ausführbaren Datei
+ *    - find_executable_dir()  : Verzeichnis der ausführbaren Datei (gibt std::optional zurück)
  *    - static_data_dir()      : Systemweites statisches Datenverzeichnis
  *    - data_dir()             : Benutzer-spezifisches Datenverzeichnis
  *    - create_data_dir()      : Erstellt Benutzer-spezifisches Datenverzeichnis
@@ -113,10 +114,22 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path executable_dir() const
         {
-            if (!cached_executable_dir_.has_value())
-                cached_executable_dir_ = executable_path().parent_path();
+            auto dir = get_executable_dir();
+            if (!dir.has_value())
+                throw indeterminable_exe_path{};
+            return *dir;
+        }
 
-            return *cached_executable_dir_;
+        /**
+         * @brief Gibt das Verzeichnis der ausführbaren Datei zurück oder std::nullopt, falls dieses nicht ermittelt werden kann.
+         *
+         * Gibt std::nullopt zurück, statt eine Exception zu werfen.
+         *
+         * @return std::optional<fs::path> Das Verzeichnis der ausführbaren Datei oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> find_executable_dir() const
+        {
+            return get_executable_dir();
         }
 
         /**
@@ -645,6 +658,22 @@ namespace pfadfinder
                 return path;
             }
             return *cached_executable_path_;
+        }
+
+        /**
+         * @brief Gibt das gecachte Verzeichnis der ausführbaren Datei zurück.
+         * @return std::optional<fs::path> Das gecachte Verzeichnis der ausführbaren Datei oder std::nullopt.
+         */
+        [[nodiscard]] std::optional<fs::path> get_executable_dir() const
+        {
+            if (!cached_executable_dir_.has_value())
+            {
+                auto exe_path = get_executable_path();
+                if (exe_path.has_value())
+                    cached_executable_dir_ = exe_path->parent_path();
+                return cached_executable_dir_;
+            }
+            return *cached_executable_dir_;
         }
 
         /**
