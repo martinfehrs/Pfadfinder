@@ -12,63 +12,111 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | Methode | Pfad |
 |---------|------|
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
+| `find_executable_path()` | Wie `executable_path()`, gibt `std::optional` zurück |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
+| `find_executable_dir()` | Wie `executable_dir()`, gibt `std::optional` zurück |
 | `static_data_dir()` | Binärverzeichnis |
+| `find_static_data_dir()` | Wie `static_data_dir()`, gibt `std::optional` zurück |
 | `shared_config_dir()` | `%ALLUSERSAPPDATA%\<appname>` |
+| `find_shared_config_dir()` | Wie `shared_config_dir()`, gibt `std::optional` zurück |
 | `create_shared_config_dir()` | Erstellt `%ALLUSERSAPPDATA%\<appname>` |
 | `data_dir()` | `%APPDATA%\<appname>` |
+| `find_data_dir()` | Wie `data_dir()`, gibt `std::optional` zurück |
 | `create_data_dir()` | Erstellt `%APPDATA%\<appname>` |
 | `user_config_dir()` | `%APPDATA%\<appname>` |
+| `find_user_config_dir()` | Wie `user_config_dir()`, gibt `std::optional` zurück |
 | `create_user_config_dir()` | Erstellt `%APPDATA%\<appname>` |
+| `user_config_file()` | `%APPDATA%\<appname>\<datei>` (mit Dateiexistenzprüfung) |
+| `find_user_config_file()` | Wie `user_config_file()`, gibt `std::optional` zurück |
+| `shared_config_file()` | `%ALLUSERSAPPDATA%\<appname>\<datei>` (mit Dateiexistenzprüfung) |
+| `find_shared_config_file()` | Wie `shared_config_file()`, gibt `std::optional` zurück |
+| `find_config_file()` | Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt `std::optional` zurück) |
+| `config_files()` | Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2) |
 | `cache_dir()` | `%LOCALAPPDATA%\<appname>\Cache` |
+| `find_cache_dir()` | Wie `cache_dir()`, gibt `std::optional` zurück |
 | `create_cache_dir()` | Erstellt `%LOCALAPPDATA%\<appname>\Cache` |
 | `log_dir()` | `%LOCALAPPDATA%\<appname>\Logs` |
+| `find_log_dir()` | Wie `log_dir()`, gibt `std::optional` zurück |
 | `create_log_dir()` | Erstellt `%LOCALAPPDATA%\<appname>\Logs` |
 | `temp_dir()` | `%TEMP%\<appname>` |
+| `find_temp_dir()` | Wie `temp_dir()`, gibt `std::optional` zurück |
 | `create_temp_dir()` | Erstellt `%TEMP%\<appname>` |
 | `home_dir()` | `%USERPROFILE%` |
+| `find_home_dir()` | Wie `home_dir()`, gibt `std::optional` zurück |
 
 ### macOS
 
 | Methode | Bundle | CLI |
 |---------|--------|-----|
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei | Vollständiger Pfad zur ausführbaren Datei |
+| `find_executable_path()` | Wie `executable_path()`, gibt `std::optional` zurück | Wie `executable_path()`, gibt `std::optional` zurück |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält | Verzeichnis, das die ausführbare Datei enthält |
+| `find_executable_dir()` | Wie `executable_dir()`, gibt `std::optional` zurück | Wie `executable_dir()`, gibt `std::optional` zurück |
 | `static_data_dir()` | `Resources`-Verzeichnis | Abgeleitet vom Binärpfad |
+| `find_static_data_dir()` | Wie `static_data_dir()`, gibt `std::optional` zurück | Wie `static_data_dir()`, gibt `std::optional` zurück |
 | `shared_config_dir()` | `/Library/Preferences/<appname>` | `/Library/Preferences/<appname>` |
+| `find_shared_config_dir()` | Wie `shared_config_dir()`, gibt `std::optional` zurück | Wie `shared_config_dir()`, gibt `std::optional` zurück |
 | `create_shared_config_dir()` | Erstellt `/Library/Preferences/<appname>` | Erstellt `/Library/Preferences/<appname>` |
 | `data_dir()` | `~/Library/Application Support/<appname>` | `~/.local/share/<appname>` |
+| `find_data_dir()` | Wie `data_dir()`, gibt `std::optional` zurück | Wie `data_dir()`, gibt `std::optional` zurück |
 | `create_data_dir()` | Erstellt `~/Library/Application Support/<appname>` | Erstellt `~/.local/share/<appname>` |
 | `user_config_dir()` | `~/Library/Preferences/<appname>` | `~/.config/<appname>` |
+| `find_user_config_dir()` | Wie `user_config_dir()`, gibt `std::optional` zurück | Wie `user_config_dir()`, gibt `std::optional` zurück |
 | `create_user_config_dir()` | Erstellt `~/Library/Preferences/<appname>` | Erstellt `~/.config/<appname>` |
+| `user_config_file()` | `~/Library/Preferences/<appname>/<datei>` (mit Dateiexistenzprüfung) | `~/.config/<appname>/<datei>` (mit Dateiexistenzprüfung) |
+| `find_user_config_file()` | Wie `user_config_file()`, gibt `std::optional` zurück | Wie `user_config_file()`, gibt `std::optional` zurück |
+| `shared_config_file()` | `/Library/Preferences/<appname>/<datei>` (mit Dateiexistenzprüfung) | `/Library/Preferences/<appname>/<datei>` (mit Dateiexistenzprüfung) |
+| `find_shared_config_file()` | Wie `shared_config_file()`, gibt `std::optional` zurück | Wie `shared_config_file()`, gibt `std::optional` zurück |
+| `find_config_file()` | Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt `std::optional` zurück) | Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt `std::optional` zurück) |
+| `config_files()` | Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2) | Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2) |
 | `cache_dir()` | `~/Library/Caches/<appname>` | `~/.cache/<appname>` |
+| `find_cache_dir()` | Wie `cache_dir()`, gibt `std::optional` zurück | Wie `cache_dir()`, gibt `std::optional` zurück |
 | `create_cache_dir()` | Erstellt `~/Library/Caches/<appname>` | Erstellt `~/.cache/<appname>` |
 | `log_dir()` | `~/Library/Logs/<appname>` | `~/.local/state/<appname>/log` |
+| `find_log_dir()` | Wie `log_dir()`, gibt `std::optional` zurück | Wie `log_dir()`, gibt `std::optional` zurück |
 | `create_log_dir()` | Erstellt `~/Library/Logs/<appname>` | Erstellt `~/.local/state/<appname>/log` |
 | `temp_dir()` | `~/Library/Caches/TemporaryItems/<appname>` | `/tmp/<appname>` |
+| `find_temp_dir()` | Wie `temp_dir()`, gibt `std::optional` zurück | Wie `temp_dir()`, gibt `std::optional` zurück |
 | `create_temp_dir()` | Erstellt `~/Library/Caches/TemporaryItems/<appname>` | Erstellt `/tmp/<appname>` |
 | `home_dir()` | `$HOME` | `$HOME` |
+| `find_home_dir()` | Wie `home_dir()`, gibt `std::optional` zurück | Wie `home_dir()`, gibt `std::optional` zurück |
 
 ### Linux
 
 | Methode | Pfad |
 |---------|------|
 | `executable_path()` | Vollständiger Pfad zur ausführbaren Datei |
+| `find_executable_path()` | Wie `executable_path()`, gibt `std::optional` zurück |
 | `executable_dir()` | Verzeichnis, das die ausführbare Datei enthält |
+| `find_executable_dir()` | Wie `executable_dir()`, gibt `std::optional` zurück |
 | `static_data_dir()` | Abgeleitet vom Binärpfad (z. B. `/usr/bin/myapp` → `/usr/share/myapp`) |
+| `find_static_data_dir()` | Wie `static_data_dir()`, gibt `std::optional` zurück |
 | `shared_config_dir()` | `/etc/<appname>` |
+| `find_shared_config_dir()` | Wie `shared_config_dir()`, gibt `std::optional` zurück |
 | `create_shared_config_dir()` | Erstellt `/etc/<appname>` |
 | `data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
+| `find_data_dir()` | Wie `data_dir()`, gibt `std::optional` zurück |
 | `create_data_dir()` | Erstellt `~/.local/share/<appname>` (XDG-Standard) |
 | `user_config_dir()` | `~/.config/<appname>` (XDG-Standard) |
+| `find_user_config_dir()` | Wie `user_config_dir()`, gibt `std::optional` zurück |
 | `create_user_config_dir()` | Erstellt `~/.config/<appname>` (XDG-Standard) |
+| `user_config_file()` | `~/.config/<appname>/<datei>` (mit Dateiexistenzprüfung) |
+| `find_user_config_file()` | Wie `user_config_file()`, gibt `std::optional` zurück |
+| `shared_config_file()` | `/etc/<appname>/<datei>` (mit Dateiexistenzprüfung) |
+| `find_shared_config_file()` | Wie `shared_config_file()`, gibt `std::optional` zurück |
+| `find_config_file()` | Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt `std::optional` zurück) |
+| `config_files()` | Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2) |
 | `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |
+| `find_cache_dir()` | Wie `cache_dir()`, gibt `std::optional` zurück |
 | `create_cache_dir()` | Erstellt `~/.cache/<appname>` (XDG-Standard) |
 | `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `find_log_dir()` | Wie `log_dir()`, gibt `std::optional` zurück |
 | `create_log_dir()` | Erstellt `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
 | `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
+| `find_temp_dir()` | Wie `temp_dir()`, gibt `std::optional` zurück |
 | `create_temp_dir()` | Erstellt `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `home_dir()` | `$HOME` |
+| `find_home_dir()` | Wie `home_dir()`, gibt `std::optional` zurück |
 
 ## Verschiedensprachige Dokumentation
 
@@ -194,21 +242,30 @@ import pfadfinder;
 
 namespace fs = std::filesystem;
 
-struct my_custom_environment : pfadfinder::default_system_environment
+struct my_custom_environment : pfadfinder::system_environment
 {
-    [[nodiscard]] fs::path user_config_dir(const fs::path&, const std::string& app_name) const override
+    [[nodiscard]] std::optional<fs::path> user_config_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::home_dir()/std::format(".{}", app_name);
+        auto home = system_environment::home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+        return *home / std::format(".{}", app_name);
     }
 
-    [[nodiscard]] fs::path data_dir(const fs::path&, const std::string& app_name) const override
+    [[nodiscard]] std::optional<fs::path> data_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::home_dir()/std::format(".{}", app_name);
+        auto home = system_environment::home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+        return *home / std::format(".{}", app_name);
     }
 
-    [[nodiscard]] fs::path cache_dir(const fs::path&, const std::string& app_name) const override
+    [[nodiscard]] std::optional<fs::path> cache_dir(const fs::path&, const std::string& app_name) const override
     {
-        return default_system_environment::home_dir()/std::format(".{}", app_name);
+        auto home = system_environment::home_dir();
+        if (!home.has_value())
+            return std::nullopt;
+        return *home / std::format(".{}", app_name);
     }
 };
 
