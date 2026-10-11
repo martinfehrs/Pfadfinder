@@ -155,7 +155,11 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path shared_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_shared_config_dir();
+            auto opt_path = get_shared_config_dir();
+            if (!opt_path.has_value())
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+
+            auto path = *opt_path;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -175,7 +179,11 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_shared_config_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_shared_config_dir();
+            auto opt_path = get_shared_config_dir();
+            if (!opt_path.has_value())
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+
+            auto path = *opt_path;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -353,7 +361,11 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path shared_config_file(const fs::path& rel_path) const
         {
-            auto path = get_shared_config_dir() / rel_path;
+            auto opt_dir = get_shared_config_dir();
+            if (!opt_dir.has_value())
+                throw environment_variable_not_set{ "ALLUSERSAPPDATA" };
+
+            auto path = *opt_dir / rel_path;
             if (!fs::exists(path) || !fs::is_regular_file(path))
                 throw file_not_found(path.string());
             return path;
@@ -370,7 +382,11 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> find_shared_config_file(const fs::path& rel_path) const
         {
-            auto path = get_shared_config_dir() / rel_path;
+            auto opt_dir = get_shared_config_dir();
+            if (!opt_dir.has_value())
+                return std::nullopt;
+
+            auto path = *opt_dir / rel_path;
             if (fs::exists(path) && fs::is_regular_file(path))
                 return path;
             return std::nullopt;
@@ -701,10 +717,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte geteilte Konfigurationsverzeichnis zurück.
          * @return fs::path Das gecachte geteilte Konfigurationsverzeichnis.
          */
-        [[nodiscard]] fs::path get_shared_config_dir() const
+        [[nodiscard]] std::optional<fs::path> get_shared_config_dir() const
         {
             if (!cached_shared_config_dir_.has_value())
-                cached_shared_config_dir_ = system_env_.shared_config_dir(app_name_);
+            {
+                auto path = system_env_.shared_config_dir(app_name_);
+                if (path.has_value())
+                    cached_shared_config_dir_ = *path;
+                return path;
+            }
             return *cached_shared_config_dir_;
         }
 

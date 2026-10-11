@@ -81,7 +81,7 @@ namespace test_backend
             return base_temp_dir / "home";
         }
         
-        [[nodiscard]] fs::path shared_config_dir(const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> shared_config_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "var" / "lib" / app_name;
         }

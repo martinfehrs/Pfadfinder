@@ -139,10 +139,10 @@ namespace pfadfinder
          * Unter Windows: \%ALLUSERSAPPDATA\%/\<appname\>.
          * 
          * @param app_name Der Name der Anwendung.
-         * @return fs::path Das geteilte Konfigurationsverzeichnis.
+         * @return std::optional<fs::path> Das geteilte Konfigurationsverzeichnis oder std::nullopt.
          * 
          * @note Linux-Backend erlaubt nur Lesen von /etc (kleinster gemeinsamer Nenner).
          */
-        [[nodiscard]] virtual fs::path shared_config_dir(const std::string& app_name) const;
+        [[nodiscard]] virtual std::optional<fs::path> shared_config_dir(const std::string& app_name) const;
     };
 }

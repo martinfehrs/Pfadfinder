@@ -129,7 +129,7 @@ namespace pfadfinder
         return get_home_dir();
     }
 
-    fs::path system_environment::shared_config_dir(const std::string& app_name) const
+    std::optional<fs::path> system_environment::shared_config_dir(const std::string& app_name) const
     {
         return fs::path{ "/Library/Preferences" } / app_name;
     }

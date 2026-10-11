@@ -171,7 +171,8 @@ TEST_CASE("windows_system_environment::shared_config_dir returns ALLUSERSAPPDATA
     GetEnvironmentVariableA("ALLUSERSAPPDATA", buffer.data(), size);
 
     auto expected = fs::path(buffer) / "test_app";
-    REQUIRE(shared_config_dir == expected);
+    REQUIRE(shared_config_dir.has_value());
+    REQUIRE(*shared_config_dir == expected);
 }
 
 TEST_CASE("windows_system_environment::home_dir returns nullopt when USERPROFILE is not set")
@@ -234,11 +235,12 @@ TEST_CASE("windows_system_environment::temp_dir returns nullopt when TEMP is not
     REQUIRE_FALSE(result.has_value());
 }
 
-TEST_CASE("windows_system_environment::shared_config_dir throws when ALLUSERSAPPDATA is not set")
+TEST_CASE("windows_system_environment::shared_config_dir returns nullopt when ALLUSERSAPPDATA is not set")
 {
     pfadfinder::test::env_guard guard("ALLUSERSAPPDATA");
     guard.unset();
 
     pfadfinder::system_environment backend;
-    REQUIRE_THROWS_AS(backend.shared_config_dir("test_app"), pfadfinder::environment_variable_not_set);
+    auto result = backend.shared_config_dir("test_app");
+    REQUIRE_FALSE(result.has_value());
 }
