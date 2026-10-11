@@ -559,26 +559,10 @@ namespace pfadfinder
          * Unter Linux entspricht dies /tmp/\<appname\> oder dem systemweiten Temp-Verzeichnis.
          * Unter macOS entspricht dies /tmp/\<appname\> oder ~/Library/Caches/TemporaryItems/\<appname\>.
          * 
-         * @return fs::path Das temporäre Verzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_temp_dir() const
-        {
-            auto path = get_temp_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das temporäre Verzeichnis mit optionalem Unterpfad und gibt es zurück.
-         * 
-         * Unter Windows entspricht dies \%TEMP\%/\<appname\>/\<rel_path\>.
-         * Unter Linux entspricht dies /tmp/\<appname\>/\<rel_path\> oder dem systemweiten Temp-Verzeichnis.
-         * Unter macOS entspricht dies /tmp/\<appname\>/\<rel_path\> oder ~/Library/Caches/TemporaryItems/\<appname\>/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das temporäre Verzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_temp_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_temp_dir(const fs::path& rel_path = "") const
         {
             auto path = get_temp_dir();
             if (!rel_path.empty())
