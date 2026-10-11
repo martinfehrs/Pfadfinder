@@ -483,27 +483,10 @@ namespace pfadfinder
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log.
          * 
-         * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung.
-         */
-        [[nodiscard]] fs::path create_log_dir() const
-        {
-            auto path = get_log_dir();
-            fs::create_directories(path);
-            return path;
-        }
-
-        /**
-         * @brief Erstellt das Benutzer-spezifische Log-Verzeichnis mit optionalem Unterpfad und gibt es zurück.
-         * 
-         * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Logs/\<rel_path\>.
-         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log/\<rel_path\> (XDG Base Directory Specification).
-         * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>/\<rel_path\>.
-         * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log/\<rel_path\>.
-         * 
-         * @param rel_path Relativer Pfad zum Basisverzeichnis.
+         * @param rel_path Relativer Pfad zum Basisverzeichnis (optional).
          * @return fs::path Das Benutzer-spezifische Log-Verzeichnis der Anwendung (Basis + rel_path).
          */
-        [[nodiscard]] fs::path create_log_dir(const fs::path& rel_path) const
+        [[nodiscard]] fs::path create_log_dir(const fs::path& rel_path = "") const
         {
             auto path = get_log_dir();
             if (!rel_path.empty())
