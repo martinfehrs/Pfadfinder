@@ -547,7 +547,11 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path temp_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_temp_dir();
+            auto opt_path = get_temp_dir();
+            if (!opt_path.has_value())
+                throw environment_variable_not_set{ "TEMP" };
+
+            auto path = *opt_path;
             if (!rel_path.empty())
                 path /= rel_path;
             if (!fs::exists(path) || !fs::is_directory(path))
@@ -567,7 +571,11 @@ namespace pfadfinder
          */
         [[nodiscard]] fs::path create_temp_dir(const fs::path& rel_path = "") const
         {
-            auto path = get_temp_dir();
+            auto opt_path = get_temp_dir();
+            if (!opt_path.has_value())
+                throw environment_variable_not_set{ "TEMP" };
+
+            auto path = *opt_path;
             if (!rel_path.empty())
                 path /= rel_path;
             fs::create_directories(path);
@@ -677,10 +685,15 @@ namespace pfadfinder
          * @brief Gibt das gecachte temporäre Verzeichnis zurück.
          * @return fs::path Das gecachte temporäre Verzeichnis.
          */
-        [[nodiscard]] fs::path get_temp_dir() const
+        [[nodiscard]] std::optional<fs::path> get_temp_dir() const
         {
             if (!cached_temp_dir_.has_value())
-                cached_temp_dir_ = system_env_.temp_dir(app_name_);
+            {
+                auto path = system_env_.temp_dir(app_name_);
+                if (path.has_value())
+                    cached_temp_dir_ = *path;
+                return path;
+            }
             return *cached_temp_dir_;
         }
 

@@ -71,7 +71,7 @@ namespace test_backend
             return base_temp_dir / "home" / ".local" / "state" / app_name / "log";
         }
         
-        [[nodiscard]] fs::path temp_dir(const std::string& app_name) const override
+        [[nodiscard]] std::optional<fs::path> temp_dir(const std::string& app_name) const override
         {
             return base_temp_dir / "tmp" / app_name;
         }

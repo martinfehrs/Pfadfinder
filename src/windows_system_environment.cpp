@@ -91,16 +91,16 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name / "Logs";
     }
 
-    fs::path system_environment::temp_dir(const std::string& app_name) const
+    std::optional<fs::path> system_environment::temp_dir(const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("TEMP", nullptr, 0);
 
         if (size == 0)
-            throw environment_variable_not_set{ "TEMP" };
+            return std::nullopt;
 
         std::string buffer(size - 1, '\0');
         if (GetEnvironmentVariableA("TEMP", buffer.data(), size) == 0)
-            throw environment_variable_not_set{ "TEMP" };
+            return std::nullopt;
 
         return fs::path{ buffer } / app_name;
     }

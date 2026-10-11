@@ -196,7 +196,8 @@ TEST_CASE("macos_system_environment::temp_dir returns correct path")
     auto temp_dir = backend.temp_dir(app_name);
 
     auto expected = fs::temp_directory_path() / "test_app";
-    REQUIRE(temp_dir == expected);
+    REQUIRE(temp_dir.has_value());
+    REQUIRE(*temp_dir == expected);
 }
 
 TEST_CASE("macos_system_environment::home_dir returns correct path")
