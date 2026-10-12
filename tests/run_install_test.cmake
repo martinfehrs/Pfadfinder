@@ -31,6 +31,27 @@ set(CONSUMER_GENERATOR "Ninja Multi-Config")
 set(CONSUMER_CONFIG "Release")
 set(CONSUMER_CONFIG_SUBDIR "Release")
 
+# Auf Windows: vcvarsall.bat finden, um die MSVC-Umgebung einzurichten.
+# Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
+# (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
+set(VCVARSALL_WRAPPER "")
+if(CMAKE_HOST_WIN32)
+    file(GLOB VCVARSALL_CANDIDATES
+        "C:/Program Files/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
+        "C:/Program Files (x86)/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
+    )
+    if(VCVARSALL_CANDIDATES)
+        list(SORT VCVARSALL_CANDIDATES)
+        list(REVERSE VCVARSALL_CANDIDATES)
+        list(GET VCVARSALL_CANDIDATES 0 VCVARSALL)
+        message(STATUS "vcvarsall.bat gefunden: ${VCVARSALL}")
+        set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
+        file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL}\" x64\r\n%*\r\n")
+    else()
+        message(STATUS "vcvarsall.bat nicht gefunden.")
+    endif()
+endif()
+
 # Schritt 1: Bibliothek installieren
 message(STATUS "Schritt 1: Bibliothek installieren...")
 set(INSTALL_CMD ${CMAKE_COMMAND} --install "${PFADFINDER_BUILD_DIR}" --prefix "${INSTALL_PREFIX}")
@@ -74,7 +95,12 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 
 # Schritt 3: Consumer-Projekt konfigurieren (prüft find_package())
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
-set(CONFIGURE_CMD ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
+set(CONFIGURE_CMD)
+if(VCVARSALL_WRAPPER)
+    list(APPEND CONFIGURE_CMD "${VCVARSALL_WRAPPER}")
+endif()
+list(APPEND CONFIGURE_CMD
+    "${CMAKE_COMMAND}" -G "${CONSUMER_GENERATOR}"
     -S "${CONSUMER_SOURCE_DIR}"
     -B "${CONSUMER_BUILD_DIR}"
     -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
@@ -95,10 +121,8 @@ if(NOT configure_result EQUAL 0)
 endif()
 message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert).")
 
-# Auf Windows nur Installation + find_package() testen.
-# Der Consumer-Build erfordert eine vollständig eingerichtete MSVC-Umgebung
-# (vcvarsall.bat), die in CI mit Ninja-Generator nicht ohne Weiteres verfügbar ist.
-if(CMAKE_HOST_WIN32)
+# Auf Windows ohne vcvarsall.bat: nur Installation + find_package testen
+if(CMAKE_HOST_WIN32 AND NOT VCVARSALL_WRAPPER)
     message(STATUS "Windows: Consumer-Build und -Ausführung übersprungen.")
     message(STATUS "=== Installationstest erfolgreich (nur Installation + find_package) ===")
     return()
@@ -106,8 +130,15 @@ endif()
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
+set(BUILD_CMD)
+if(VCVARSALL_WRAPPER)
+    list(APPEND BUILD_CMD "${VCVARSALL_WRAPPER}")
+endif()
+list(APPEND BUILD_CMD
+    "${CMAKE_COMMAND}" --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
+)
 execute_process(
-    COMMAND ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
+    COMMAND ${BUILD_CMD}
     RESULT_VARIABLE build_result
     OUTPUT_VARIABLE build_output
     ERROR_VARIABLE build_error
