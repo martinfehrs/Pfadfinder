@@ -86,6 +86,20 @@ namespace test_backend
             return base_temp_dir / "var" / "lib" / app_name;
         }
     };
+
+    // Mock-Backend, das für executable_path und home_dir std::nullopt zurückgibt
+    struct failing_test_system_environment : pfadfinder::system_environment
+    {
+        [[nodiscard]] std::optional<fs::path> executable_path() const override
+        {
+            return std::nullopt;
+        }
+
+        [[nodiscard]] std::optional<fs::path> home_dir() const override
+        {
+            return std::nullopt;
+        }
+    };
 }
 
 // Unit-Tests für die application_environment-Klasse mit Mock-Backend
@@ -244,6 +258,28 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env_unique.data_dir("subdir"), pfadfinder::directory_not_found);
     }
 
+    SECTION("data_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name;
+        fs::create_directories(expected_path);
+
+        auto dir = env.data_dir();
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
+    SECTION("data_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name / "subdir";
+        fs::create_directories(expected_path);
+
+        auto dir = env.data_dir("subdir");
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
     // Test find_data_dir
     SECTION("find_data_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
@@ -319,6 +355,28 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     {
         test_env_type env_unique("nonexistent_config_app", backend);
         REQUIRE_THROWS_AS(env_unique.user_config_dir(), pfadfinder::directory_not_found);
+    }
+
+    SECTION("user_config_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".config" / test_app_name;
+        fs::create_directories(expected_path);
+
+        auto dir = env.user_config_dir();
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
+    SECTION("user_config_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".config" / test_app_name / "subdir";
+        fs::create_directories(expected_path);
+
+        auto dir = env.user_config_dir("subdir");
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
     }
 
     SECTION("user_config_file gibt gültigen Pfad zurück wenn Datei existiert")
@@ -589,6 +647,28 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env_unique.cache_dir("subdir"), pfadfinder::directory_not_found);
     }
 
+    SECTION("cache_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".cache" / test_app_name;
+        fs::create_directories(expected_path);
+
+        auto dir = env.cache_dir();
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
+    SECTION("cache_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".cache" / test_app_name / "subdir";
+        fs::create_directories(expected_path);
+
+        auto dir = env.cache_dir("subdir");
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
     // Test create_cache_dir
     SECTION("create_cache_dir erstellt Verzeichnis und gibt Pfad zurück")
     {
@@ -659,6 +739,28 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE_THROWS_AS(env_unique.log_dir("subdir"), pfadfinder::directory_not_found);
     }
 
+    SECTION("log_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log";
+        fs::create_directories(expected_path);
+
+        auto dir = env.log_dir();
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
+    SECTION("log_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log" / "subdir";
+        fs::create_directories(expected_path);
+
+        auto dir = env.log_dir("subdir");
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
     // Test find_log_dir
     SECTION("find_log_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
     {
@@ -722,6 +824,28 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
     {
         test_env_type env_unique("nonexistent_temp_app", backend);
         REQUIRE_THROWS_AS(env_unique.temp_dir("subdir"), pfadfinder::directory_not_found);
+    }
+
+    SECTION("temp_dir gibt gültigen Pfad zurück wenn Verzeichnis existiert")
+    {
+        auto expected_path = backend.base_temp_dir / "tmp" / test_app_name;
+        fs::create_directories(expected_path);
+
+        auto dir = env.temp_dir();
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
+    }
+
+    SECTION("temp_dir mit rel_path gibt gültigen Pfad zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "tmp" / test_app_name / "subdir";
+        fs::create_directories(expected_path);
+
+        auto dir = env.temp_dir("subdir");
+        REQUIRE(dir == expected_path);
+        REQUIRE(fs::exists(dir));
+        REQUIRE(fs::is_directory(dir));
     }
 
     // Test find_temp_dir
@@ -938,6 +1062,111 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(dir1 == dir2);
     }
 
+    // Caching-Tests für find_*-Methoden
+    SECTION("find_executable_path gibt konsistente Werte zurück")
+    {
+        auto result1 = env.find_executable_path();
+        auto result2 = env.find_executable_path();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_executable_dir gibt konsistente Werte zurück")
+    {
+        auto result1 = env.find_executable_dir();
+        auto result2 = env.find_executable_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_home_dir gibt konsistente Werte zurück")
+    {
+        auto result1 = env.find_home_dir();
+        auto result2 = env.find_home_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_static_data_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "share" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_static_data_dir();
+        auto result2 = env.find_static_data_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_data_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "share" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_data_dir();
+        auto result2 = env.find_data_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_user_config_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".config" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_user_config_dir();
+        auto result2 = env.find_user_config_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_cache_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".cache" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_cache_dir();
+        auto result2 = env.find_cache_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_log_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "home" / ".local" / "state" / test_app_name / "log";
+        fs::create_directories(expected_path);
+        auto result1 = env.find_log_dir();
+        auto result2 = env.find_log_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_temp_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "tmp" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_temp_dir();
+        auto result2 = env.find_temp_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
+    SECTION("find_shared_config_dir gibt konsistente Werte zurück")
+    {
+        auto expected_path = backend.base_temp_dir / "var" / "lib" / test_app_name;
+        fs::create_directories(expected_path);
+        auto result1 = env.find_shared_config_dir();
+        auto result2 = env.find_shared_config_dir();
+        REQUIRE(result1.has_value());
+        REQUIRE(result2.has_value());
+        REQUIRE(*result1 == *result2);
+    }
+
     // Test mit verschiedenen app_names
     SECTION("Mehrere Instanzen mit verschiedenen app_names")
     {
@@ -954,5 +1183,50 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         REQUIRE(dir1 != dir2);
         REQUIRE(dir1.filename() == "app1");
         REQUIRE(dir2.filename() == "app2");
+    }
+}
+
+// Negativtests mit fehlschlagendem Backend (executable_path und home_dir geben std::nullopt zurück)
+TEST_CASE("pfadfinder::application_environment: Negativtests mit fehlschlagendem Backend")
+{
+    using failing_env_type = pfadfinder::application_environment<test_backend::failing_test_system_environment>;
+
+    test_backend::failing_test_system_environment backend;
+    failing_env_type env("test_app", backend);
+
+    SECTION("find_executable_path gibt std::nullopt zurück wenn Backend fehlschlägt")
+    {
+        auto result = env.find_executable_path();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
+    SECTION("find_executable_dir gibt std::nullopt zurück wenn Backend fehlschlägt")
+    {
+        auto result = env.find_executable_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
+    SECTION("find_home_dir gibt std::nullopt zurück wenn Backend fehlschlägt")
+    {
+        auto result = env.find_home_dir();
+        REQUIRE_FALSE(result.has_value());
+        REQUIRE(result == std::nullopt);
+    }
+
+    SECTION("executable_path wirft wenn Backend fehlschlägt")
+    {
+        REQUIRE_THROWS_AS(env.executable_path(), pfadfinder::indeterminable_exe_path);
+    }
+
+    SECTION("executable_dir wirft wenn Backend fehlschlägt")
+    {
+        REQUIRE_THROWS_AS(env.executable_dir(), pfadfinder::indeterminable_exe_path);
+    }
+
+    SECTION("home_dir wirft wenn Backend fehlschlägt")
+    {
+        REQUIRE_THROWS_AS(env.home_dir(), pfadfinder::environment_variable_not_set);
     }
 }
