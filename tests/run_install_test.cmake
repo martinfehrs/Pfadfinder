@@ -16,10 +16,24 @@ message(STATUS "=== Installationstest ===")
 message(STATUS "Install prefix: ${INSTALL_PREFIX}")
 message(STATUS "Consumer source: ${CONSUMER_SOURCE_DIR}")
 
+# Multi-Config-Generatoren (z.B. "Ninja Multi-Config", "Visual Studio ...")
+# benötigen --config und legen Ausgaben in einem Konfigurations-Unterverzeichnis ab
+if(PFADFINDER_GENERATOR MATCHES "Multi-Config|Visual Studio|Xcode")
+    set(PFADFINDER_CONFIG "Release")
+    set(PFADFINDER_CONFIG_SUBDIR "Release")
+else()
+    set(PFADFINDER_CONFIG "")
+    set(PFADFINDER_CONFIG_SUBDIR "")
+endif()
+
 # Schritt 1: Bibliothek installieren
 message(STATUS "Schritt 1: Bibliothek installieren...")
+set(INSTALL_CMD ${CMAKE_COMMAND} --install "${PFADFINDER_BUILD_DIR}" --prefix "${INSTALL_PREFIX}")
+if(PFADFINDER_CONFIG)
+    list(APPEND INSTALL_CMD --config "${PFADFINDER_CONFIG}")
+endif()
 execute_process(
-    COMMAND ${CMAKE_COMMAND} --install "${PFADFINDER_BUILD_DIR}" --prefix "${INSTALL_PREFIX}"
+    COMMAND ${INSTALL_CMD}
     RESULT_VARIABLE install_result
     OUTPUT_VARIABLE install_output
     ERROR_VARIABLE install_error
@@ -64,8 +78,12 @@ message(STATUS "Consumer-Konfiguration erfolgreich.")
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
+set(BUILD_CMD ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}")
+if(PFADFINDER_CONFIG)
+    list(APPEND BUILD_CMD --config "${PFADFINDER_CONFIG}")
+endif()
 execute_process(
-    COMMAND ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}"
+    COMMAND ${BUILD_CMD}
     RESULT_VARIABLE build_result
     OUTPUT_VARIABLE build_output
     ERROR_VARIABLE build_error
@@ -78,9 +96,14 @@ message(STATUS "Consumer-Build erfolgreich.")
 # Schritt 5: Consumer-Programm ausführen
 message(STATUS "Schritt 5: Consumer-Programm ausführen...")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/Release/consumer.exe")
+    set(CONSUMER_EXE_NAME "consumer.exe")
 else()
-    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/consumer")
+    set(CONSUMER_EXE_NAME "consumer")
+endif()
+if(PFADFINDER_CONFIG_SUBDIR)
+    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/${PFADFINDER_CONFIG_SUBDIR}/${CONSUMER_EXE_NAME}")
+else()
+    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/${CONSUMER_EXE_NAME}")
 endif()
 
 execute_process(
