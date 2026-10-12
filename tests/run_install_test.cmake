@@ -39,11 +39,14 @@ if(CMAKE_HOST_WIN32)
     if(DEFINED ENV{VCINSTALLDIR})
         set(MSVC_ENV_SETUP TRUE)
     else()
-        set(VSWHERE "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer/vswhere.exe")
-        if(NOT EXISTS "${VSWHERE}")
-            set(VSWHERE "$ENV{ProgramFiles}/Microsoft Visual Studio/Installer/vswhere.exe")
-        endif()
-        if(EXISTS "${VSWHERE}")
+        file(GLOB VSWHERE_CANDIDATES
+            "C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
+            "C:/Program Files/Microsoft Visual Studio/Installer/vswhere.exe"
+        )
+        if(VSWHERE_CANDIDATES)
+            list(SORT VSWHERE_CANDIDATES)
+            list(REVERSE VSWHERE_CANDIDATES)
+            list(GET VSWHERE_CANDIDATES 0 VSWHERE)
             execute_process(
                 COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
                 OUTPUT_VARIABLE VS_INSTALL_DIR
