@@ -31,38 +31,54 @@ set(CONSUMER_GENERATOR "Ninja Multi-Config")
 set(CONSUMER_CONFIG "Release")
 set(CONSUMER_CONFIG_SUBDIR "Release")
 
-# Auf Windows: MSVC-Umgebung über vswhere.exe und Wrapper-Skript einrichten.
+# Auf Windows: MSVC-Umgebung über vswhere.exe und vcvarsall.bat einrichten.
 # Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
 # (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
-set(VCVARSALL_WRAPPER "")
-if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR})
-    file(GLOB VSWHERE_CANDIDATES
-        "C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
-        "C:/Program Files/Microsoft Visual Studio/Installer/vswhere.exe"
-    )
-    if(VSWHERE_CANDIDATES)
-        list(SORT VSWHERE_CANDIDATES)
-        list(REVERSE VSWHERE_CANDIDATES)
-        list(GET VSWHERE_CANDIDATES 0 VSWHERE)
-        execute_process(
-            COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-            OUTPUT_VARIABLE VS_INSTALL_DIR
-            OUTPUT_STRIP_TRAILING_WHITESPACE
+set(MSVC_ENV_SETUP FALSE)
+if(CMAKE_HOST_WIN32)
+    if(DEFINED ENV{VCINSTALLDIR})
+        set(MSVC_ENV_SETUP TRUE)
+    else()
+        file(GLOB VSWHERE_CANDIDATES
+            "C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
+            "C:/Program Files/Microsoft Visual Studio/Installer/vswhere.exe"
         )
-        if(VS_INSTALL_DIR)
-            message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
-            set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
-            if(EXISTS "${VCVARSALL_BAT}")
-                set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
-                file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL_BAT}\" amd64\r\n%*\r\n")
-                message(STATUS "MSVC-Wrapper erstellt: ${VCVARSALL_WRAPPER}")
+        if(VSWHERE_CANDIDATES)
+            list(SORT VSWHERE_CANDIDATES)
+            list(REVERSE VSWHERE_CANDIDATES)
+            list(GET VSWHERE_CANDIDATES 0 VSWHERE)
+            execute_process(
+                COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+                OUTPUT_VARIABLE VS_INSTALL_DIR
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+            if(VS_INSTALL_DIR)
+                message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
+                set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
+                if(EXISTS "${VCVARSALL_BAT}")
+                    # Delayed Expansion (/v:on) nötig, damit !VAR! erst nach
+                    # vcvarsall.bat expandiert wird (nicht vorher wie %VAR%).
+                    execute_process(
+                        COMMAND cmd /v:on /c "call \"${VCVARSALL_BAT}\" amd64 && echo INCLUDE=!INCLUDE! && echo LIB=!LIB! && echo PATH=!PATH! && echo LIBPATH=!LIBPATH!"
+                        OUTPUT_VARIABLE VC_ENV_VARS
+                    )
+                    string(REPLACE "\r\n" "\n" VC_ENV_VARS "${VC_ENV_VARS}")
+                    foreach(env_var IN ITEMS PATH INCLUDE LIB LIBPATH)
+                        string(REGEX MATCH "(^|\n)${env_var}=([^\n]*)" _ "${VC_ENV_VARS}")
+                        if(CMAKE_MATCH_2)
+                            set(ENV{${env_var}} "${CMAKE_MATCH_2}")
+                        endif()
+                    endforeach()
+                    set(MSVC_ENV_SETUP TRUE)
+                    message(STATUS "MSVC-Umgebung eingerichtet.")
+                endif()
             endif()
         endif()
     endif()
 endif()
 
 # Auf Windows muss die MSVC-Umgebung eingerichtet sein, sonst schlägt der Build fehl
-if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR} AND NOT VCVARSALL_WRAPPER)
+if(CMAKE_HOST_WIN32 AND NOT MSVC_ENV_SETUP)
     message(FATAL_ERROR "MSVC-Umgebung konnte nicht eingerichtet werden (vswhere.exe oder vcvarsall.bat nicht gefunden).")
 endif()
 
@@ -109,12 +125,7 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 
 # Schritt 3: Consumer-Projekt konfigurieren (prüft find_package())
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
-set(CONFIGURE_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND CONFIGURE_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND CONFIGURE_CMD
-    "${CMAKE_COMMAND}" -G "${CONSUMER_GENERATOR}"
+set(CONFIGURE_CMD ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
     -S "${CONSUMER_SOURCE_DIR}"
     -B "${CONSUMER_BUILD_DIR}"
     -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
@@ -137,15 +148,8 @@ message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert)
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
-set(BUILD_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND BUILD_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND BUILD_CMD
-    "${CMAKE_COMMAND}" --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
-)
 execute_process(
-    COMMAND ${BUILD_CMD}
+    COMMAND ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
     RESULT_VARIABLE build_result
     OUTPUT_VARIABLE build_output
     ERROR_VARIABLE build_error
