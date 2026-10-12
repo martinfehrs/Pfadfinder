@@ -1,0 +1,178 @@
+# CMake-Skript für den Installationstest
+# Dieses Skript wird von CTest ausgeführt und prüft, ob die Bibliothek
+# installiert und in einem externen CMake-Projekt verwendet werden kann.
+#
+# Erwartete Variablen:
+#   PFADFINDER_SOURCE_DIR   - Quellverzeichnis des Pfadfinder-Projekts
+#   PFADFINDER_BUILD_DIR    - Build-Verzeichnis des Pfadfinder-Projekts
+#   PFADFINDER_GENERATOR    - CMake-Generator (z.B. "Ninja")
+#   CMAKE_COMMAND           - Pfad zum cmake-Kommando (automatisch gesetzt)
+
+set(INSTALL_PREFIX "${PFADFINDER_BUILD_DIR}/install-test")
+set(CONSUMER_SOURCE_DIR "${PFADFINDER_SOURCE_DIR}/tests/consumer")
+set(CONSUMER_BUILD_DIR "${PFADFINDER_BUILD_DIR}/consumer-test-build")
+
+message(STATUS "=== Installationstest ===")
+message(STATUS "Install prefix: ${INSTALL_PREFIX}")
+message(STATUS "Consumer source: ${CONSUMER_SOURCE_DIR}")
+
+# Multi-Config-Generatoren (z.B. "Ninja Multi-Config", "Visual Studio ...")
+# benötigen --config beim Installieren
+if(PFADFINDER_GENERATOR MATCHES "Multi-Config|Visual Studio|Xcode")
+    set(PFADFINDER_CONFIG "Release")
+else()
+    set(PFADFINDER_CONFIG "")
+endif()
+
+# Consumer-Projekt immer mit Ninja Multi-Config bauen:
+# Der Visual-Studio-Generator unterstützt keine BMI-Only-Kompilierung
+# von C++-Modulen aus importierten Targets.
+set(CONSUMER_GENERATOR "Ninja Multi-Config")
+set(CONSUMER_CONFIG "Release")
+set(CONSUMER_CONFIG_SUBDIR "Release")
+
+# Auf Windows: vcvarsall.bat finden, um die MSVC-Umgebung einzurichten.
+# Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
+# (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
+set(VCVARSALL_WRAPPER "")
+if(CMAKE_HOST_WIN32)
+    file(GLOB VCVARSALL_CANDIDATES
+        "C:/Program Files/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
+        "C:/Program Files (x86)/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
+    )
+    if(VCVARSALL_CANDIDATES)
+        list(SORT VCVARSALL_CANDIDATES)
+        list(REVERSE VCVARSALL_CANDIDATES)
+        list(GET VCVARSALL_CANDIDATES 0 VCVARSALL)
+        message(STATUS "vcvarsall.bat gefunden: ${VCVARSALL}")
+        set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
+        file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL}\" x64\r\n%*\r\n")
+    else()
+        message(STATUS "vcvarsall.bat nicht gefunden.")
+    endif()
+endif()
+
+# Schritt 1: Bibliothek installieren
+message(STATUS "Schritt 1: Bibliothek installieren...")
+set(INSTALL_CMD ${CMAKE_COMMAND} --install "${PFADFINDER_BUILD_DIR}" --prefix "${INSTALL_PREFIX}")
+if(PFADFINDER_CONFIG)
+    list(APPEND INSTALL_CMD --config "${PFADFINDER_CONFIG}")
+endif()
+execute_process(
+    COMMAND ${INSTALL_CMD}
+    RESULT_VARIABLE install_result
+    OUTPUT_VARIABLE install_output
+    ERROR_VARIABLE install_error
+)
+if(NOT install_result EQUAL 0)
+    message(FATAL_ERROR "Installation fehlgeschlagen:\n${install_output}\n${install_error}")
+endif()
+message(STATUS "Installation erfolgreich.")
+
+# Schritt 2: Prüfen, ob die installierten Dateien existieren
+message(STATUS "Schritt 2: Installierte Dateien prüfen...")
+# Bibliotheksname ist plattformabhängig (Windows: pfadfinder.lib, Unix: libpfadfinder.a)
+if(EXISTS "${INSTALL_PREFIX}/lib/pfadfinder.lib")
+    set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/pfadfinder.lib")
+elseif(EXISTS "${INSTALL_PREFIX}/lib/libpfadfinder.a")
+    set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/libpfadfinder.a")
+else()
+    message(FATAL_ERROR "Bibliothek nicht gefunden in ${INSTALL_PREFIX}/lib/ (weder pfadfinder.lib noch libpfadfinder.a)")
+endif()
+set(EXPECTED_FILES
+    "${PFADFINDER_LIB_FILE}"
+    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/pfadfinderConfig.cmake"
+    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/pfadfinder.cppm"
+    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/error.cppm"
+    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/system_environment.cppm"
+)
+foreach(expected_file IN LISTS EXPECTED_FILES)
+    if(NOT EXISTS "${expected_file}")
+        message(FATAL_ERROR "Erwartete Datei nicht gefunden: ${expected_file}")
+    endif()
+endforeach()
+message(STATUS "Alle erwarteten Dateien vorhanden.")
+
+# Schritt 3: Consumer-Projekt konfigurieren (prüft find_package())
+message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
+set(CONFIGURE_CMD)
+if(VCVARSALL_WRAPPER)
+    list(APPEND CONFIGURE_CMD "${VCVARSALL_WRAPPER}")
+endif()
+list(APPEND CONFIGURE_CMD
+    "${CMAKE_COMMAND}" -G "${CONSUMER_GENERATOR}"
+    -S "${CONSUMER_SOURCE_DIR}"
+    -B "${CONSUMER_BUILD_DIR}"
+    -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
+    -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+)
+# Gleichen Compiler wie das Hauptprojekt verwenden (z.B. MSVC statt MinGW auf Windows)
+if(PFADFINDER_CXX_COMPILER)
+    list(APPEND CONFIGURE_CMD "-DCMAKE_CXX_COMPILER=${PFADFINDER_CXX_COMPILER}")
+endif()
+execute_process(
+    COMMAND ${CONFIGURE_CMD}
+    RESULT_VARIABLE configure_result
+    OUTPUT_VARIABLE configure_output
+    ERROR_VARIABLE configure_error
+)
+if(NOT configure_result EQUAL 0)
+    message(FATAL_ERROR "Consumer-Konfiguration fehlgeschlagen:\n${configure_output}\n${configure_error}")
+endif()
+message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert).")
+
+# Auf Windows ohne vcvarsall.bat: nur Installation + find_package testen
+if(CMAKE_HOST_WIN32 AND NOT VCVARSALL_WRAPPER)
+    message(STATUS "Windows: Consumer-Build und -Ausführung übersprungen.")
+    message(STATUS "=== Installationstest erfolgreich (nur Installation + find_package) ===")
+    return()
+endif()
+
+# Schritt 4: Consumer-Projekt bauen
+message(STATUS "Schritt 4: Consumer-Projekt bauen...")
+set(BUILD_CMD)
+if(VCVARSALL_WRAPPER)
+    list(APPEND BUILD_CMD "${VCVARSALL_WRAPPER}")
+endif()
+list(APPEND BUILD_CMD
+    "${CMAKE_COMMAND}" --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
+)
+execute_process(
+    COMMAND ${BUILD_CMD}
+    RESULT_VARIABLE build_result
+    OUTPUT_VARIABLE build_output
+    ERROR_VARIABLE build_error
+)
+if(NOT build_result EQUAL 0)
+    message(FATAL_ERROR "Consumer-Build fehlgeschlagen:\n${build_output}\n${build_error}")
+endif()
+message(STATUS "Consumer-Build erfolgreich.")
+
+# Schritt 5: Consumer-Programm ausführen
+message(STATUS "Schritt 5: Consumer-Programm ausführen...")
+set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}/${CONSUMER_CONFIG_SUBDIR}")
+# Executable-Name ist plattformabhängig (Windows: consumer.exe, Unix: consumer)
+if(EXISTS "${CONSUMER_EXE_DIR}/consumer.exe")
+    set(CONSUMER_EXE "${CONSUMER_EXE_DIR}/consumer.exe")
+else()
+    set(CONSUMER_EXE "${CONSUMER_EXE_DIR}/consumer")
+endif()
+
+execute_process(
+    COMMAND "${CONSUMER_EXE}"
+    RESULT_VARIABLE run_result
+    OUTPUT_VARIABLE run_output
+    ERROR_VARIABLE run_error
+)
+message(STATUS "Consumer-Ausgabe:\n${run_output}")
+if(NOT run_result EQUAL 0)
+    message(FATAL_ERROR "Consumer-Ausführung fehlgeschlagen (Exit-Code: ${run_result}):\n${run_error}")
+endif()
+
+# Prüfen, ob die Ausgabe "OK" enthält
+string(FIND "${run_output}" "OK" ok_pos)
+if(ok_pos EQUAL -1)
+    message(FATAL_ERROR "Consumer-Ausgabe enthält kein 'OK':\n${run_output}")
+endif()
+
+message(STATUS "=== Installationstest erfolgreich ===")
