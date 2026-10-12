@@ -31,25 +31,39 @@ set(CONSUMER_GENERATOR "Ninja Multi-Config")
 set(CONSUMER_CONFIG "Release")
 set(CONSUMER_CONFIG_SUBDIR "Release")
 
-# Auf Windows: vcvarsall.bat finden, um die MSVC-Umgebung einzurichten.
+# Auf Windows: MSVC-Umgebung über vswhere.exe und Wrapper-Skript einrichten.
 # Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
 # (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
 set(VCVARSALL_WRAPPER "")
-if(CMAKE_HOST_WIN32)
-    file(GLOB VCVARSALL_CANDIDATES
-        "C:/Program Files/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
-        "C:/Program Files (x86)/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
+if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR})
+    file(GLOB VSWHERE_CANDIDATES
+        "C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
+        "C:/Program Files/Microsoft Visual Studio/Installer/vswhere.exe"
     )
-    if(VCVARSALL_CANDIDATES)
-        list(SORT VCVARSALL_CANDIDATES)
-        list(REVERSE VCVARSALL_CANDIDATES)
-        list(GET VCVARSALL_CANDIDATES 0 VCVARSALL)
-        message(STATUS "vcvarsall.bat gefunden: ${VCVARSALL}")
-        set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
-        file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL}\" x64\r\n%*\r\n")
-    else()
-        message(STATUS "vcvarsall.bat nicht gefunden.")
+    if(VSWHERE_CANDIDATES)
+        list(SORT VSWHERE_CANDIDATES)
+        list(REVERSE VSWHERE_CANDIDATES)
+        list(GET VSWHERE_CANDIDATES 0 VSWHERE)
+        execute_process(
+            COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+            OUTPUT_VARIABLE VS_INSTALL_DIR
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if(VS_INSTALL_DIR)
+            message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
+            set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
+            if(EXISTS "${VCVARSALL_BAT}")
+                set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
+                file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL_BAT}\" amd64\r\n%*\r\n")
+                message(STATUS "MSVC-Wrapper erstellt: ${VCVARSALL_WRAPPER}")
+            endif()
+        endif()
     endif()
+endif()
+
+# Auf Windows muss die MSVC-Umgebung eingerichtet sein, sonst schlägt der Build fehl
+if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR} AND NOT VCVARSALL_WRAPPER)
+    message(FATAL_ERROR "MSVC-Umgebung konnte nicht eingerichtet werden (vswhere.exe oder vcvarsall.bat nicht gefunden).")
 endif()
 
 # Schritt 1: Bibliothek installieren
@@ -120,13 +134,6 @@ if(NOT configure_result EQUAL 0)
     message(FATAL_ERROR "Consumer-Konfiguration fehlgeschlagen:\n${configure_output}\n${configure_error}")
 endif()
 message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert).")
-
-# Auf Windows ohne vcvarsall.bat: nur Installation + find_package testen
-if(CMAKE_HOST_WIN32 AND NOT VCVARSALL_WRAPPER)
-    message(STATUS "Windows: Consumer-Build und -Ausführung übersprungen.")
-    message(STATUS "=== Installationstest erfolgreich (nur Installation + find_package) ===")
-    return()
-endif()
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
