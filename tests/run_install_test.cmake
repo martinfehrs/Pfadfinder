@@ -74,11 +74,17 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 
 # Schritt 3: Consumer-Projekt konfigurieren
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
+set(CONFIGURE_CMD ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
+    -S "${CONSUMER_SOURCE_DIR}"
+    -B "${CONSUMER_BUILD_DIR}"
+    -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
+)
+# Gleichen Compiler wie das Hauptprojekt verwenden (z.B. MSVC statt MinGW auf Windows)
+if(PFADFINDER_CXX_COMPILER)
+    list(APPEND CONFIGURE_CMD "-DCMAKE_CXX_COMPILER=${PFADFINDER_CXX_COMPILER}")
+endif()
 execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
-        -S "${CONSUMER_SOURCE_DIR}"
-        -B "${CONSUMER_BUILD_DIR}"
-        -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
+    COMMAND ${CONFIGURE_CMD}
     RESULT_VARIABLE configure_result
     OUTPUT_VARIABLE configure_output
     ERROR_VARIABLE configure_error
