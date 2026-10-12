@@ -83,6 +83,33 @@ set(CONFIGURE_CMD ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
 if(PFADFINDER_CXX_COMPILER)
     list(APPEND CONFIGURE_CMD "-DCMAKE_CXX_COMPILER=${PFADFINDER_CXX_COMPILER}")
 endif()
+# Auf Windows: rc.exe und mt.exe aus dem Windows SDK finden.
+# Diese werden für die Manifest-Generierung beim Linken benötigt und
+# sind ohne vcvarsall.bat nicht im PATH.
+find_program(PFADFINDER_RC_COMPILER NAMES rc rc.exe)
+if(NOT PFADFINDER_RC_COMPILER)
+    file(GLOB RC_CANDIDATES "C:/Program Files (x86)/Windows Kits/10/bin/*/x64/rc.exe")
+    if(RC_CANDIDATES)
+        list(SORT RC_CANDIDATES)
+        list(REVERSE RC_CANDIDATES)
+        list(GET RC_CANDIDATES 0 PFADFINDER_RC_COMPILER)
+    endif()
+endif()
+if(PFADFINDER_RC_COMPILER)
+    list(APPEND CONFIGURE_CMD "-DCMAKE_RC_COMPILER=${PFADFINDER_RC_COMPILER}")
+endif()
+find_program(PFADFINDER_MT NAMES mt mt.exe)
+if(NOT PFADFINDER_MT)
+    file(GLOB MT_CANDIDATES "C:/Program Files (x86)/Windows Kits/10/bin/*/x64/mt.exe")
+    if(MT_CANDIDATES)
+        list(SORT MT_CANDIDATES)
+        list(REVERSE MT_CANDIDATES)
+        list(GET MT_CANDIDATES 0 PFADFINDER_MT)
+    endif()
+endif()
+if(PFADFINDER_MT)
+    list(APPEND CONFIGURE_CMD "-DCMAKE_MT=${PFADFINDER_MT}")
+endif()
 execute_process(
     COMMAND ${CONFIGURE_CMD}
     RESULT_VARIABLE configure_result
