@@ -53,8 +53,8 @@ target_compile_features(test_pfadfinder PRIVATE cxx_std_20)
 # Installationstest: prüft find_package() in externem Projekt
 add_test(NAME install_test
     COMMAND ${CMAKE_COMMAND}
-        -DPFADFINDER_SOURCE_DIR=${CMAKE_SOURCE_DIR}
-        -DPFADFINDER_BUILD_DIR=${CMAKE_BINARY_DIR}
-        -DPFADFINDER_GENERATOR=${CMAKE_GENERATOR}
-        -P ${CMAKE_CURRENT_SOURCE_DIR}/run_install_test.cmake
+        "-DPFADFINDER_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+        "-DPFADFINDER_BUILD_DIR=${CMAKE_BINARY_DIR}"
+        "-DPFADFINDER_GENERATOR=${CMAKE_GENERATOR}"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/run_install_test.cmake"
 )

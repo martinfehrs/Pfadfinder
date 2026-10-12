@@ -45,10 +45,13 @@ message(STATUS "Installation erfolgreich.")
 
 # Schritt 2: Prüfen, ob die installierten Dateien existieren
 message(STATUS "Schritt 2: Installierte Dateien prüfen...")
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+# Bibliotheksname ist plattformabhängig (Windows: pfadfinder.lib, Unix: libpfadfinder.a)
+if(EXISTS "${INSTALL_PREFIX}/lib/pfadfinder.lib")
     set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/pfadfinder.lib")
-else()
+elseif(EXISTS "${INSTALL_PREFIX}/lib/libpfadfinder.a")
     set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/libpfadfinder.a")
+else()
+    message(FATAL_ERROR "Bibliothek nicht gefunden in ${INSTALL_PREFIX}/lib/ (weder pfadfinder.lib noch libpfadfinder.a)")
 endif()
 set(EXPECTED_FILES
     "${PFADFINDER_LIB_FILE}"
@@ -100,15 +103,16 @@ message(STATUS "Consumer-Build erfolgreich.")
 
 # Schritt 5: Consumer-Programm ausführen
 message(STATUS "Schritt 5: Consumer-Programm ausführen...")
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(CONSUMER_EXE_NAME "consumer.exe")
-else()
-    set(CONSUMER_EXE_NAME "consumer")
-endif()
 if(PFADFINDER_CONFIG_SUBDIR)
-    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/${PFADFINDER_CONFIG_SUBDIR}/${CONSUMER_EXE_NAME}")
+    set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}/${PFADFINDER_CONFIG_SUBDIR}")
 else()
-    set(CONSUMER_EXE "${CONSUMER_BUILD_DIR}/${CONSUMER_EXE_NAME}")
+    set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}")
+endif()
+# Executable-Name ist plattformabhängig (Windows: consumer.exe, Unix: consumer)
+if(EXISTS "${CONSUMER_EXE_DIR}/consumer.exe")
+    set(CONSUMER_EXE "${CONSUMER_EXE_DIR}/consumer.exe")
+else()
+    set(CONSUMER_EXE "${CONSUMER_EXE_DIR}/consumer")
 endif()
 
 execute_process(
