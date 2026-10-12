@@ -17,14 +17,19 @@ message(STATUS "Install prefix: ${INSTALL_PREFIX}")
 message(STATUS "Consumer source: ${CONSUMER_SOURCE_DIR}")
 
 # Multi-Config-Generatoren (z.B. "Ninja Multi-Config", "Visual Studio ...")
-# benötigen --config und legen Ausgaben in einem Konfigurations-Unterverzeichnis ab
+# benötigen --config beim Installieren
 if(PFADFINDER_GENERATOR MATCHES "Multi-Config|Visual Studio|Xcode")
     set(PFADFINDER_CONFIG "Release")
-    set(PFADFINDER_CONFIG_SUBDIR "Release")
 else()
     set(PFADFINDER_CONFIG "")
-    set(PFADFINDER_CONFIG_SUBDIR "")
 endif()
+
+# Consumer-Projekt immer mit Ninja Multi-Config bauen:
+# Der Visual-Studio-Generator unterstützt keine BMI-Only-Kompilierung
+# von C++-Modulen aus importierten Targets.
+set(CONSUMER_GENERATOR "Ninja Multi-Config")
+set(CONSUMER_CONFIG "Release")
+set(CONSUMER_CONFIG_SUBDIR "Release")
 
 # Schritt 1: Bibliothek installieren
 message(STATUS "Schritt 1: Bibliothek installieren...")
@@ -70,11 +75,10 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 # Schritt 3: Consumer-Projekt konfigurieren
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
 execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${PFADFINDER_GENERATOR}"
+    COMMAND ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
         -S "${CONSUMER_SOURCE_DIR}"
         -B "${CONSUMER_BUILD_DIR}"
         -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
-        -DCMAKE_BUILD_TYPE=Release
     RESULT_VARIABLE configure_result
     OUTPUT_VARIABLE configure_output
     ERROR_VARIABLE configure_error
@@ -86,12 +90,8 @@ message(STATUS "Consumer-Konfiguration erfolgreich.")
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
-set(BUILD_CMD ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}")
-if(PFADFINDER_CONFIG)
-    list(APPEND BUILD_CMD --config "${PFADFINDER_CONFIG}")
-endif()
 execute_process(
-    COMMAND ${BUILD_CMD}
+    COMMAND ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
     RESULT_VARIABLE build_result
     OUTPUT_VARIABLE build_output
     ERROR_VARIABLE build_error
@@ -103,11 +103,7 @@ message(STATUS "Consumer-Build erfolgreich.")
 
 # Schritt 5: Consumer-Programm ausführen
 message(STATUS "Schritt 5: Consumer-Programm ausführen...")
-if(PFADFINDER_CONFIG_SUBDIR)
-    set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}/${PFADFINDER_CONFIG_SUBDIR}")
-else()
-    set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}")
-endif()
+set(CONSUMER_EXE_DIR "${CONSUMER_BUILD_DIR}/${CONSUMER_CONFIG_SUBDIR}")
 # Executable-Name ist plattformabhängig (Windows: consumer.exe, Unix: consumer)
 if(EXISTS "${CONSUMER_EXE_DIR}/consumer.exe")
     set(CONSUMER_EXE "${CONSUMER_EXE_DIR}/consumer.exe")
