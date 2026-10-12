@@ -45,8 +45,13 @@ message(STATUS "Installation erfolgreich.")
 
 # Schritt 2: Prüfen, ob die installierten Dateien existieren
 message(STATUS "Schritt 2: Installierte Dateien prüfen...")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/pfadfinder.lib")
+else()
+    set(PFADFINDER_LIB_FILE "${INSTALL_PREFIX}/lib/libpfadfinder.a")
+endif()
 set(EXPECTED_FILES
-    "${INSTALL_PREFIX}/lib/libpfadfinder.a"
+    "${PFADFINDER_LIB_FILE}"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/pfadfinderConfig.cmake"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/pfadfinder.cppm"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/error.cppm"
