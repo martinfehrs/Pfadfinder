@@ -35,37 +35,46 @@ set(CONSUMER_CONFIG_SUBDIR "Release")
 # Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
 # (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
 set(MSVC_ENV_SETUP FALSE)
-if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR})
-    set(VSWHERE "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer/vswhere.exe")
-    if(NOT EXISTS "${VSWHERE}")
-        set(VSWHERE "$ENV{ProgramFiles}/Microsoft Visual Studio/Installer/vswhere.exe")
-    endif()
-    if(EXISTS "${VSWHERE}")
-        execute_process(
-            COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-            OUTPUT_VARIABLE VS_INSTALL_DIR
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-        if(VS_INSTALL_DIR)
-            message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
-            set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
-            if(EXISTS "${VCVARSALL_BAT}")
-                execute_process(
-                    COMMAND cmd /c "call \"${VCVARSALL_BAT}\" amd64 && set"
-                    OUTPUT_VARIABLE VC_ENV_VARS
-                )
-                string(REPLACE "\r\n" "\n" VC_ENV_VARS "${VC_ENV_VARS}")
-                foreach(env_var IN ITEMS PATH INCLUDE LIB LIBPATH)
-                    string(REGEX MATCH "(^|\n)${env_var}=([^\n]*)" _ "${VC_ENV_VARS}")
-                    if(CMAKE_MATCH_2)
-                        set(ENV{${env_var}} "${CMAKE_MATCH_2}")
-                    endif()
-                endforeach()
-                set(MSVC_ENV_SETUP TRUE)
-                message(STATUS "MSVC-Umgebung eingerichtet.")
+if(CMAKE_HOST_WIN32)
+    if(DEFINED ENV{VCINSTALLDIR})
+        set(MSVC_ENV_SETUP TRUE)
+    else()
+        set(VSWHERE "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer/vswhere.exe")
+        if(NOT EXISTS "${VSWHERE}")
+            set(VSWHERE "$ENV{ProgramFiles}/Microsoft Visual Studio/Installer/vswhere.exe")
+        endif()
+        if(EXISTS "${VSWHERE}")
+            execute_process(
+                COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+                OUTPUT_VARIABLE VS_INSTALL_DIR
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+            if(VS_INSTALL_DIR)
+                message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
+                set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
+                if(EXISTS "${VCVARSALL_BAT}")
+                    execute_process(
+                        COMMAND cmd /c "call \"${VCVARSALL_BAT}\" amd64 && set"
+                        OUTPUT_VARIABLE VC_ENV_VARS
+                    )
+                    string(REPLACE "\r\n" "\n" VC_ENV_VARS "${VC_ENV_VARS}")
+                    foreach(env_var IN ITEMS PATH INCLUDE LIB LIBPATH)
+                        string(REGEX MATCH "(^|\n)${env_var}=([^\n]*)" _ "${VC_ENV_VARS}")
+                        if(CMAKE_MATCH_2)
+                            set(ENV{${env_var}} "${CMAKE_MATCH_2}")
+                        endif()
+                    endforeach()
+                    set(MSVC_ENV_SETUP TRUE)
+                    message(STATUS "MSVC-Umgebung eingerichtet.")
+                endif()
             endif()
         endif()
     endif()
+endif()
+
+# Auf Windows muss die MSVC-Umgebung eingerichtet sein, sonst schlägt der Build fehl
+if(CMAKE_HOST_WIN32 AND NOT MSVC_ENV_SETUP)
+    message(FATAL_ERROR "MSVC-Umgebung konnte nicht eingerichtet werden (vswhere.exe oder vcvarsall.bat nicht gefunden).")
 endif()
 
 # Schritt 1: Bibliothek installieren
@@ -131,13 +140,6 @@ if(NOT configure_result EQUAL 0)
     message(FATAL_ERROR "Consumer-Konfiguration fehlgeschlagen:\n${configure_output}\n${configure_error}")
 endif()
 message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert).")
-
-# Auf Windows ohne eingerichtete MSVC-Umgebung: nur Installation + find_package testen
-if(CMAKE_HOST_WIN32 AND NOT MSVC_ENV_SETUP)
-    message(STATUS "Windows: Consumer-Build und -Ausführung übersprungen.")
-    message(STATUS "=== Installationstest erfolgreich (nur Installation + find_package) ===")
-    return()
-endif()
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
