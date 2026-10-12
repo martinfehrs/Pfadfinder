@@ -31,24 +31,40 @@ set(CONSUMER_GENERATOR "Ninja Multi-Config")
 set(CONSUMER_CONFIG "Release")
 set(CONSUMER_CONFIG_SUBDIR "Release")
 
-# Auf Windows: vcvarsall.bat finden, um die MSVC-Umgebung einzurichten.
+# Auf Windows: MSVC-Umgebung einrichten, falls nicht bereits geschehen.
 # Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
 # (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
-set(VCVARSALL_WRAPPER "")
-if(CMAKE_HOST_WIN32)
-    file(GLOB VCVARSALL_CANDIDATES
-        "C:/Program Files/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
-        "C:/Program Files (x86)/Microsoft Visual Studio/2022/*/VC/Auxiliary/Build/vcvarsall.bat"
-    )
-    if(VCVARSALL_CANDIDATES)
-        list(SORT VCVARSALL_CANDIDATES)
-        list(REVERSE VCVARSALL_CANDIDATES)
-        list(GET VCVARSALL_CANDIDATES 0 VCVARSALL)
-        message(STATUS "vcvarsall.bat gefunden: ${VCVARSALL}")
-        set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
-        file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL}\" x64\r\n%*\r\n")
-    else()
-        message(STATUS "vcvarsall.bat nicht gefunden.")
+set(MSVC_ENV_SETUP FALSE)
+if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR})
+    set(VSWHERE "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer/vswhere.exe")
+    if(NOT EXISTS "${VSWHERE}")
+        set(VSWHERE "$ENV{ProgramFiles}/Microsoft Visual Studio/Installer/vswhere.exe")
+    endif()
+    if(EXISTS "${VSWHERE}")
+        execute_process(
+            COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+            OUTPUT_VARIABLE VS_INSTALL_DIR
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if(VS_INSTALL_DIR)
+            message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
+            set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
+            if(EXISTS "${VCVARSALL_BAT}")
+                execute_process(
+                    COMMAND cmd /c "call \"${VCVARSALL_BAT}\" amd64 && set"
+                    OUTPUT_VARIABLE VC_ENV_VARS
+                )
+                string(REPLACE "\r\n" "\n" VC_ENV_VARS "${VC_ENV_VARS}")
+                foreach(env_var IN ITEMS PATH INCLUDE LIB LIBPATH)
+                    string(REGEX MATCH "(^|\n)${env_var}=([^\n]*)" _ "${VC_ENV_VARS}")
+                    if(CMAKE_MATCH_2)
+                        set(ENV{${env_var}} "${CMAKE_MATCH_2}")
+                    endif()
+                endforeach()
+                set(MSVC_ENV_SETUP TRUE)
+                message(STATUS "MSVC-Umgebung eingerichtet.")
+            endif()
+        endif()
     endif()
 endif()
 
@@ -95,12 +111,7 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 
 # Schritt 3: Consumer-Projekt konfigurieren (prüft find_package())
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
-set(CONFIGURE_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND CONFIGURE_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND CONFIGURE_CMD
-    "${CMAKE_COMMAND}" -G "${CONSUMER_GENERATOR}"
+set(CONFIGURE_CMD ${CMAKE_COMMAND} -G "${CONSUMER_GENERATOR}"
     -S "${CONSUMER_SOURCE_DIR}"
     -B "${CONSUMER_BUILD_DIR}"
     -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX}
@@ -121,8 +132,8 @@ if(NOT configure_result EQUAL 0)
 endif()
 message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert).")
 
-# Auf Windows ohne vcvarsall.bat: nur Installation + find_package testen
-if(CMAKE_HOST_WIN32 AND NOT VCVARSALL_WRAPPER)
+# Auf Windows ohne eingerichtete MSVC-Umgebung: nur Installation + find_package testen
+if(CMAKE_HOST_WIN32 AND NOT MSVC_ENV_SETUP)
     message(STATUS "Windows: Consumer-Build und -Ausführung übersprungen.")
     message(STATUS "=== Installationstest erfolgreich (nur Installation + find_package) ===")
     return()
@@ -130,15 +141,8 @@ endif()
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
-set(BUILD_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND BUILD_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND BUILD_CMD
-    "${CMAKE_COMMAND}" --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
-)
 execute_process(
-    COMMAND ${BUILD_CMD}
+    COMMAND ${CMAKE_COMMAND} --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
     RESULT_VARIABLE build_result
     OUTPUT_VARIABLE build_output
     ERROR_VARIABLE build_error
