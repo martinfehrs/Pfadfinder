@@ -34,36 +34,37 @@ set(CONSUMER_CONFIG_SUBDIR "Release")
 # Auf Windows: MSVC-Umgebung über vswhere.exe und Wrapper-Skript einrichten.
 # Ohne eingerichtete Umgebung kann der Ninja-Generator nicht linken
 # (fehlende Windows-SDK-Bibliotheken wie kernel32.lib).
-set(VCVARSALL_WRAPPER "")
+set(VCVARS_WRAPPER "")
 if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR})
-    file(GLOB VSWHERE_CANDIDATES
-        "C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe"
-        "C:/Program Files/Microsoft Visual Studio/Installer/vswhere.exe"
+    find_program(VSWHERE_EXE
+        NAMES vswhere vswhere.exe
+        PATHS
+            "C:/Program Files (x86)/Microsoft Visual Studio/Installer"
+            "C:/Program Files/Microsoft Visual Studio/Installer"
     )
-    if(VSWHERE_CANDIDATES)
-        list(SORT VSWHERE_CANDIDATES)
-        list(REVERSE VSWHERE_CANDIDATES)
-        list(GET VSWHERE_CANDIDATES 0 VSWHERE)
+    if(VSWHERE_EXE)
         execute_process(
-            COMMAND "${VSWHERE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+            COMMAND "${VSWHERE_EXE}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
             OUTPUT_VARIABLE VS_INSTALL_DIR
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         if(VS_INSTALL_DIR)
             message(STATUS "Visual Studio gefunden: ${VS_INSTALL_DIR}")
-            set(VCVARSALL_BAT "${VS_INSTALL_DIR}/VC/Auxiliary/Build/vcvarsall.bat")
-            if(EXISTS "${VCVARSALL_BAT}")
-                set(VCVARSALL_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
-                file(WRITE "${VCVARSALL_WRAPPER}" "@echo off\r\ncall \"${VCVARSALL_BAT}\" amd64\r\n%*\r\n")
-                message(STATUS "MSVC-Wrapper erstellt: ${VCVARSALL_WRAPPER}")
+            # Forward-Slashes in Backslashes umwandeln (cmd.exe verträgt keine gemischten Pfade)
+            string(REPLACE "/" "\\" VS_INSTALL_DIR "${VS_INSTALL_DIR}")
+            set(VCVARS_BAT "${VS_INSTALL_DIR}\\VC\\Auxiliary\\Build\\vcvars64.bat")
+            if(EXISTS "${VCVARS_BAT}")
+                set(VCVARS_WRAPPER "${PFADFINDER_BUILD_DIR}/vcvars_wrapper.bat")
+                file(WRITE "${VCVARS_WRAPPER}" "@echo off\r\ncall \"${VCVARS_BAT}\"\r\n%*\r\n")
+                message(STATUS "MSVC-Wrapper erstellt: ${VCVARS_WRAPPER}")
             endif()
         endif()
     endif()
 endif()
 
 # Auf Windows muss die MSVC-Umgebung eingerichtet sein, sonst schlägt der Build fehl
-if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR} AND NOT VCVARSALL_WRAPPER)
-    message(FATAL_ERROR "MSVC-Umgebung konnte nicht eingerichtet werden (vswhere.exe oder vcvarsall.bat nicht gefunden).")
+if(CMAKE_HOST_WIN32 AND NOT DEFINED ENV{VCINSTALLDIR} AND NOT VCVARS_WRAPPER)
+    message(FATAL_ERROR "MSVC-Umgebung konnte nicht eingerichtet werden (vswhere.exe oder vcvars64.bat nicht gefunden).")
 endif()
 
 # Schritt 1: Bibliothek installieren
@@ -109,11 +110,7 @@ message(STATUS "Alle erwarteten Dateien vorhanden.")
 
 # Schritt 3: Consumer-Projekt konfigurieren (prüft find_package())
 message(STATUS "Schritt 3: Consumer-Projekt konfigurieren...")
-set(CONFIGURE_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND CONFIGURE_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND CONFIGURE_CMD
+set(CONFIGURE_CMD
     "${CMAKE_COMMAND}" -G "${CONSUMER_GENERATOR}"
     -S "${CONSUMER_SOURCE_DIR}"
     -B "${CONSUMER_BUILD_DIR}"
@@ -123,6 +120,9 @@ list(APPEND CONFIGURE_CMD
 # Gleichen Compiler wie das Hauptprojekt verwenden (z.B. MSVC statt MinGW auf Windows)
 if(PFADFINDER_CXX_COMPILER)
     list(APPEND CONFIGURE_CMD "-DCMAKE_CXX_COMPILER=${PFADFINDER_CXX_COMPILER}")
+endif()
+if(VCVARS_WRAPPER)
+    list(PREPEND CONFIGURE_CMD "${VCVARS_WRAPPER}")
 endif()
 execute_process(
     COMMAND ${CONFIGURE_CMD}
@@ -137,13 +137,12 @@ message(STATUS "Consumer-Konfiguration erfolgreich (find_package() funktioniert)
 
 # Schritt 4: Consumer-Projekt bauen
 message(STATUS "Schritt 4: Consumer-Projekt bauen...")
-set(BUILD_CMD)
-if(VCVARSALL_WRAPPER)
-    list(APPEND BUILD_CMD "${VCVARSALL_WRAPPER}")
-endif()
-list(APPEND BUILD_CMD
+set(BUILD_CMD
     "${CMAKE_COMMAND}" --build "${CONSUMER_BUILD_DIR}" --config "${CONSUMER_CONFIG}"
 )
+if(VCVARS_WRAPPER)
+    list(PREPEND BUILD_CMD "${VCVARS_WRAPPER}")
+endif()
 execute_process(
     COMMAND ${BUILD_CMD}
     RESULT_VARIABLE build_result
