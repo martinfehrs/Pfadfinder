@@ -66,3 +66,7 @@ Testing/
 
 # Catch2 build files
 _deps/
+
+# clangd-Cache
+.cache/
+
