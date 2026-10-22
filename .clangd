@@ -4,45 +4,6 @@ CompileFlags:
         - -stdlib=libstdc++
 
 Diagnostics:
-    ClangTidy:
-        Add:
-            - modernize-*
-            - bugprone-*
-            - performance-*
-            - readability-*
-            - cppcoreguidelines-*
-        Remove:
-            - modernize-use-trailing-return-type
-            - modernize-avoid-c-arrays
-            - modernize-use-nodiscard
-            - readability-magic-numbers
-            - readability-implicit-bool-conversion
-            - readability-uppercase-literal-suffix
-            - readability-convert-member-functions-to-static
-            - readability-else-after-return
-            - readability-braces-around-statements
-            - readability-function-cognitive-complexity
-            - readability-identifier-length
-            - cppcoreguidelines-avoid-non-const-global-variables
-            - cppcoreguidelines-owning-memory
-            - cppcoreguidelines-pro-bounds-pointer-arithmetic
-            - cppcoreguidelines-pro-type-vararg
-            - cppcoreguidelines-avoid-do-while
-        CheckOptions:
-            readability-identifier-naming.FunctionCase: lower_case
-            readability-identifier-naming.ClassCase: lower_case
-            readability-identifier-naming.StructCase: lower_case
-            readability-identifier-naming.EnumCase: lower_case
-            readability-identifier-naming.EnumConstantCase: lower_case
-            readability-identifier-naming.ConstantCase: lower_case
-            readability-identifier-naming.MemberCase: lower_case
-            readability-identifier-naming.PrivateMemberCase: lower_case
-            readability-identifier-naming.ParameterCase: lower_case
-            readability-identifier-naming.LocalVariableCase: lower_case
-            readability-identifier-naming.VariableCase: lower_case
-            readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
-            readability-identifier-naming.NamespaceCase: lower_case
-            readability-identifier-naming.IncludeGuardCase: UPPER_CASE
     UnusedIncludes: Strict
     MissingIncludes: Strict
 
