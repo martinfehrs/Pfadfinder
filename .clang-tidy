@@ -8,7 +8,6 @@ Checks: >
     -bugprone-macro-parentheses,
     -modernize-use-trailing-return-type,
     -modernize-avoid-c-arrays,
-    -modernize-use-nodiscard,
     -readability-magic-numbers,
     -readability-implicit-bool-conversion,
     -readability-uppercase-literal-suffix,
@@ -57,10 +56,16 @@ CheckOptions:
       value: lower_case
     - key: readability-identifier-naming.MemberCase
       value: lower_case
+    - key: readability-identifier-naming.MemberSuffix
+      value: '_'
     - key: readability-identifier-naming.PrivateMemberCase
       value: lower_case
+    - key: readability-identifier-naming.PrivateMemberSuffix
+      value: '_'
     - key: readability-identifier-naming.ProtectedMemberCase
       value: lower_case
+    - key: readability-identifier-naming.ProtectedMemberSuffix
+      value: '_'
     - key: readability-identifier-naming.VariableCase
       value: lower_case
     - key: readability-identifier-naming.PrivateVariableCase

@@ -1,0 +1,52 @@
+BasedOnStyle: LLVM
+
+# C++20
+Standard: c++20
+
+# Allman-Stil: öffnende Klammer auf neuer Zeile
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: Always
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: true
+    AfterUnion: true
+    AfterExternBlock: true
+    BeforeCatch: true
+    BeforeElse: true
+    BeforeLambdaBody: false
+    IndentBraces: false
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: false
+
+# Einrückung: 4 Leerzeichen, keine Tabs
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+# Maximale Zeilenlänge
+ColumnLimit: 120
+
+# Zeiger und Referenzen linksbündig
+PointerAlignment: Left
+DerivePointerAlignment: false
+ReferenceAlignment: Left
+
+# Namensräume: Inhalt einrücken, keine Kommentare nach schließender Klammer
+IndentNamespace: true
+FixNamespaceComments: false
+
+# Leerzeilen am Anfang und Ende von Blöcken erhalten
+KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 1
+
+# Sonstiges
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
