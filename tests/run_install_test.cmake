@@ -107,7 +107,7 @@ set(EXPECTED_FILES
     "${PFADFINDER_LIB_FILE}"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/pfadfinderConfig.cmake"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/pfadfinder.cppm"
-    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/error.cppm"
+    "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/errors.cppm"
     "${INSTALL_PREFIX}/lib/cmake/pfadfinder/src/system_environment.cppm"
 )
 

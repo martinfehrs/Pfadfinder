@@ -1,6 +1,6 @@
 /**
- * @file error.cppm
- * @brief Error handling (pfadfinder:error)
+ * @file errors.cppm
+ * @brief Error handling (pfadfinder:errors)
  * @author Martin Fehrs
  */
 
