@@ -1,0 +1,85 @@
+---
+Checks: >
+    bugprone-*,
+    modernize-*,
+    performance-*,
+    readability-*,
+    cppcoreguidelines-*,
+    -bugprone-macro-parentheses,
+    -modernize-use-trailing-return-type,
+    -modernize-avoid-c-arrays,
+    -modernize-use-nodiscard,
+    -readability-magic-numbers,
+    -readability-implicit-bool-conversion,
+    -readability-uppercase-literal-suffix,
+    -readability-convert-member-functions-to-static,
+    -readability-else-after-return,
+    -readability-function-cognitive-complexity,
+    -readability-identifier-length,
+    -cppcoreguidelines-avoid-non-const-global-variables,
+    -cppcoreguidelines-owning-memory,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+    -cppcoreguidelines-pro-type-vararg,
+    -cppcoreguidelines-avoid-do-while,
+    -hicpp-*  # Alias für cppcoreguidelines-*, bereits abgedeckt
+
+CheckOptions:
+    - key: readability-identifier-naming.FunctionCase
+      value: lower_case
+    - key: readability-identifier-naming.FunctionTemplateCase
+      value: lower_case
+    - key: readability-identifier-naming.ClassCase
+      value: lower_case
+    - key: readability-identifier-naming.StructCase
+      value: lower_case
+    - key: readability-identifier-naming.EnumCase
+      value: lower_case
+    - key: readability-identifier-naming.EnumConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.ConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.ConstantMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.StaticConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.GlobalConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.StaticVariableCase
+      value: lower_case
+    - key: readability-identifier-naming.GlobalVariableCase
+      value: lower_case
+    - key: readability-identifier-naming.LocalVariableCase
+      value: lower_case
+    - key: readability-identifier-naming.LocalConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.ParameterCase
+      value: lower_case
+    - key: readability-identifier-naming.MemberCase
+      value: lower_case
+    - key: readability-identifier-naming.PrivateMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.ProtectedMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.VariableCase
+      value: lower_case
+    - key: readability-identifier-naming.PrivateVariableCase
+      value: lower_case
+    - key: readability-identifier-naming.ProtectedVariableCase
+      value: lower_case
+    - key: readability-identifier-naming.TypeTemplateParameterCase
+      value: lower_case
+    - key: readability-identifier-naming.TemplateParameterCase
+      value: lower_case
+    - key: readability-identifier-naming.MacroDefinitionCase
+      value: UPPER_CASE
+    - key: readability-identifier-naming.NamespaceCase
+      value: lower_case
+    - key: readability-identifier-naming.NamespaceAliasCase
+      value: lower_case
+    - key: readability-identifier-naming.IncludeGuardCase
+      value: UPPER_CASE
+    - key: readability-function-cognitive-complexity.Threshold
+      value: 30
+    - key: readability-function-cognitive-complexity.IgnoreMacros
+      value: true
+...
