@@ -1,0 +1,28 @@
+CompileFlags:
+    Add:
+        - -std=c++20
+        - -stdlib=libstdc++
+
+Diagnostics:
+    UnusedIncludes: Strict
+    MissingIncludes: Strict
+
+Hover:
+    ShowAKA: true
+
+InlayHints:
+    Enabled: true
+    BlockEnd: true
+    ChainingHints: true
+    TypeHints: true
+    ParameterHints: true
+    DeducedTypes: true
+    Designators: true
+
+Completion:
+    AllScopes: true
+    Style: Detailed
+
+HeaderInsertion: Never
+
+BackgroundIndex: true
