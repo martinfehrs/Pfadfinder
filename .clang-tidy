@@ -8,7 +8,6 @@ Checks: >
     -bugprone-macro-parentheses,
     -modernize-use-trailing-return-type,
     -modernize-avoid-c-arrays,
-    -modernize-use-nodiscard,
     -readability-magic-numbers,
     -readability-implicit-bool-conversion,
     -readability-uppercase-literal-suffix,
