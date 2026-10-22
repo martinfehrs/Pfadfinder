@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Fehlerbehandlung (pfadfinder:error)
+ * @brief Fehlerbehandlung (pfadfinder:errors)
  * @author Martin Fehrs
  */
 
@@ -10,7 +10,7 @@ module;
 #include <string>
 #include <format>
 
-export module pfadfinder:error;
+export module pfadfinder:errors;
 
 namespace pfadfinder
 {

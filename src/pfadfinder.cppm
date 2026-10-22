@@ -18,7 +18,7 @@ module;
 
 export module pfadfinder;
 
-export import :error;
+export import :errors;
 export import :system_environment;
 
 namespace fs = std::filesystem;

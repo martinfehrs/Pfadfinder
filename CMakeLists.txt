@@ -23,7 +23,7 @@ add_library(pfadfinder STATIC)
 target_sources(pfadfinder PUBLIC
     FILE_SET CXX_MODULES
         FILES src/pfadfinder.cppm
-              src/error.cppm
+              src/errors.cppm
               src/system_environment.cppm
 )
 

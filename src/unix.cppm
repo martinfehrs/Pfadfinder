@@ -17,7 +17,7 @@ module;
 
 module pfadfinder:unix;
 
-import :error;
+import :errors;
 
 namespace fs = std::filesystem;
 
