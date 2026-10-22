@@ -49,4 +49,4 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortLoopsOnASingleLine: false
 AllowShortBlocksOnASingleLine: false
-AllowShortLambdasOnASingleLine: None
+AllowShortLambdasOnASingleLine: All
