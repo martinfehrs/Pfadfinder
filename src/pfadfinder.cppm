@@ -744,7 +744,7 @@ namespace pfadfinder
                 }
                 return path;
             }
-            return *cached_executable_path_;
+            return cached_executable_path_;
         }
 
         /**
@@ -760,7 +760,7 @@ namespace pfadfinder
                     cached_executable_dir_ = exe_path->parent_path();
                 return cached_executable_dir_;
             }
-            return *cached_executable_dir_;
+            return cached_executable_dir_;
         }
 
         /**
@@ -776,7 +776,7 @@ namespace pfadfinder
                     return std::nullopt;
                 cached_static_data_dir_ = system_env_.static_data_dir(*exe_dir, app_name_);
             }
-            return *cached_static_data_dir_;
+            return cached_static_data_dir_;
         }
 
         /**
@@ -795,7 +795,7 @@ namespace pfadfinder
                     cached_data_dir_ = *path;
                 return path;
             }
-            return *cached_data_dir_;
+            return cached_data_dir_;
         }
 
         /**
@@ -814,7 +814,7 @@ namespace pfadfinder
                     cached_user_config_dir_ = *path;
                 return path;
             }
-            return *cached_user_config_dir_;
+            return cached_user_config_dir_;
         }
 
         /**
@@ -833,7 +833,7 @@ namespace pfadfinder
                     cached_cache_dir_ = *path;
                 return path;
             }
-            return *cached_cache_dir_;
+            return cached_cache_dir_;
         }
 
         /**
@@ -852,7 +852,7 @@ namespace pfadfinder
                     cached_log_dir_ = *path;
                 return path;
             }
-            return *cached_log_dir_;
+            return cached_log_dir_;
         }
 
         /**
@@ -868,7 +868,7 @@ namespace pfadfinder
                     cached_temp_dir_ = *path;
                 return path;
             }
-            return *cached_temp_dir_;
+            return cached_temp_dir_;
         }
 
         /**
@@ -884,7 +884,7 @@ namespace pfadfinder
                     cached_shared_config_dir_ = *path;
                 return path;
             }
-            return *cached_shared_config_dir_;
+            return cached_shared_config_dir_;
         }
 
         /**
@@ -900,7 +900,7 @@ namespace pfadfinder
                     cached_home_dir_ = *path;
                 return path;
             }
-            return *cached_home_dir_;
+            return cached_home_dir_;
         }
 
         /** @brief Der Name der Anwendung. */
