@@ -23,15 +23,13 @@ namespace pfadfinder
 {
     std::optional<fs::path> system_environment::executable_path() const
     {
-        char path[PATH_MAX]{};
-        ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+        std::array<char, PATH_MAX> path{};
+        ssize_t len = readlink("/proc/self/exe", path.data(), std::size(path) - 1);
 
         if (len == -1)
             return std::nullopt;
 
-        path[len] = '\0';
-
-        return fs::path{ path };
+        return fs::path{ path.data() };
     }
 
     fs::path system_environment::static_data_dir(const fs::path& exe_dir, const std::string& app_name) const
