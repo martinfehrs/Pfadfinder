@@ -13,16 +13,18 @@ Hover:
 InlayHints:
     Enabled: true
     BlockEnd: true
-    ChainingHints: true
-    TypeHints: true
-    ParameterHints: true
+    ParameterNames: true
     DeducedTypes: true
     Designators: true
+    DefaultArguments: true
 
 Completion:
     AllScopes: true
-    Style: Detailed
+    HeaderInsertion: Never
 
-HeaderInsertion: Never
+Index:
+    Background: true
+    StandardLibrary: true
 
-BackgroundIndex: true
+Documentation:
+    CommentFormat: Doxygen
