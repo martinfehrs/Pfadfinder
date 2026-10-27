@@ -22,7 +22,7 @@ Completion:
     HeaderInsertion: Never
 
 Index:
-    Background: true
+    Background: Build
     StandardLibrary: true
 
 Documentation:
