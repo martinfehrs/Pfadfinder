@@ -7,9 +7,9 @@
 module;
 
 #include <unistd.h>
+#include <linux/limits.h>
 
 #include <filesystem>
-#include <climits>
 #include <optional>
 #include <string>
 
