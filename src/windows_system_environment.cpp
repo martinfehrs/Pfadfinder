@@ -20,7 +20,7 @@ namespace fs = std::filesystem;
 
 namespace pfadfinder
 {
-    std::optional<fs::path> system_environment::executable_path() const
+    std::optional<fs::path> default_system_environment::executable_path() const
     {
         wchar_t path[MAX_PATH]{};
 
@@ -30,12 +30,12 @@ namespace pfadfinder
         return fs::path{ path };
     }
 
-    fs::path system_environment::static_data_dir(const fs::path& exe_dir, const std::string& app_name) const
+    fs::path default_system_environment::static_data_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
         return exe_dir;
     }
 
-    std::optional<fs::path> system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
@@ -49,7 +49,7 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name;
     }
 
-    std::optional<fs::path> system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("APPDATA", nullptr, 0);
 
@@ -63,7 +63,7 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name;
     }
 
-    std::optional<fs::path> system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
@@ -77,7 +77,7 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name / "Cache";
     }
 
-    std::optional<fs::path> system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("LOCALAPPDATA", nullptr, 0);
 
@@ -91,7 +91,7 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name / "Logs";
     }
 
-    std::optional<fs::path> system_environment::temp_dir(const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::temp_dir(const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("TEMP", nullptr, 0);
 
@@ -105,7 +105,7 @@ namespace pfadfinder
         return fs::path{ buffer } / app_name;
     }
 
-    std::optional<fs::path> system_environment::home_dir() const
+    std::optional<fs::path> default_system_environment::home_dir() const
     {
         DWORD size = GetEnvironmentVariableA("USERPROFILE", nullptr, 0);
 
@@ -119,7 +119,7 @@ namespace pfadfinder
         return fs::path{ buffer };
     }
 
-    std::optional<fs::path> system_environment::shared_config_dir(const std::string& app_name) const
+    std::optional<fs::path> default_system_environment::shared_config_dir(const std::string& app_name) const
     {
         DWORD size = GetEnvironmentVariableA("ALLUSERSAPPDATA", nullptr, 0);
 

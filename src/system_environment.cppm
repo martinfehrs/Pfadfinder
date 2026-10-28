@@ -31,11 +31,11 @@ namespace pfadfinder
      *       weichen von den XDG-Konventionen ab.
      *       Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
      */
-    export class system_environment
+    export class default_system_environment
     {
     public:
         /** @brief Virtueller Destruktor für korrekte Ableitung. */
-        virtual ~system_environment() = default;
+        virtual ~default_system_environment() = default;
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

@@ -25,7 +25,7 @@ namespace fs = std::filesystem;
 
 namespace test_backend
 {
-    struct test_system_environment : pfadfinder::system_environment
+    struct test_system_environment : pfadfinder::default_system_environment
     {
         fs::path base_temp_dir;
         
@@ -88,7 +88,7 @@ namespace test_backend
     };
 
     // Mock-Backend, das für executable_path und home_dir std::nullopt zurückgibt
-    struct failing_test_system_environment : pfadfinder::system_environment
+    struct failing_test_system_environment : pfadfinder::default_system_environment
     {
         [[nodiscard]] std::optional<fs::path> executable_path() const override
         {

@@ -243,11 +243,11 @@ import pfadfinder;
 
 namespace fs = std::filesystem;
 
-struct my_custom_environment : pfadfinder::system_environment
+struct my_custom_environment : pfadfinder::default_system_environment
 {
     [[nodiscard]] std::optional<fs::path> user_config_dir(const fs::path&, const std::string& app_name) const override
     {
-        auto home = system_environment::home_dir();
+        auto home = default_system_environment::home_dir();
         if (!home.has_value())
             return std::nullopt;
         return *home / std::format(".{}", app_name);
@@ -255,7 +255,7 @@ struct my_custom_environment : pfadfinder::system_environment
 
     [[nodiscard]] std::optional<fs::path> data_dir(const fs::path&, const std::string& app_name) const override
     {
-        auto home = system_environment::home_dir();
+        auto home = default_system_environment::home_dir();
         if (!home.has_value())
             return std::nullopt;
         return *home / std::format(".{}", app_name);
@@ -263,7 +263,7 @@ struct my_custom_environment : pfadfinder::system_environment
 
     [[nodiscard]] std::optional<fs::path> cache_dir(const fs::path&, const std::string& app_name) const override
     {
-        auto home = system_environment::home_dir();
+        auto home = default_system_environment::home_dir();
         if (!home.has_value())
             return std::nullopt;
         return *home / std::format(".{}", app_name);

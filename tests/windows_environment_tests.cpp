@@ -21,7 +21,7 @@ namespace fs = std::filesystem;
 
 TEST_CASE("windows_system_environment::executable_path returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_path = backend.executable_path();
 
     REQUIRE(exe_path.has_value());
@@ -32,7 +32,7 @@ TEST_CASE("windows_system_environment::executable_path returns correct path")
 
 TEST_CASE("windows_system_environment::static_data_dir returns executable directory")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("C:/Program Files/MyApp");
     auto app_name = std::string("test_app");
 
@@ -47,7 +47,7 @@ TEST_CASE("windows_system_environment::data_dir returns APPDATA path")
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("C:/Program Files/MyApp");
     auto app_name = std::string("test_app");
 
@@ -67,7 +67,7 @@ TEST_CASE("windows_system_environment::user_config_dir returns APPDATA path")
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("C:/Program Files/MyApp");
     auto app_name = std::string("test_app");
 
@@ -87,7 +87,7 @@ TEST_CASE("windows_system_environment::cache_dir returns LOCALAPPDATA path with 
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("C:/Program Files/MyApp");
     auto app_name = std::string("test_app");
 
@@ -107,7 +107,7 @@ TEST_CASE("windows_system_environment::log_dir returns LOCALAPPDATA path with Lo
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("C:/Program Files/MyApp");
     auto app_name = std::string("test_app");
 
@@ -127,7 +127,7 @@ TEST_CASE("windows_system_environment::temp_dir returns TEMP path with app subdi
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto app_name = std::string("test_app");
 
     auto temp_dir = backend.temp_dir(app_name);
@@ -146,7 +146,7 @@ TEST_CASE("windows_system_environment::home_dir returns USERPROFILE path")
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto home_dir = backend.home_dir();
 
     std::string buffer(size - 1, '\0');
@@ -162,7 +162,7 @@ TEST_CASE("windows_system_environment::shared_config_dir returns ALLUSERSAPPDATA
     if (size == 0)
         return;
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto app_name = std::string("test_app");
 
     auto shared_config_dir = backend.shared_config_dir(app_name);
@@ -180,7 +180,7 @@ TEST_CASE("windows_system_environment::home_dir returns nullopt when USERPROFILE
     pfadfinder::test::env_guard guard("USERPROFILE");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.home_dir();
     REQUIRE_FALSE(result.has_value());
 }
@@ -190,7 +190,7 @@ TEST_CASE("windows_system_environment::data_dir returns nullopt when APPDATA is 
     pfadfinder::test::env_guard guard("APPDATA");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.data_dir(fs::path("C:/Program Files/MyApp"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -200,7 +200,7 @@ TEST_CASE("windows_system_environment::user_config_dir returns nullopt when APPD
     pfadfinder::test::env_guard guard("APPDATA");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.user_config_dir(fs::path("C:/Program Files/MyApp"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -210,7 +210,7 @@ TEST_CASE("windows_system_environment::cache_dir returns nullopt when LOCALAPPDA
     pfadfinder::test::env_guard guard("LOCALAPPDATA");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.cache_dir(fs::path("C:/Program Files/MyApp"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -220,7 +220,7 @@ TEST_CASE("windows_system_environment::log_dir returns nullopt when LOCALAPPDATA
     pfadfinder::test::env_guard guard("LOCALAPPDATA");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.log_dir(fs::path("C:/Program Files/MyApp"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -230,7 +230,7 @@ TEST_CASE("windows_system_environment::temp_dir returns nullopt when TEMP is not
     pfadfinder::test::env_guard guard("TEMP");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.temp_dir("test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -240,7 +240,7 @@ TEST_CASE("windows_system_environment::shared_config_dir returns nullopt when AL
     pfadfinder::test::env_guard guard("ALLUSERSAPPDATA");
     guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.shared_config_dir("test_app");
     REQUIRE_FALSE(result.has_value());
 }

@@ -36,11 +36,11 @@ namespace pfadfinder
      * Die Ergebnisse der Methoden werden als Objektvariablen gecacht, um wiederholte
      * Berechnungen zu vermeiden.
      * 
-     * @tparam SystemEnvironment Typ des Backend-Implementierung, Standardmäßig pfadfinder::system_environment.
+     * @tparam system_environment Typ der Backend-Implementierung, Standardmäßig pfadfinder::default_system_environment.
      * 
      * @note Wenn kein app_name angegeben wird, wird der Dateiname der ausführbaren Datei verwendet.
      */
-    export template <typename SystemEnvironment = system_environment>
+    export template <typename system_environment = default_system_environment>
     class application_environment
     {
 
@@ -52,7 +52,7 @@ namespace pfadfinder
          *                 Wenn nicht angegeben, wird der Dateiname der ausführbaren Datei verwendet.
          * @param system_env Backend-Implementierung für Pfadermittlung.
          */
-        explicit application_environment(std::string app_name = "", SystemEnvironment system_env = SystemEnvironment{})
+        explicit application_environment(std::string app_name = "", system_environment system_env = system_environment{})
             : app_name_(std::move(app_name)), system_env_(std::move_if_noexcept(system_env))
         {}
 
@@ -907,7 +907,7 @@ namespace pfadfinder
         mutable std::string app_name_;
 
         /** @brief Plattformspezifische Implementierung für Pfadermittlung. */
-        [[no_unique_address]] SystemEnvironment system_env_;
+        [[no_unique_address]] system_environment system_env_;
 
         // Cache für die berechneten Pfade (Lazy Initialization)
         /** @brief Gecachter Pfad zur ausführbaren Datei. */
