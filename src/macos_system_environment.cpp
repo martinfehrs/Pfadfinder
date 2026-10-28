@@ -6,10 +6,10 @@
 
 module;
 
+#include <sys/syslimits.h>
 #include <mach-o/dyld.h>
 
 #include <filesystem>
-#include <climits>
 #include <optional>
 #include <string>
 
