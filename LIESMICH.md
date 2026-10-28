@@ -94,24 +94,24 @@ Zugriff auf folgende Betriebssystemabhängigen Pfade und deren Unterpfade.
 | `shared_config_dir()` | `/etc/<appname>` |
 | `find_shared_config_dir()` | Wie `shared_config_dir()`, gibt `std::optional` zurück |
 | `create_shared_config_dir()` | Erstellt `/etc/<appname>` |
-| `data_dir()` | `~/.local/share/<appname>` (XDG-Standard) |
+| `data_dir()` | `~/.local/share/<appname>` |
 | `find_data_dir()` | Wie `data_dir()`, gibt `std::optional` zurück |
-| `create_data_dir()` | Erstellt `~/.local/share/<appname>` (XDG-Standard) |
-| `user_config_dir()` | `~/.config/<appname>` (XDG-Standard) |
+| `create_data_dir()` | Erstellt `~/.local/share/<appname>` |
+| `user_config_dir()` | `~/.config/<appname>` |
 | `find_user_config_dir()` | Wie `user_config_dir()`, gibt `std::optional` zurück |
-| `create_user_config_dir()` | Erstellt `~/.config/<appname>` (XDG-Standard) |
+| `create_user_config_dir()` | Erstellt `~/.config/<appname>` |
 | `user_config_file()` | `~/.config/<appname>/<datei>` (mit Dateiexistenzprüfung) |
 | `find_user_config_file()` | Wie `user_config_file()`, gibt `std::optional` zurück |
 | `shared_config_file()` | `/etc/<appname>/<datei>` (mit Dateiexistenzprüfung) |
 | `find_shared_config_file()` | Wie `shared_config_file()`, gibt `std::optional` zurück |
 | `find_config_file()` | Sucht Benutzer- dann geteilte Konfigurationsdatei (gibt `std::optional` zurück) |
 | `config_files()` | Gibt alle verfügbaren Konfigurationsdateien zurück (0, 1 oder 2) |
-| `cache_dir()` | `~/.cache/<appname>` (XDG-Standard) |
+| `cache_dir()` | `~/.cache/<appname>` |
 | `find_cache_dir()` | Wie `cache_dir()`, gibt `std::optional` zurück |
-| `create_cache_dir()` | Erstellt `~/.cache/<appname>` (XDG-Standard) |
-| `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_cache_dir()` | Erstellt `~/.cache/<appname>` |
+| `log_dir()` | `~/.local/state/<appname>/log` |
 | `find_log_dir()` | Wie `log_dir()`, gibt `std::optional` zurück |
-| `create_log_dir()` | Erstellt `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_log_dir()` | Erstellt `~/.local/state/<appname>/log` |
 | `temp_dir()` | `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
 | `find_temp_dir()` | Wie `temp_dir()`, gibt `std::optional` zurück |
 | `create_temp_dir()` | Erstellt `/tmp/<appname>` oder systemweites Temp-Verzeichnis |
