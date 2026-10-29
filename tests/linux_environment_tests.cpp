@@ -19,7 +19,7 @@ namespace fs = std::filesystem;
 
 TEST_CASE("linux_system_environment::executable_path returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_path = backend.executable_path();
 
     REQUIRE(exe_path.has_value());
@@ -30,7 +30,7 @@ TEST_CASE("linux_system_environment::executable_path returns correct path")
 
 TEST_CASE("linux_system_environment::static_data_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
     auto app_name = std::string("test_app");
 
@@ -40,7 +40,7 @@ TEST_CASE("linux_system_environment::static_data_dir returns correct path")
 
 TEST_CASE("linux_system_environment::data_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
     auto app_name = std::string("test_app");
 
@@ -56,7 +56,7 @@ TEST_CASE("linux_system_environment::data_dir returns correct path")
 
 TEST_CASE("linux_system_environment::user_config_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
     auto app_name = std::string("test_app");
 
@@ -72,7 +72,7 @@ TEST_CASE("linux_system_environment::user_config_dir returns correct path")
 
 TEST_CASE("linux_system_environment::cache_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
     auto app_name = std::string("test_app");
 
@@ -88,7 +88,7 @@ TEST_CASE("linux_system_environment::cache_dir returns correct path")
 
 TEST_CASE("linux_system_environment::log_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
     auto app_name = std::string("test_app");
 
@@ -104,7 +104,7 @@ TEST_CASE("linux_system_environment::log_dir returns correct path")
 
 TEST_CASE("linux_system_environment::temp_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto app_name = std::string("test_app");
 
     auto temp_dir = backend.temp_dir(app_name);
@@ -116,7 +116,7 @@ TEST_CASE("linux_system_environment::temp_dir returns correct path")
 
 TEST_CASE("linux_system_environment::home_dir returns correct path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto home_dir = backend.home_dir();
 
     const char* home = std::getenv("HOME");
@@ -128,7 +128,7 @@ TEST_CASE("linux_system_environment::home_dir returns correct path")
 
 TEST_CASE("linux_system_environment::shared_config_dir returns /etc path")
 {
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto app_name = std::string("test_app");
 
     auto shared_config_dir = backend.shared_config_dir(app_name);
@@ -141,7 +141,7 @@ TEST_CASE("linux_system_environment::home_dir returns nullopt when HOME is not s
     pfadfinder::test::env_guard home_guard("HOME");
     home_guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.home_dir();
     REQUIRE_FALSE(result.has_value());
 }
@@ -151,7 +151,7 @@ TEST_CASE("linux_system_environment::data_dir returns nullopt when HOME is not s
     pfadfinder::test::env_guard home_guard("HOME");
     home_guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.data_dir(fs::path("/usr/bin"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -161,7 +161,7 @@ TEST_CASE("linux_system_environment::user_config_dir returns nullopt when HOME i
     pfadfinder::test::env_guard home_guard("HOME");
     home_guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.user_config_dir(fs::path("/usr/bin"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -171,7 +171,7 @@ TEST_CASE("linux_system_environment::cache_dir returns nullopt when HOME is not 
     pfadfinder::test::env_guard home_guard("HOME");
     home_guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.cache_dir(fs::path("/usr/bin"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }
@@ -181,7 +181,7 @@ TEST_CASE("linux_system_environment::log_dir returns nullopt when HOME is not se
     pfadfinder::test::env_guard home_guard("HOME");
     home_guard.unset();
 
-    pfadfinder::system_environment backend;
+    pfadfinder::default_system_environment backend;
     auto result = backend.log_dir(fs::path("/usr/bin"), "test_app");
     REQUIRE_FALSE(result.has_value());
 }

@@ -24,11 +24,11 @@ namespace pfadfinder
      * Diese Klasse bietet plattformspezifische Implementierungen zur Pfadermittlung.
      * Die konkreten Methodendefinitionen werden durch plattformspezifische Implementierungsmodule bereitgestellt.
      */
-    export class system_environment
+    export class default_system_environment
     {
     public:
         /** @brief Virtueller Destruktor für korrekte Ableitung. */
-        virtual ~system_environment() = default;
+        virtual ~default_system_environment() = default;
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.
