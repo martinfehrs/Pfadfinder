@@ -95,24 +95,24 @@ Using an instance of the `pfadfinder::application_environment` class, you get ac
 | `shared_config_dir()` | `/etc/<appname>` |
 | `find_shared_config_dir()` | Like `shared_config_dir()`, returns `std::optional` |
 | `create_shared_config_dir()` | Creates `/etc/<appname>` |
-| `data_dir()` | `~/.local/share/<appname>` (XDG standard) |
+| `data_dir()` | `~/.local/share/<appname>` |
 | `find_data_dir()` | Like `data_dir()`, returns `std::optional` |
-| `create_data_dir()` | Creates `~/.local/share/<appname>` (XDG standard) |
-| `user_config_dir()` | `~/.config/<appname>` (XDG standard) |
+| `create_data_dir()` | Creates `~/.local/share/<appname>` |
+| `user_config_dir()` | `~/.config/<appname>` |
 | `find_user_config_dir()` | Like `user_config_dir()`, returns `std::optional` |
-| `create_user_config_dir()` | Creates `~/.config/<appname>` (XDG standard) |
+| `create_user_config_dir()` | Creates `~/.config/<appname>` |
 | `user_config_file()` | `~/.config/<appname>/<file>` (with file existence check) |
 | `find_user_config_file()` | Like `user_config_file()`, returns `std::optional` |
 | `shared_config_file()` | `/etc/<appname>/<file>` (with file existence check) |
 | `find_shared_config_file()` | Like `shared_config_file()`, returns `std::optional` |
 | `find_config_file()` | Searches user then shared config file (returns `std::optional`) |
 | `config_files()` | Returns all available config files (0, 1 or 2) |
-| `cache_dir()` | `~/.cache/<appname>` (XDG standard) |
+| `cache_dir()` | `~/.cache/<appname>` |
 | `find_cache_dir()` | Like `cache_dir()`, returns `std::optional` |
-| `create_cache_dir()` | Creates `~/.cache/<appname>` (XDG standard) |
-| `log_dir()` | `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_cache_dir()` | Creates `~/.cache/<appname>` |
+| `log_dir()` | `~/.local/state/<appname>/log` |
 | `find_log_dir()` | Like `log_dir()`, returns `std::optional` |
-| `create_log_dir()` | Creates `~/.local/state/<appname>/log` (XDG Base Directory Specification) |
+| `create_log_dir()` | Creates `~/.local/state/<appname>/log` |
 | `temp_dir()` | `/tmp/<appname>` or system temp directory |
 | `find_temp_dir()` | Like `temp_dir()`, returns `std::optional` |
 | `create_temp_dir()` | Creates `/tmp/<appname>` or system temp directory |

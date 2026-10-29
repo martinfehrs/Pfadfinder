@@ -297,7 +297,7 @@ namespace pfadfinder
          * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung zurück.
          * 
          * Unter Windows entspricht dies \%APPDATA\%/\<appname\>.
-         * Unter Linux entspricht dies ~/.config/\<appname\> (XDG-Standard).
+         * Unter Linux entspricht dies ~/.config/\<appname\>.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/\<appname\>, ansonsten ~/.config/\<appname\>.
          * 
@@ -322,7 +322,7 @@ namespace pfadfinder
          * @brief Erstellt das Benutzer-spezifische Konfigurationsverzeichnis der Anwendung und gibt es zurück.
          * 
          * Unter Windows entspricht dies \%APPDATA\%/\<appname\>.
-         * Unter Linux entspricht dies ~/.config/\<appname\> (XDG-Standard).
+         * Unter Linux entspricht dies ~/.config/\<appname\>.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Preferences/\<appname\>, ansonsten ~/.config/\<appname\>.
          * 
@@ -491,7 +491,7 @@ namespace pfadfinder
          * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis der Anwendung zurück.
          * 
          * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Cache.
-         * Unter Linux entspricht dies ~/.cache/\<appname\> (XDG-Standard).
+         * Unter Linux entspricht dies ~/.cache/\<appname\>.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/\<appname\>, ansonsten ~/.cache/\<appname\>.
          * 
@@ -516,7 +516,7 @@ namespace pfadfinder
          * @brief Erstellt das Benutzer-spezifische Cache-Verzeichnis und gibt es zurück.
          * 
          * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Cache.
-         * Unter Linux entspricht dies ~/.cache/\<appname\> (XDG-Standard).
+         * Unter Linux entspricht dies ~/.cache/\<appname\>.
          * Unter macOS entspricht dies bei gebündelten Anwendungen
          * ~/Library/Caches/\<appname\>, ansonsten ~/.cache/\<appname\>.
          * 
@@ -561,7 +561,7 @@ namespace pfadfinder
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis der Anwendung zurück.
          * 
          * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Logs.
-         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log.
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log.
          * 
@@ -607,7 +607,7 @@ namespace pfadfinder
          * @brief Erstellt das Benutzer-spezifische Log-Verzeichnis und gibt es zurück.
          * 
          * Unter Windows entspricht dies \%LOCALAPPDATA\%/\<appname\>/Logs.
-         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log (XDG Base Directory Specification).
+         * Unter Linux entspricht dies ~/.local/state/\<appname\>/log.
          * Unter macOS (Bundle) entspricht dies ~/Library/Logs/\<appname\>.
          * Unter macOS (CLI) entspricht dies ~/.local/state/\<appname\>/log.
          * 

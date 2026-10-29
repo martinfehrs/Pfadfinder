@@ -23,13 +23,6 @@ namespace pfadfinder
      *
      * Diese Klasse bietet plattformspezifische Implementierungen zur Pfadermittlung.
      * Die konkreten Methodendefinitionen werden durch plattformspezifische Implementierungsmodule bereitgestellt.
-     *
-     * @note Unter Linux folgen die Pfade data_dir (~/.local/share), user_config_dir (~/.config),
-     *       cache_dir (~/.cache) und log_dir (~/.local/state)
-     *       den XDG-Konventionen.
-     *       Die Pfade static_data_dir, temp_dir und shared_config_dir
-     *       weichen von den XDG-Konventionen ab.
-     *       Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
      */
     export class default_system_environment
     {
@@ -66,49 +59,48 @@ namespace pfadfinder
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return std::optional<fs::path> Das Benutzer-Datenverzeichnis oder std::nullopt.
-         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual std::optional<fs::path> data_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Konfigurationsverzeichnis zurück.
          * 
-         * Unter Linux: ~/.config/\<appname\> (XDG-Standard).
+         * Unter Linux: ~/.config/\<appname\>.
          * Unter macOS: ~/Library/Preferences/\<appname\> (Bundle) oder ~/.config/\<appname\> (CLI).
          * Unter Windows: \%APPDATA\%/\<appname\>.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return std::optional<fs::path> Das Benutzer-spezifische Konfigurationsverzeichnis oder std::nullopt.
-         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
+         * @note Umgebungsvariablen zur Pfadüberschreibung werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual std::optional<fs::path> user_config_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Cache-Verzeichnis zurück.
          * 
-         * Unter Linux: ~/.cache/\<appname\> (XDG-Standard).
+         * Unter Linux: ~/.cache/\<appname\>.
          * Unter macOS: ~/Library/Caches/\<appname\> (Bundle) oder ~/.cache/\<appname\> (CLI).
          * Unter Windows: \%LOCALAPPDATA\%/\<appname\>/Cache.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return std::optional<fs::path> Das Benutzer-spezifische Cache-Verzeichnis oder std::nullopt.
-         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
+         * @note Umgebungsvariablen zur Pfadüberschreibung werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual std::optional<fs::path> cache_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
         /**
          * @brief Gibt das Benutzer-spezifische Log-Verzeichnis zurück.
          * 
-         * Unter Linux: ~/.local/state/\<appname\>/log (XDG-Standard).
+         * Unter Linux: ~/.local/state/\<appname\>/log.
          * Unter macOS: ~/Library/Logs/\<appname\> (Bundle) oder ~/.local/state/\<appname\>/log (CLI).
          * Unter Windows: \%LOCALAPPDATA\%/\<appname\>/Logs.
          * 
          * @param exe_dir Das Verzeichnis der ausführbaren Datei.
          * @param app_name Der Name der Anwendung.
          * @return std::optional<fs::path> Das Benutzer-spezifische Log-Verzeichnis oder std::nullopt.
-         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
+         * @note Umgebungsvariablen zur Pfadüberschreibung werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual std::optional<fs::path> log_dir(const fs::path& exe_dir, const std::string& app_name) const;
 
@@ -121,7 +113,7 @@ namespace pfadfinder
          * 
          * @param app_name Der Name der Anwendung.
          * @return std::optional<fs::path> Das temporäre Verzeichnis oder std::nullopt.
-         * @note Die XDG-Umgebungsvariablen werden nicht berücksichtigt.
+         * @note Umgebungsvariablen zur Pfadüberschreibung werden nicht berücksichtigt.
          */
         [[nodiscard]] virtual std::optional<fs::path> temp_dir(const std::string& app_name) const;
 
