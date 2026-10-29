@@ -38,7 +38,7 @@ TEST_CASE("linux_system_environment::static_data_dir returns correct path")
     REQUIRE(static_dir == fs::path("/usr/share/test_app"));
 }
 
-TEST_CASE("linux_system_environment::data_dir returns correct XDG path")
+TEST_CASE("linux_system_environment::data_dir returns correct path")
 {
     pfadfinder::system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
@@ -54,7 +54,7 @@ TEST_CASE("linux_system_environment::data_dir returns correct XDG path")
     REQUIRE(*data_dir == expected);
 }
 
-TEST_CASE("linux_system_environment::user_config_dir returns correct XDG path")
+TEST_CASE("linux_system_environment::user_config_dir returns correct path")
 {
     pfadfinder::system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
@@ -70,7 +70,7 @@ TEST_CASE("linux_system_environment::user_config_dir returns correct XDG path")
     REQUIRE(*config_dir == expected);
 }
 
-TEST_CASE("linux_system_environment::cache_dir returns correct XDG path")
+TEST_CASE("linux_system_environment::cache_dir returns correct path")
 {
     pfadfinder::system_environment backend;
     auto exe_dir = fs::path("/usr/bin");
@@ -86,7 +86,7 @@ TEST_CASE("linux_system_environment::cache_dir returns correct XDG path")
     REQUIRE(*cache_dir == expected);
 }
 
-TEST_CASE("linux_system_environment::log_dir returns correct XDG path")
+TEST_CASE("linux_system_environment::log_dir returns correct path")
 {
     pfadfinder::system_environment backend;
     auto exe_dir = fs::path("/usr/bin");

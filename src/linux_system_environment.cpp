@@ -34,27 +34,27 @@ namespace pfadfinder
 
     fs::path system_environment::static_data_dir(const fs::path& exe_dir, const std::string& app_name) const
     {
-        return get_xdg_static_data_dir(exe_dir, app_name);
+        return get_unix_static_data_dir(exe_dir, app_name);
     }
 
     std::optional<fs::path> system_environment::data_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        return get_xdg_user_data_dir(app_name);
+        return get_unix_user_data_dir(app_name);
     }
 
     std::optional<fs::path> system_environment::user_config_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        return get_xdg_user_config_dir(app_name);
+        return get_unix_user_config_dir(app_name);
     }
 
     std::optional<fs::path> system_environment::cache_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        return get_xdg_user_cache_dir(app_name);
+        return get_unix_user_cache_dir(app_name);
     }
 
     std::optional<fs::path> system_environment::log_dir([[maybe_unused]] const fs::path& exe_dir, const std::string& app_name) const
     {
-        return get_xdg_user_log_dir(app_name);
+        return get_unix_user_log_dir(app_name);
     }
 
     std::optional<fs::path> system_environment::temp_dir(const std::string& app_name) const
