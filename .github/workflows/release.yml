@@ -124,10 +124,8 @@ jobs:
     - name: Install LLVM 22 (Ubuntu)
       if: runner.os == 'Linux'
       run: |
-        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
-        echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main" >> /etc/apt/sources.list.d/llvm22.list
-        apt-get update -qq
-        apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
 
     - name: Install LLVM 22 (macOS)
       if: runner.os == 'macOS'
