@@ -103,17 +103,44 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   clang-tidy:
-    runs-on: ubuntu-26.04
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+          - os: ubuntu-26.04
+            generator: "Ninja"
+          - os: windows-2022
+            generator: "Ninja Multi-Config"
+          - os: macos-26
+            generator: "Ninja Multi-Config"
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LLVM 22
+    - name: Install LLVM 22 (Ubuntu)
+      if: runner.os == 'Linux'
       run: |
         wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
         echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main" >> /etc/apt/sources.list.d/llvm22.list
         apt-get update -qq
         apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
+
+    - name: Install LLVM 22 (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install llvm@22
+        LLVM_PREFIX=$(brew --prefix llvm@22)
+        echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
+
+    - name: Setup LLVM 22 (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        choco install llvm --version 22.1.0 -y
+        echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
@@ -123,15 +150,27 @@ jobs:
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja"
+    - name: Conan install (macOS)
+      if: runner.os == 'macOS'
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+
+    - name: Conan install (other)
+      if: runner.os != 'macOS'
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
 
     - name: Run clang-tidy
+      shell: bash
       run: |
         BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
         SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
-        run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
+          RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
+          python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
+        else
+          run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
+        fi
 
