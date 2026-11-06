@@ -111,7 +111,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-            generator: "Ninja"
+            generator: "Ninja Multi-Config"
           - os: windows-2022
             generator: "Ninja Multi-Config"
           - os: macos-26
@@ -158,9 +158,13 @@ jobs:
       if: runner.os == 'macOS'
       run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
+    - name: Conan install (Linux clang)
+      if: runner.os == 'Linux'
       run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+
+    - name: Conan install (Windows clang)
+      if: runner.os == 'Windows'
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
@@ -177,6 +181,11 @@ jobs:
           CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
           RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
           python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
+        elif [ "${{ runner.os }}" = "macOS" ]; then
+          LLVM_PREFIX=$(brew --prefix llvm@22)
+          RUN_SCRIPT="$LLVM_PREFIX/bin/run-clang-tidy"
+          [ -f "$RUN_SCRIPT" ] || RUN_SCRIPT="$LLVM_PREFIX/bin/run-clang-tidy.py"
+          python "$RUN_SCRIPT" -p "$BUILD_DIR" -clang-tidy-binary "$LLVM_PREFIX/bin/clang-tidy" $SOURCE_FILES
         else
           run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
         fi
