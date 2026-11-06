@@ -159,6 +159,9 @@ jobs:
     - name: Configure CMake
       run: cmake --preset=conan-default
 
+    - name: Build (generates module files for clang-tidy)
+      run: cmake --build --preset=conan-release
+
     - name: Run clang-tidy
       shell: bash
       run: |
