@@ -166,9 +166,7 @@ jobs:
         BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
         SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
         if [ "${{ runner.os }}" = "Windows" ]; then
-          CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
-          RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
-          python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
+          python run-clang-tidy.py -p "$BUILD_DIR" -clang-tidy-binary clang-tidy.exe $SOURCE_FILES
         else
           run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
         fi
