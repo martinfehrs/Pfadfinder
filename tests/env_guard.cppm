@@ -26,8 +26,8 @@ export namespace pfadfinder::test
         void unset();
 
     private:
-        std::string name_;
-        std::string original_;
-        bool was_set_ = false;
+        std::string name;
+        std::string original;
+        bool was_set = false;
     };
 }
