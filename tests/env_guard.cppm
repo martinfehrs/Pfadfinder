@@ -18,6 +18,11 @@ export namespace pfadfinder::test
         explicit env_guard(const char* name);
         ~env_guard();
 
+        env_guard(const env_guard&) = delete;
+        env_guard& operator=(const env_guard&) = delete;
+        env_guard(env_guard&&) = delete;
+        env_guard& operator=(env_guard&&) = delete;
+
         void unset();
 
     private:
