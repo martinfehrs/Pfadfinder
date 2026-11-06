@@ -102,4 +102,36 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  clang-tidy:
+    runs-on: ubuntu-26.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install LLVM 22
+      run: |
+        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+        echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main" >> /etc/apt/sources.list.d/llvm22.list
+        apt-get update -qq
+        apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
+
+    - name: Setup Conan
+      uses: conan-io/setup-conan@v1
+      with:
+        cache_packages: true
+
+    - name: Create Conan profile
+      run: conan profile detect --force
+
+    - name: Conan install
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja"
+
+    - name: Configure CMake
+      run: cmake --preset=conan-default
+
+    - name: Run clang-tidy
+      run: |
+        BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
+        SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
+        run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
 
