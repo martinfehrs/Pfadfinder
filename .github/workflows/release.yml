@@ -125,12 +125,16 @@ jobs:
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
+        echo "CC=clang-22" >> $GITHUB_ENV
+        echo "CXX=clang++-22" >> $GITHUB_ENV
 
     - name: Install LLVM 22 (macOS)
       if: runner.os == 'macOS'
       run: |
         brew install llvm@22
         LLVM_PREFIX=$(brew --prefix llvm@22)
+        echo "CC=$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
+        echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
         echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
 
     - name: Setup LLVM 22 (Windows)
@@ -139,6 +143,8 @@ jobs:
       run: |
         choco install llvm --version 22.1.0 -y
         echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+        echo "CC=clang-cl" >> $env:GITHUB_ENV
+        echo "CXX=clang-cl" >> $env:GITHUB_ENV
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
