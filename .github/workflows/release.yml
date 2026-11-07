@@ -160,17 +160,10 @@ jobs:
       shell: bash
       run: |
         conan profile detect --force
-        PROFILE_PATH=$(conan profile path default)
-        echo "Profile path: $PROFILE_PATH"
-        cat > "$PROFILE_PATH" << 'PROFILE_EOF'
-        [settings]
-        os=Windows
-        arch=x86_64
-        compiler=clang
-        compiler.version=22
-        compiler.cppstd=20
-        build_type=Release
-        PROFILE_EOF
+        DEFAULT_PROFILE=$(conan config home)/profiles/default
+        echo "Writing profile to: $DEFAULT_PROFILE"
+        mkdir -p "$(dirname "$DEFAULT_PROFILE")"
+        printf '[settings]\nos=Windows\narch=x86_64\ncompiler=clang\ncompiler.version=22\ncompiler.cppstd=20\nbuild_type=Release\n' > "$DEFAULT_PROFILE"
         conan profile show default
         conan profile show default
 
