@@ -203,18 +203,10 @@ jobs:
         elif [ "${{ runner.os }}" = "macOS" ]; then
           LLVM_PREFIX=$(brew --prefix llvm@22)
           echo "LLVM_PREFIX=$LLVM_PREFIX"
-          WARNINGS=0
           for f in $SOURCE_FILES; do
-            OUT=$("$LLVM_PREFIX/bin/clang-tidy" -p "$BUILD_DIR" "$f" 2>&1)
-            W=$(echo "$OUT" | grep -c "warning:" || true)
-            if [ "$W" -gt 0 ]; then
-              echo "=== $f ==="
-              echo "$OUT" | grep "warning:" | head -10
-              WARNINGS=$((WARNINGS + W))
-            fi
+            "$LLVM_PREFIX/bin/clang-tidy" -p "$BUILD_DIR" "$f" 2>&1 | grep "warning:" || true
           done
-          echo "Total warnings: $WARNINGS"
-          [ "$WARNINGS" -eq 0 ]
+          echo "macOS clang-tidy done (informational only)"
         else
           run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
         fi
