@@ -191,12 +191,9 @@ jobs:
     - name: Run clang-tidy
       shell: bash
       run: |
-        if [ "${{ runner.os }}" = "macOS" ]; then
-          BUILD_DIR=$(dirname "$(find build -name compile_commands.json | head -1)")
-        else
-          BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
-        fi
+        BUILD_DIR="build"
         echo "BUILD_DIR=$BUILD_DIR"
+        ls -la "$BUILD_DIR/compile_commands.json"
         SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
         echo "SOURCE_FILES=$SOURCE_FILES"
         if [ "${{ runner.os }}" = "Windows" ]; then
