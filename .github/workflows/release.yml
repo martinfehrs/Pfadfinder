@@ -191,7 +191,11 @@ jobs:
     - name: Run clang-tidy
       shell: bash
       run: |
-        BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
+        if [ "${{ runner.os }}" = "macOS" ]; then
+          BUILD_DIR=$(dirname "$(find build -name compile_commands.json | head -1)")
+        else
+          BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
+        fi
         echo "BUILD_DIR=$BUILD_DIR"
         SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
         echo "SOURCE_FILES=$SOURCE_FILES"
@@ -202,8 +206,6 @@ jobs:
         elif [ "${{ runner.os }}" = "macOS" ]; then
           LLVM_PREFIX=$(brew --prefix llvm@22)
           echo "LLVM_PREFIX=$LLVM_PREFIX"
-          echo "BUILD_DIR=$BUILD_DIR"
-          ls "$BUILD_DIR/compile_commands.json"
           WARNINGS=0
           for f in $SOURCE_FILES; do
             OUT=$("$LLVM_PREFIX/bin/clang-tidy" -p "$BUILD_DIR" "$f" 2>&1)
