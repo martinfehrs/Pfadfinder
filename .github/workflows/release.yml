@@ -159,9 +159,10 @@ jobs:
       if: runner.os == 'Windows'
       shell: bash
       run: |
-        PROFILE_DIR=$(conan profile path default | xargs dirname)
-        mkdir -p "$PROFILE_DIR"
-        cat > "$(conan profile path default)" << 'PROFILE_EOF'
+        conan profile detect --force
+        PROFILE_PATH=$(conan profile path default)
+        echo "Profile path: $PROFILE_PATH"
+        cat > "$PROFILE_PATH" << 'PROFILE_EOF'
         [settings]
         os=Windows
         arch=x86_64
@@ -170,6 +171,7 @@ jobs:
         compiler.cppstd=20
         build_type=Release
         PROFILE_EOF
+        conan profile show default
         conan profile show default
 
     - name: Conan install (macOS)
@@ -210,6 +212,17 @@ jobs:
           done
           echo "macOS clang-tidy done (informational only)"
         else
-          run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
+          WARNINGS=0
+          for f in $SOURCE_FILES; do
+            OUT=$(clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1)
+            W=$(echo "$OUT" | grep -c "warning:" || true)
+            if [ "$W" -gt 0 ]; then
+              echo "=== $f ==="
+              echo "$OUT" | grep "warning:" | head -10
+              WARNINGS=$((WARNINGS + W))
+            fi
+          done
+          echo "Total warnings: $WARNINGS"
+          [ "$WARNINGS" -eq 0 ]
         fi
 
