@@ -159,10 +159,16 @@ jobs:
       if: runner.os == 'Windows'
       shell: bash
       run: |
-        conan profile detect --force
-        conan profile update settings.compiler=clang default
-        conan profile update settings.compiler.version=22 default
-        conan profile update settings.compiler.cppstd=20 default
+        mkdir -p "$(conan profile path default 2>/dev/null | xargs dirname 2>/dev/null || echo ~/.conan2/profiles)"
+        cat > "$(conan profile path default)" << 'PROFILE_EOF'
+        [settings]
+        os=Windows
+        arch=x86_64
+        compiler=clang
+        compiler.version=22
+        compiler.cppstd=20
+        build_type=Release
+        PROFILE_EOF
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
