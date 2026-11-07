@@ -196,13 +196,7 @@ jobs:
         BUILD_DIR="build"
         echo "BUILD_DIR=$BUILD_DIR"
         # Nur Dateien aus der Compile-Datenbank prüfen (plattformspezifische Dateien ausschließen)
-        SOURCE_FILES=$(python3 -c "
-import json, os
-with open('$BUILD_DIR/compile_commands.json') as f:
-    db = json.load(f)
-for entry in db:
-    print(entry['file'])
-")
+        SOURCE_FILES=$(python3 -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
         echo "SOURCE_FILES=$SOURCE_FILES"
         if [ "${{ runner.os }}" = "Windows" ]; then
           CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
