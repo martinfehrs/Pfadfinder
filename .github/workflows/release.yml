@@ -159,7 +159,8 @@ jobs:
       if: runner.os == 'Windows'
       shell: bash
       run: |
-        mkdir -p "$(conan profile path default 2>/dev/null | xargs dirname 2>/dev/null || echo ~/.conan2/profiles)"
+        PROFILE_DIR=$(conan profile path default | xargs dirname)
+        mkdir -p "$PROFILE_DIR"
         cat > "$(conan profile path default)" << 'PROFILE_EOF'
         [settings]
         os=Windows
@@ -169,6 +170,7 @@ jobs:
         compiler.cppstd=20
         build_type=Release
         PROFILE_EOF
+        conan profile show default
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
@@ -193,8 +195,14 @@ jobs:
       run: |
         BUILD_DIR="build"
         echo "BUILD_DIR=$BUILD_DIR"
-        ls -la "$BUILD_DIR/compile_commands.json"
-        SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
+        # Nur Dateien aus der Compile-Datenbank prüfen (plattformspezifische Dateien ausschließen)
+        SOURCE_FILES=$(python3 -c "
+import json, os
+with open('$BUILD_DIR/compile_commands.json') as f:
+    db = json.load(f)
+for entry in db:
+    print(entry['file'])
+")
         echo "SOURCE_FILES=$SOURCE_FILES"
         if [ "${{ runner.os }}" = "Windows" ]; then
           CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
