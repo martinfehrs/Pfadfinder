@@ -192,16 +192,20 @@ jobs:
       shell: bash
       run: |
         BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
+        echo "BUILD_DIR=$BUILD_DIR"
         SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
+        echo "SOURCE_FILES=$SOURCE_FILES"
         if [ "${{ runner.os }}" = "Windows" ]; then
           CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
           RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
           python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
         elif [ "${{ runner.os }}" = "macOS" ]; then
           LLVM_PREFIX=$(brew --prefix llvm@22)
+          echo "LLVM_PREFIX=$LLVM_PREFIX"
           RUN_SCRIPT="$LLVM_PREFIX/bin/run-clang-tidy"
           [ -f "$RUN_SCRIPT" ] || RUN_SCRIPT="$LLVM_PREFIX/bin/run-clang-tidy.py"
-          python "$RUN_SCRIPT" -p "$BUILD_DIR" -clang-tidy-binary "$LLVM_PREFIX/bin/clang-tidy" $SOURCE_FILES
+          echo "RUN_SCRIPT=$RUN_SCRIPT"
+          python3 "$RUN_SCRIPT" -p "$BUILD_DIR" -clang-tidy-binary "$LLVM_PREFIX/bin/clang-tidy" $SOURCE_FILES
         else
           run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
         fi
