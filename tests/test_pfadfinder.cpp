@@ -40,6 +40,11 @@ namespace test_backend
             // Aufräumen
             fs::remove_all(base_temp_dir);
         }
+
+        test_system_environment(const test_system_environment&) = default;
+        test_system_environment& operator=(const test_system_environment&) = default;
+        test_system_environment(test_system_environment&&) = default;
+        test_system_environment& operator=(test_system_environment&&) = default;
         
         [[nodiscard]] std::optional<fs::path> executable_path() const override
         {
