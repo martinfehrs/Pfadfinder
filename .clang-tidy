@@ -23,7 +23,7 @@ Checks: >
     -cppcoreguidelines-avoid-do-while,
     -hicpp-*  # Alias für cppcoreguidelines-*, bereits abgedeckt
 
-HeaderFilterRegex: '^(src|tests)/.*'
+HeaderFilterRegex: '(^|/)(src|tests)/.*\.(cpp|cppm|h|hpp)$'
 
 CheckOptions:
     - key: readability-identifier-naming.FunctionCase
