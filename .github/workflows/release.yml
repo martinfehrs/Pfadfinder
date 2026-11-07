@@ -137,14 +137,18 @@ jobs:
         echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
         echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
 
-    - name: Setup LLVM 22 (Windows)
+    - name: Setup LLVM (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        choco install llvm --version 22.1.0 -y
+        choco install llvm -y
         echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
         echo "CC=clang-cl" >> $env:GITHUB_ENV
         echo "CXX=clang-cl" >> $env:GITHUB_ENV
+
+    - name: Setup MSVC dev environment (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
@@ -152,20 +156,7 @@ jobs:
         cache_packages: true
 
     - name: Create Conan profile
-      if: runner.os != 'Windows'
       run: conan profile detect --force
-
-    - name: Create Conan profile (Windows clang)
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE=$(conan config home)/profiles/default
-        echo "Writing profile to: $DEFAULT_PROFILE"
-        mkdir -p "$(dirname "$DEFAULT_PROFILE")"
-        printf '[settings]\nos=Windows\narch=x86_64\ncompiler=clang\ncompiler.version=22\ncompiler.cppstd=20\nbuild_type=Release\n' > "$DEFAULT_PROFILE"
-        conan profile show default
-        conan profile show default
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
@@ -177,7 +168,8 @@ jobs:
 
     - name: Conan install (Windows clang)
       if: runner.os == 'Windows'
-      run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      shell: pwsh
+      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
@@ -191,12 +183,26 @@ jobs:
         BUILD_DIR="build"
         echo "BUILD_DIR=$BUILD_DIR"
         # Nur Dateien aus der Compile-Datenbank prüfen (plattformspezifische Dateien ausschließen)
-        SOURCE_FILES=$(python3 -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          PYTHON=python
+        else
+          PYTHON=python3
+        fi
+        SOURCE_FILES=$($PYTHON -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
         echo "SOURCE_FILES=$SOURCE_FILES"
         if [ "${{ runner.os }}" = "Windows" ]; then
-          CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
-          RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
-          python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
+          WARNINGS=0
+          for f in $SOURCE_FILES; do
+            OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
+            W=$(echo "$OUT" | grep -c "warning:" || true)
+            if [ "$W" -gt 0 ]; then
+              echo "=== $f ==="
+              echo "$OUT" | grep "warning:" | head -10
+              WARNINGS=$((WARNINGS + W))
+            fi
+          done
+          echo "Total warnings: $WARNINGS"
+          [ "$WARNINGS" -eq 0 ]
         elif [ "${{ runner.os }}" = "macOS" ]; then
           LLVM_PREFIX=$(brew --prefix llvm@22)
           echo "LLVM_PREFIX=$LLVM_PREFIX"
