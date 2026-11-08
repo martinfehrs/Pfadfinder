@@ -105,6 +105,7 @@ jobs:
       run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
+      shell: bash
       run: |
         if [ "${{ matrix.clang_tidy }}" = "true" ]; then
           if [ "${{ runner.os }}" = "Linux" ]; then
