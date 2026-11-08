@@ -120,29 +120,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LLVM 22 (Ubuntu)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
-        echo "CC=clang-22" >> $GITHUB_ENV
-        echo "CXX=clang++-22" >> $GITHUB_ENV
+    - name: Setup LLVM 22
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: 22
 
-    - name: Install LLVM 22 (macOS)
-      if: runner.os == 'macOS'
+    - name: Set clang as compiler (Unix)
+      if: runner.os != 'Windows'
       run: |
-        brew install llvm@22
-        LLVM_PREFIX=$(brew --prefix llvm@22)
-        echo "CC=$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
-        echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
-        echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
-
-    - name: Setup LLVM (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        choco install llvm -y
-        echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
 
     - name: Setup MSVC dev environment (Windows)
       if: runner.os == 'Windows'
@@ -154,15 +141,6 @@ jobs:
         cache_packages: true
 
     - name: Create Conan profile
-      if: runner.os != 'Windows'
-      run: conan profile detect --force
-
-    - name: Create Conan profile (Windows)
-      if: runner.os == 'Windows'
-      shell: bash
-      env:
-        CONAN_COMPILER: clang
-        CONAN_COMPILER_VERSION: "22"
       run: conan profile detect --force
 
     - name: Conan install (macOS)
@@ -189,7 +167,6 @@ jobs:
       run: |
         BUILD_DIR="build"
         echo "BUILD_DIR=$BUILD_DIR"
-        # Nur Dateien aus der Compile-Datenbank prüfen (plattformspezifische Dateien ausschließen)
         if [ "${{ runner.os }}" = "Windows" ]; then
           PYTHON=python
         else
@@ -197,38 +174,16 @@ jobs:
         fi
         SOURCE_FILES=$($PYTHON -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
         echo "SOURCE_FILES=$SOURCE_FILES"
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          WARNINGS=0
-          for f in $SOURCE_FILES; do
-            OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
-            W=$(echo "$OUT" | grep -c "warning:" || true)
-            if [ "$W" -gt 0 ]; then
-              echo "=== $f ==="
-              echo "$OUT" | grep "warning:" | head -10
-              WARNINGS=$((WARNINGS + W))
-            fi
-          done
-          echo "Total warnings: $WARNINGS"
-          [ "$WARNINGS" -eq 0 ]
-        elif [ "${{ runner.os }}" = "macOS" ]; then
-          LLVM_PREFIX=$(brew --prefix llvm@22)
-          echo "LLVM_PREFIX=$LLVM_PREFIX"
-          for f in $SOURCE_FILES; do
-            "$LLVM_PREFIX/bin/clang-tidy" -p "$BUILD_DIR" "$f" 2>&1 | grep "warning:" || true
-          done
-          echo "macOS clang-tidy done (informational only)"
-        else
-          WARNINGS=0
-          for f in $SOURCE_FILES; do
-            OUT=$(clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1)
-            W=$(echo "$OUT" | grep -c "warning:" || true)
-            if [ "$W" -gt 0 ]; then
-              echo "=== $f ==="
-              echo "$OUT" | grep "warning:" | head -10
-              WARNINGS=$((WARNINGS + W))
-            fi
-          done
-          echo "Total warnings: $WARNINGS"
-          [ "$WARNINGS" -eq 0 ]
-        fi
+        WARNINGS=0
+        for f in $SOURCE_FILES; do
+          OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
+          W=$(echo "$OUT" | grep -c "warning:" || true)
+          if [ "$W" -gt 0 ]; then
+            echo "=== $f ==="
+            echo "$OUT" | grep "warning:" | head -10
+            WARNINGS=$((WARNINGS + W))
+          fi
+        done
+        echo "Total warnings: $WARNINGS"
+        [ "$WARNINGS" -eq 0 ]
 
