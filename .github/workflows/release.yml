@@ -143,8 +143,6 @@ jobs:
       run: |
         choco install llvm -y
         echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
-        echo "CC=clang-cl" >> $env:GITHUB_ENV
-        echo "CXX=clang-cl" >> $env:GITHUB_ENV
 
     - name: Setup MSVC dev environment (Windows)
       if: runner.os == 'Windows'
@@ -166,10 +164,10 @@ jobs:
       if: runner.os == 'Linux'
       run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
-    - name: Conan install (Windows clang)
+    - name: Conan install (Windows MSVC)
       if: runner.os == 'Windows'
       shell: pwsh
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
