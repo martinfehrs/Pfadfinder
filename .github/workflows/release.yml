@@ -125,15 +125,10 @@ jobs:
       with:
         llvm-version: 22
 
-    - name: Set clang as compiler (Unix)
-      if: runner.os != 'Windows'
+    - name: Set clang as compiler
       run: |
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
-
-    - name: Setup MSVC dev environment (Windows)
-      if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
@@ -147,14 +142,9 @@ jobs:
       if: runner.os == 'macOS'
       run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
-    - name: Conan install (Linux clang)
-      if: runner.os == 'Linux'
+    - name: Conan install (Linux/Windows clang)
+      if: runner.os != 'macOS'
       run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
-
-    - name: Conan install (Windows MSVC)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
