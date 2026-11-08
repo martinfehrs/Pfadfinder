@@ -24,16 +24,25 @@ jobs:
             cpp_compiler: g++
             generator: "Ninja Multi-Config"
             build_type: release
+            clang_tidy: false
+          - os: ubuntu-26.04
+            c_compiler: clang
+            cpp_compiler: clang++
+            generator: "Ninja Multi-Config"
+            build_type: release
+            clang_tidy: true
           - os: windows-2022
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 17 2022"
             build_type: release
+            clang_tidy: false
           - os: macos-26
             c_compiler: clang
             cpp_compiler: clang++
             generator: "Ninja Multi-Config"
             build_type: release
+            clang_tidy: true
 
     steps:
     - uses: actions/checkout@v4
@@ -44,10 +53,26 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Setup Conan
-      uses: conan-io/setup-conan@v1
-      with:
-        cache_packages: true
+    - name: Setup LLVM 22 (Ubuntu)
+      if: runner.os == 'Linux' && matrix.clang_tidy
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
+        echo "CC=clang-22" >> $GITHUB_ENV
+        echo "CXX=clang++-22" >> $GITHUB_ENV
+
+    - name: Setup LLVM 22 (Windows clang-tidy)
+      if: runner.os == 'Windows' && matrix.clang_tidy
+      shell: pwsh
+      run: |
+        choco install llvm -y
+        echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+        echo "CC=clang-cl" >> $env:GITHUB_ENV
+        echo "CXX=clang-cl" >> $env:GITHUB_ENV
+
+    - name: Setup MSVC dev environment (Windows clang-tidy)
+      if: runner.os == 'Windows' && matrix.clang_tidy
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Install macOS dependencies
       if: runner.os == 'macOS'
@@ -58,40 +83,63 @@ jobs:
         echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
         echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
 
+    - name: Setup Conan
+      uses: conan-io/setup-conan@v1
+      with:
+        cache_packages: true
+
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install (macOS)
-      if: runner.os == 'macOS'
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+    - name: Conan install (clang)
+      if: matrix.clang_tidy
+      run: |
+        if [ "${{ runner.os }}" = "macOS" ]; then
+          conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+        else
+          conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+        fi
 
     - name: Conan install (other)
-      if: runner.os != 'macOS'
+      if: ${{ !matrix.clang_tidy }}
       run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
-      run: cmake --preset=conan-default
+      shell: bash
+      run: |
+        if [ "${{ matrix.clang_tidy }}" = "true" ]; then
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            cmake --preset=conan-default -DCMAKE_CXX_CLANG_TIDY=clang-tidy-22
+          else
+            cmake --preset=conan-default -DCMAKE_CXX_CLANG_TIDY=clang-tidy
+          fi
+        else
+          cmake --preset=conan-default
+        fi
 
     - name: Build
       run: cmake --build --preset=conan-${{ matrix.build_type }}
 
     - name: Test
+      if: ${{ !matrix.clang_tidy }}
       run: ctest --preset=conan-${{ matrix.build_type }} -V
 
     - name: Install
+      if: ${{ !matrix.clang_tidy }}
       run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix install --config Release
 
     - name: Create package with CPack (Windows)
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && !matrix.clang_tidy
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G ZIP
 
     - name: Create package with CPack (Unix)
-      if: runner.os != 'Windows'
+      if: runner.os != 'Windows' && !matrix.clang_tidy
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: cpack -C Release -D CPACK_PACKAGE_FILE_NAME="pfadfinder-dev-${{ runner.os }}" -G TGZ
 
     - name: Publish Dev Release
+      if: ${{ !matrix.clang_tidy }}
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.strings.outputs.build-output-dir }}/pfadfinder-dev-*
@@ -101,71 +149,3 @@ jobs:
         make_latest: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  clang-tidy:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        include:
-          - os: ubuntu-26.04
-            generator: "Ninja Multi-Config"
-          - os: windows-2022
-            generator: "Ninja Multi-Config"
-          - os: macos-26
-            generator: "Ninja Multi-Config"
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup LLVM 22
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: 22
-
-    - name: Set clang as compiler
-      run: |
-        echo "CC=clang" >> $GITHUB_ENV
-        echo "CXX=clang++" >> $GITHUB_ENV
-
-    - name: Setup Conan
-      uses: conan-io/setup-conan@v1
-      with:
-        cache_packages: true
-
-    - name: Create Conan profile
-      run: conan profile detect --force
-
-    - name: Conan install (macOS)
-      if: runner.os == 'macOS'
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
-
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
-      run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
-
-    - name: Configure CMake
-      run: cmake --preset=conan-default
-
-    - name: Build (generates module files for clang-tidy)
-      run: cmake --build --preset=conan-release
-
-    - name: Run clang-tidy
-      shell: bash
-      run: |
-        BUILD_DIR="build"
-        SOURCE_FILES=$(python3 -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
-        WARNINGS=0
-        for f in $SOURCE_FILES; do
-          OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
-          W=$(echo "$OUT" | grep -c "warning:" || true)
-          if [ "$W" -gt 0 ]; then
-            echo "=== $f ==="
-            echo "$OUT" | grep "warning:" | head -10
-            WARNINGS=$((WARNINGS + W))
-          fi
-        done
-        echo "Total warnings: $WARNINGS"
-        [ "$WARNINGS" -eq 0 ]
