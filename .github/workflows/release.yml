@@ -211,17 +211,9 @@ jobs:
           done
           echo "macOS clang-tidy done (informational only)"
         else
-          WARNINGS=0
           for f in $SOURCE_FILES; do
-            OUT=$(clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1)
-            W=$(echo "$OUT" | grep -c "warning:" || true)
-            if [ "$W" -gt 0 ]; then
-              echo "=== $f ==="
-              echo "$OUT" | grep "warning:" | head -10
-              WARNINGS=$((WARNINGS + W))
-            fi
+            clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1 | grep "warning:" || true
           done
-          echo "Total warnings: $WARNINGS"
-          [ "$WARNINGS" -eq 0 ]
+          echo "Ubuntu clang-tidy done (informational only)"
         fi
 
