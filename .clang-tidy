@@ -23,6 +23,8 @@ Checks: >
     -cppcoreguidelines-avoid-do-while,
     -hicpp-*  # Alias für cppcoreguidelines-*, bereits abgedeckt
 
+HeaderFilterRegex: '(^|/)(src|tests)/.*\.(cpp|cppm|h|hpp)$'
+
 CheckOptions:
     - key: readability-identifier-naming.FunctionCase
       value: lower_case
@@ -56,16 +58,10 @@ CheckOptions:
       value: lower_case
     - key: readability-identifier-naming.MemberCase
       value: lower_case
-    - key: readability-identifier-naming.MemberSuffix
-      value: '_'
     - key: readability-identifier-naming.PrivateMemberCase
       value: lower_case
-    - key: readability-identifier-naming.PrivateMemberSuffix
-      value: '_'
     - key: readability-identifier-naming.ProtectedMemberCase
       value: lower_case
-    - key: readability-identifier-naming.ProtectedMemberSuffix
-      value: '_'
     - key: readability-identifier-naming.VariableCase
       value: lower_case
     - key: readability-identifier-naming.PrivateVariableCase
