@@ -37,6 +37,12 @@ jobs:
             generator: "Visual Studio 17 2022"
             build_type: release
             clang_tidy: false
+          - os: windows-2022
+            c_compiler: clang-cl
+            cpp_compiler: clang-cl
+            generator: "Ninja Multi-Config"
+            build_type: release
+            clang_tidy: true
           - os: macos-26
             c_compiler: clang
             cpp_compiler: clang++
@@ -61,6 +67,19 @@ jobs:
         echo "CC=clang-22" >> $GITHUB_ENV
         echo "CXX=clang++-22" >> $GITHUB_ENV
 
+    - name: Setup LLVM 22 (Windows clang-tidy)
+      if: runner.os == 'Windows' && matrix.clang_tidy
+      shell: pwsh
+      run: |
+        choco install llvm -y
+        echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+        echo "CC=clang-cl" >> $env:GITHUB_ENV
+        echo "CXX=clang-cl" >> $env:GITHUB_ENV
+
+    - name: Setup MSVC dev environment (Windows clang-tidy)
+      if: runner.os == 'Windows' && matrix.clang_tidy
+      uses: ilammy/msvc-dev-cmd@v1
+
     - name: Install macOS dependencies
       if: runner.os == 'macOS'
       run: |
@@ -83,12 +102,14 @@ jobs:
       run: |
         if [ "${{ runner.os }}" = "macOS" ]; then
           conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+        elif [ "${{ runner.os }}" = "Windows" ]; then
+          conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
         else
           conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
         fi
 
     - name: Conan install (other)
-      if: ${{ !matrix.clang_tidy }}
+      if: runner.os == 'Windows' || (runner.os == 'Linux' && !matrix.clang_tidy)
       run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
