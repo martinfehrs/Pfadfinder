@@ -154,6 +154,15 @@ jobs:
         cache_packages: true
 
     - name: Create Conan profile
+      if: runner.os != 'Windows'
+      run: conan profile detect --force
+
+    - name: Create Conan profile (Windows)
+      if: runner.os == 'Windows'
+      shell: bash
+      env:
+        CONAN_COMPILER: clang
+        CONAN_COMPILER_VERSION: "22"
       run: conan profile detect --force
 
     - name: Conan install (macOS)
@@ -209,9 +218,17 @@ jobs:
           done
           echo "macOS clang-tidy done (informational only)"
         else
+          WARNINGS=0
           for f in $SOURCE_FILES; do
-            clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1 | grep "warning:" || true
+            OUT=$(clang-tidy-22 -p "$BUILD_DIR" "$f" 2>&1)
+            W=$(echo "$OUT" | grep -c "warning:" || true)
+            if [ "$W" -gt 0 ]; then
+              echo "=== $f ==="
+              echo "$OUT" | grep "warning:" | head -10
+              WARNINGS=$((WARNINGS + W))
+            fi
           done
-          echo "Ubuntu clang-tidy done (informational only)"
+          echo "Total warnings: $WARNINGS"
+          [ "$WARNINGS" -eq 0 ]
         fi
 
