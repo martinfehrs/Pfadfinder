@@ -153,12 +153,15 @@ jobs:
         BUILD_DIR="build"
         SOURCE_FILES=$(python3 -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
         WARNINGS=0
+        : > "$GITHUB_STEP_SUMMARY"
         for f in $SOURCE_FILES; do
           OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
           W=$(echo "$OUT" | grep -c "warning:" || true)
           if [ "$W" -gt 0 ]; then
-            echo "=== $f ==="
-            echo "$OUT" | grep "warning:" | head -10
+            echo "### $f" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "$OUT" | grep "warning:" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
             WARNINGS=$((WARNINGS + W))
           fi
         done
