@@ -23,9 +23,10 @@ TEST_CASE("linux_system_environment::executable_path returns correct path")
     auto exe_path = backend.executable_path();
 
     REQUIRE(exe_path.has_value());
-    REQUIRE_FALSE(exe_path->empty());
-    REQUIRE(exe_path->is_absolute());
-    REQUIRE(exe_path->filename() == "test_pfadfinder");
+    const auto& path = exe_path.value();
+    REQUIRE_FALSE(path.empty());
+    REQUIRE(path.is_absolute());
+    REQUIRE(path.filename() == "test_pfadfinder");
 }
 
 TEST_CASE("linux_system_environment::static_data_dir returns correct path")
