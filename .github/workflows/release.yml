@@ -151,14 +151,18 @@ jobs:
       shell: bash
       run: |
         BUILD_DIR="build"
+        echo "clang-tidy: $(command -v clang-tidy || echo 'NOT FOUND')"
+        clang-tidy --version || true
+        echo "compile_commands.json: $(ls -la $BUILD_DIR/compile_commands.json 2>&1 || echo 'NOT FOUND')"
         SOURCE_FILES=$(python3 -c "import json; print('\n'.join(e['file'] for e in json.load(open('$BUILD_DIR/compile_commands.json'))))")
+        echo "Source files: $(echo "$SOURCE_FILES" | wc -l)"
         WARNINGS=0
         for f in $SOURCE_FILES; do
-          OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1)
+          OUT=$(clang-tidy -p "$BUILD_DIR" "$f" 2>&1 || true)
           W=$(echo "$OUT" | grep -c "warning:" || true)
           if [ "$W" -gt 0 ]; then
             echo "=== $f ==="
-            echo "$OUT" | grep "warning:"
+            echo "$OUT" | grep "warning:" | head -10
             WARNINGS=$((WARNINGS + W))
           fi
         done
