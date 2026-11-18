@@ -1,28 +1,5 @@
 ---
-Checks: >
-    bugprone-*,
-    modernize-*,
-    performance-*,
-    readability-*,
-    cppcoreguidelines-*,
-    -bugprone-macro-parentheses,
-    -modernize-use-trailing-return-type,
-    -modernize-avoid-c-arrays,
-    -readability-magic-numbers,
-    -readability-implicit-bool-conversion,
-    -readability-uppercase-literal-suffix,
-    -readability-convert-member-functions-to-static,
-    -readability-else-after-return,
-    -readability-braces-around-statements,
-    -readability-function-cognitive-complexity,
-    -readability-identifier-length,
-    -readability-redundant-declaration,
-    -cppcoreguidelines-avoid-non-const-global-variables,
-    -cppcoreguidelines-owning-memory,
-    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-    -cppcoreguidelines-pro-type-vararg,
-    -cppcoreguidelines-avoid-do-while,
-    -hicpp-*  # Alias für cppcoreguidelines-*, bereits abgedeckt
+Checks: '-*'
 
 HeaderFilterRegex: '(^|/)(src|tests)/.*\.(cpp|cppm|h|hpp)$'
 
