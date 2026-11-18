@@ -35,7 +35,7 @@ namespace test_backend
             fs::create_directories(base_temp_dir);
         }
         
-        ~test_system_environment() override
+        ~test_system_environment()
         {
             // Aufräumen
             fs::remove_all(base_temp_dir);
@@ -391,7 +391,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         
         // Datei erstellen
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.user_config_file("test_config.json");
@@ -412,7 +412,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         
         // Datei erstellen
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.find_user_config_file("test_config.json");
@@ -475,7 +475,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Verzeichnis und Datei erstellen
         fs::create_directories(config_dir);
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.shared_config_file("shared_config.json");
@@ -497,7 +497,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Verzeichnis und Datei erstellen
         fs::create_directories(config_dir);
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.find_shared_config_file("shared_config.json");
@@ -521,7 +521,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         
         // Datei im Benutzer-Konfigurationsverzeichnis erstellen
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.find_config_file("test_config.json");
@@ -538,7 +538,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Datei nur im geteilten Konfigurationsverzeichnis erstellen
         fs::create_directories(shared_config_dir);
         std::ofstream test_file(shared_config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.find_config_file("test_config.json");
@@ -564,10 +564,10 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Dateien in beiden Verzeichnissen erstellen
         fs::create_directories(shared_config_dir);
         std::ofstream user_file(user_config_file);
-        user_file << "user_config" << '\n';
+        user_file << "user_config" << std::endl;
         user_file.close();
         std::ofstream shared_file(shared_config_file);
-        shared_file << "shared_config" << '\n';
+        shared_file << "shared_config" << std::endl;
         shared_file.close();
         
         auto result = env.find_config_file("test_config.json");
@@ -590,7 +590,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         
         // Datei im Benutzer-Konfigurationsverzeichnis erstellen
         std::ofstream test_file(config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.config_files("test_config.json");
@@ -606,7 +606,7 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Datei nur im geteilten Konfigurationsverzeichnis erstellen
         fs::create_directories(shared_config_dir);
         std::ofstream test_file(shared_config_file);
-        test_file << "{}" << '\n';
+        test_file << "{}" << std::endl;
         test_file.close();
         
         auto result = env.config_files("test_config.json");
@@ -625,10 +625,10 @@ TEST_CASE("pfadfinder::application_environment: Unit-Tests mit Mock-Backend")
         // Dateien in beiden Verzeichnissen erstellen
         fs::create_directories(shared_config_dir);
         std::ofstream user_file(user_config_file);
-        user_file << "user_config" << '\n';
+        user_file << "user_config" << std::endl;
         user_file.close();
         std::ofstream shared_file(shared_config_file);
-        shared_file << "shared_config" << '\n';
+        shared_file << "shared_config" << std::endl;
         shared_file.close();
         
         auto result = env.config_files("test_config.json");
