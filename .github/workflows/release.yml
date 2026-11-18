@@ -135,14 +135,14 @@ jobs:
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
-      run: conan install . --build=missing -s:h compiler=clang -s:h compiler.version=22 -s:h compiler.libcxx=libc++ -s:h compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . --build=missing -s:h compiler=clang -s:h compiler.version=22 -s:h compiler.libcxx=libc++ -s:h compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Conan install (other)
       if: runner.os != 'macOS'
-      run: conan install . --build=missing -s:h compiler=clang -s:h compiler.version=22 -s:h compiler.libcxx=libstdc++ -s:h compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . --build=missing -s:h compiler=clang -s:h compiler.version=22 -s:h compiler.libcxx=libstdc++ -s:h compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Configure CMake
-      run: cmake --preset=conan-default -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+      run: cmake --preset=conan-default
 
     - name: Build (generates module files for clang-tidy)
       run: cmake --build --preset=conan-release
