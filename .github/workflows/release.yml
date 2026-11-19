@@ -111,11 +111,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-            generator: "Ninja Multi-Config"
+            generator: "Ninja"
           - os: windows-2026
-            generator: "Ninja Multi-Config"
+            generator: "Ninja"
           - os: macos-26
-            generator: "Ninja Multi-Config"
+            generator: "Ninja"
 
     steps:
     - uses: actions/checkout@v4
@@ -149,12 +149,4 @@ jobs:
 
     - name: Run clang-tidy
       shell: bash
-      run: |
-        python3 << 'PYEOF'
-        import json
-        data = json.load(open('build/compile_commands.json'))
-        filtered = [e for e in data if 'Release' in e.get('command', '')]
-        json.dump(filtered, open('build/compile_commands.json', 'w'), indent=2)
-        print(f'Filtered to {len(filtered)} Release entries')
-        PYEOF
-        run-clang-tidy -p build -warnings-as-errors='*'
+      run: run-clang-tidy -p build -warnings-as-errors='*'
