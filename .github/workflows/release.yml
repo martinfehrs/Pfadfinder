@@ -142,7 +142,7 @@ jobs:
       run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Configure CMake
-      run: cmake --preset=conan-default
+      run: cmake --preset=conan-release
 
     - name: Build (generates module files for clang-tidy)
       run: cmake --build --preset=conan-release > build.log 2>&1 || (cat build.log && exit 1)
