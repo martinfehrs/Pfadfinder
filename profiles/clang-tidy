@@ -1,25 +1,8 @@
 [settings]
-{% if platform.system() == "Windows" %}
-os=Windows
-{% elif platform.system() == "Darwin" %}
-os=Macos
-{% else %}
-os=Linux
-{% endif %}
-{% set machine = platform.machine() | lower %}
-{% if machine in ("amd64", "x86_64") %}
-arch=x86_64
-{% elif machine in ("arm64", "aarch64") %}
-arch=armv8
-{% else %}
-arch={{ machine }}
-{% endif %}
+os={{ detect_api.detect_os() }}
+arch={{ detect_api.detect_arch() }}
 build_type=Release
 compiler=clang
 compiler.version=22
 compiler.cppstd=20
-{% if platform.system() == "Darwin" %}
-compiler.libcxx=libc++
-{% else %}
-compiler.libcxx=libstdc++
-{% endif %}
+compiler.libcxx={{ "libc++" if detect_api.detect_os() == "Macos" else "libstdc++" }}
