@@ -98,7 +98,15 @@ endif()
 # ============================================================================
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
-find_package(Doxygen 1.17 REQUIRED)
+# Optional: nur wenn doxygen verfuegbar ist (z.B. nicht im clang-tidy-Job)
+find_package(Doxygen 1.17 QUIET)
+
+# Create a small C++ program to filter comments from source files
+# (unabhaengig von doxygen, damit clang-tidy es pruefen kann)
+add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
+target_compile_features(filter_comments PRIVATE cxx_std_20)
+
+if(DOXYGEN_FOUND)
 
 # Fetch doxygen-awesome-css theme
 include(FetchContent)
@@ -132,10 +140,6 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/README_doxygen.md "${README_DOXYGEN}")
 
 # Configure English Doxyfile template with awesome CSS path
 set(DOXYGEN_OUTPUT_DIR ${DOXYGEN_OUTPUT_DIR_EN})
-
-# Create a small C++ program to filter comments from source files
-add_executable(filter_comments EXCLUDE_FROM_ALL docs/filter_comments.cpp)
-target_compile_features(filter_comments PRIVATE cxx_std_20)
 
 # Create filtered source directory for English documentation
 set(FILTERED_SRC_EN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_filtered_en)
@@ -182,6 +186,8 @@ add_custom_target(docs
     DEPENDS docs-de docs-en
     COMMENT "Generating API documentation in both German and English"
 )
+
+endif()
 
 # ============================================================================
 # PACKETIERUNG

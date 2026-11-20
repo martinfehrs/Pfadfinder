@@ -18,11 +18,16 @@ export namespace pfadfinder::test
         explicit env_guard(const char* name);
         ~env_guard();
 
+        env_guard(const env_guard&) = delete;
+        env_guard& operator=(const env_guard&) = delete;
+        env_guard(env_guard&&) = delete;
+        env_guard& operator=(env_guard&&) = delete;
+
         void unset();
 
     private:
-        std::string name_;
-        std::string original_;
-        bool was_set_ = false;
+        std::string name;
+        std::string original;
+        bool was_set = false;
     };
 }

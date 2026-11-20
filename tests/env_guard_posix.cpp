@@ -14,25 +14,25 @@ module env_guard;
 
 namespace pfadfinder::test
 {
-    env_guard::env_guard(const char* name) : name_(name)
+    env_guard::env_guard(const char* name) : name(name)
     {
         if (const char* val = std::getenv(name))
         {
-            was_set_ = true;
-            original_ = val;
+            was_set = true;
+            original = val;
         }
     }
 
     env_guard::~env_guard()
     {
-        if (was_set_)
-            setenv(name_.c_str(), original_.c_str(), 1);
+        if (was_set)
+            setenv(name.c_str(), original.c_str(), 1);
         else
-            unsetenv(name_.c_str());
+            unsetenv(name.c_str());
     }
 
     void env_guard::unset()
     {
-        unsetenv(name_.c_str());
+        unsetenv(name.c_str());
     }
 }

@@ -52,8 +52,8 @@ namespace pfadfinder
          *                 Wenn nicht angegeben, wird der Dateiname der ausführbaren Datei verwendet.
          * @param system_env Backend-Implementierung für Pfadermittlung.
          */
-        explicit application_environment(std::string app_name = "", system_environment system_env = system_environment{})
-            : app_name_(std::move(app_name)), system_env_(std::move_if_noexcept(system_env))
+        explicit application_environment(std::string app_name = "", system_environment system_env = system_environment{}) // NOLINT(performance-unnecessary-value-param)
+            : app_name(std::move(app_name)), system_env(std::move_if_noexcept(system_env))
         {}
 
         /**
@@ -731,20 +731,20 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_executable_path() const
         {
-            if (!cached_executable_path_.has_value())
+            if (!cached_executable_path.has_value())
             {
-                auto path = system_env_.executable_path();
+                auto path = system_env.executable_path();
                 if (path.has_value())
                 {
-                    // Setze app_name_ auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
-                    if (app_name_.empty())
-                        app_name_ = path->stem().string();
+                    // Setze app_name auf den Dateinamen ohne Dateierweiterung, falls noch nicht gesetzt
+                    if (app_name.empty())
+                        app_name = path->stem().string();
 
-                    cached_executable_path_ = *path;
+                    cached_executable_path = *path;
                 }
                 return path;
             }
-            return cached_executable_path_;
+            return cached_executable_path;
         }
 
         /**
@@ -753,14 +753,14 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_executable_dir() const
         {
-            if (!cached_executable_dir_.has_value())
+            if (!cached_executable_dir.has_value())
             {
                 auto exe_path = get_executable_path();
                 if (exe_path.has_value())
-                    cached_executable_dir_ = exe_path->parent_path();
-                return cached_executable_dir_;
+                    cached_executable_dir = exe_path->parent_path();
+                return cached_executable_dir;
             }
-            return cached_executable_dir_;
+            return cached_executable_dir;
         }
 
         /**
@@ -769,14 +769,14 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_static_data_dir() const
         {
-            if (!cached_static_data_dir_.has_value())
+            if (!cached_static_data_dir.has_value())
             {
                 auto exe_dir = get_executable_dir();
                 if (!exe_dir.has_value())
                     return std::nullopt;
-                cached_static_data_dir_ = system_env_.static_data_dir(*exe_dir, app_name_);
+                cached_static_data_dir = system_env.static_data_dir(*exe_dir, app_name);
             }
-            return cached_static_data_dir_;
+            return cached_static_data_dir;
         }
 
         /**
@@ -785,17 +785,17 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_data_dir() const
         {
-            if (!cached_data_dir_.has_value())
+            if (!cached_data_dir.has_value())
             {
                 auto exe_dir = get_executable_dir();
                 if (!exe_dir.has_value())
                     return std::nullopt;
-                auto path = system_env_.data_dir(*exe_dir, app_name_);
+                auto path = system_env.data_dir(*exe_dir, app_name);
                 if (path.has_value())
-                    cached_data_dir_ = *path;
+                    cached_data_dir = *path;
                 return path;
             }
-            return cached_data_dir_;
+            return cached_data_dir;
         }
 
         /**
@@ -804,17 +804,17 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_user_config_dir() const
         {
-            if (!cached_user_config_dir_.has_value())
+            if (!cached_user_config_dir.has_value())
             {
                 auto exe_dir = get_executable_dir();
                 if (!exe_dir.has_value())
                     return std::nullopt;
-                auto path = system_env_.user_config_dir(*exe_dir, app_name_);
+                auto path = system_env.user_config_dir(*exe_dir, app_name);
                 if (path.has_value())
-                    cached_user_config_dir_ = *path;
+                    cached_user_config_dir = *path;
                 return path;
             }
-            return cached_user_config_dir_;
+            return cached_user_config_dir;
         }
 
         /**
@@ -823,17 +823,17 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_cache_dir() const
         {
-            if (!cached_cache_dir_.has_value())
+            if (!cached_cache_dir.has_value())
             {
                 auto exe_dir = get_executable_dir();
                 if (!exe_dir.has_value())
                     return std::nullopt;
-                auto path = system_env_.cache_dir(*exe_dir, app_name_);
+                auto path = system_env.cache_dir(*exe_dir, app_name);
                 if (path.has_value())
-                    cached_cache_dir_ = *path;
+                    cached_cache_dir = *path;
                 return path;
             }
-            return cached_cache_dir_;
+            return cached_cache_dir;
         }
 
         /**
@@ -842,17 +842,17 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_log_dir() const
         {
-            if (!cached_log_dir_.has_value())
+            if (!cached_log_dir.has_value())
             {
                 auto exe_dir = get_executable_dir();
                 if (!exe_dir.has_value())
                     return std::nullopt;
-                auto path = system_env_.log_dir(*exe_dir, app_name_);
+                auto path = system_env.log_dir(*exe_dir, app_name);
                 if (path.has_value())
-                    cached_log_dir_ = *path;
+                    cached_log_dir = *path;
                 return path;
             }
-            return cached_log_dir_;
+            return cached_log_dir;
         }
 
         /**
@@ -861,14 +861,14 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_temp_dir() const
         {
-            if (!cached_temp_dir_.has_value())
+            if (!cached_temp_dir.has_value())
             {
-                auto path = system_env_.temp_dir(app_name_);
+                auto path = system_env.temp_dir(app_name);
                 if (path.has_value())
-                    cached_temp_dir_ = *path;
+                    cached_temp_dir = *path;
                 return path;
             }
-            return cached_temp_dir_;
+            return cached_temp_dir;
         }
 
         /**
@@ -877,14 +877,14 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_shared_config_dir() const
         {
-            if (!cached_shared_config_dir_.has_value())
+            if (!cached_shared_config_dir.has_value())
             {
-                auto path = system_env_.shared_config_dir(app_name_);
+                auto path = system_env.shared_config_dir(app_name);
                 if (path.has_value())
-                    cached_shared_config_dir_ = *path;
+                    cached_shared_config_dir = *path;
                 return path;
             }
-            return cached_shared_config_dir_;
+            return cached_shared_config_dir;
         }
 
         /**
@@ -893,43 +893,43 @@ namespace pfadfinder
          */
         [[nodiscard]] std::optional<fs::path> get_home_dir() const
         {
-            if (!cached_home_dir_.has_value())
+            if (!cached_home_dir.has_value())
             {
-                auto path = system_env_.home_dir();
+                auto path = system_env.home_dir();
                 if (path.has_value())
-                    cached_home_dir_ = *path;
+                    cached_home_dir = *path;
                 return path;
             }
-            return cached_home_dir_;
+            return cached_home_dir;
         }
 
         /** @brief Der Name der Anwendung. */
-        mutable std::string app_name_;
+        mutable std::string app_name;
 
         /** @brief Plattformspezifische Implementierung für Pfadermittlung. */
-        [[no_unique_address]] system_environment system_env_;
+        [[no_unique_address]] system_environment system_env;
 
         // Cache für die berechneten Pfade (Lazy Initialization)
         /** @brief Gecachter Pfad zur ausführbaren Datei. */
-        mutable std::optional<fs::path> cached_executable_path_;
+        mutable std::optional<fs::path> cached_executable_path;
         /** @brief Gecachtes Verzeichnis der ausführbaren Datei. */
-        mutable std::optional<fs::path> cached_executable_dir_;
+        mutable std::optional<fs::path> cached_executable_dir;
         /** @brief Gecachtes statisches Datenverzeichnis. */
-        mutable std::optional<fs::path> cached_static_data_dir_;
+        mutable std::optional<fs::path> cached_static_data_dir;
         /** @brief Gecachtes Benutzer-Datenverzeichnis. */
-        mutable std::optional<fs::path> cached_data_dir_;
+        mutable std::optional<fs::path> cached_data_dir;
         /** @brief Gecachtes Benutzer-spezifische Konfigurationsverzeichnis. */
-        mutable std::optional<fs::path> cached_user_config_dir_;
+        mutable std::optional<fs::path> cached_user_config_dir;
         /** @brief Gecachtes Benutzer-spezifische Cache-Verzeichnis. */
-        mutable std::optional<fs::path> cached_cache_dir_;
+        mutable std::optional<fs::path> cached_cache_dir;
         /** @brief Gecachtes Benutzer-spezifische Log-Verzeichnis. */
-        mutable std::optional<fs::path> cached_log_dir_;
+        mutable std::optional<fs::path> cached_log_dir;
         /** @brief Gecachtes temporäres Verzeichnis. */
-        mutable std::optional<fs::path> cached_temp_dir_;
+        mutable std::optional<fs::path> cached_temp_dir;
         /** @brief Gecachtes Home-Verzeichnis. */
-        mutable std::optional<fs::path> cached_home_dir_;
+        mutable std::optional<fs::path> cached_home_dir;
         /** @brief Gecachtes geteiltes Konfigurationsverzeichnis. */
-        mutable std::optional<fs::path> cached_shared_config_dir_;
+        mutable std::optional<fs::path> cached_shared_config_dir;
     };
 
 }

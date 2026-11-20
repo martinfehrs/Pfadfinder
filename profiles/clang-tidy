@@ -1,0 +1,12 @@
+[settings]
+os={{ detect_api.detect_os() }}
+arch={{ detect_api.detect_arch() }}
+build_type=Release
+compiler=clang
+compiler.version=22
+compiler.cppstd=20
+compiler.libcxx={{ "libc++" if detect_api.detect_os() == "Macos" else "libstdc++" }}
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+tools.build:compiler_executables={'c': 'clang', 'cpp': 'clang++'}

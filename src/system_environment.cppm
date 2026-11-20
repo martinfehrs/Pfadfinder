@@ -27,8 +27,15 @@ namespace pfadfinder
     export class default_system_environment
     {
     public:
+        default_system_environment() = default;
+
         /** @brief Virtueller Destruktor für korrekte Ableitung. */
         virtual ~default_system_environment() = default;
+
+        default_system_environment(const default_system_environment&) = default;
+        default_system_environment& operator=(const default_system_environment&) = default;
+        default_system_environment(default_system_environment&&) = default;
+        default_system_environment& operator=(default_system_environment&&) = default;
 
         /**
          * @brief Gibt den vollständigen Pfad zur ausführbaren Datei zurück.

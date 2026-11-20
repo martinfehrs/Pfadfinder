@@ -63,11 +63,15 @@ jobs:
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
-      run: conan install . --build=missing -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+    - name: Conan install (Windows)
+      if: runner.os == 'Windows'
+      run: conan install . --build=missing -s compiler.cppstd=20 -s:b compiler.cppstd=17 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+
+    - name: Conan install (Linux)
+      if: runner.os == 'Linux'
+      run: conan install . --build=missing -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Configure CMake
       run: cmake --preset=conan-default
@@ -103,7 +107,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   clang-tidy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -112,34 +115,16 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-            generator: "Ninja"
           - os: windows-2022
-            generator: "Ninja Multi-Config"
           - os: macos-26
-            generator: "Ninja Multi-Config"
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LLVM 22 (Ubuntu)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y -qq clang-22 clang-tidy-22 llvm-22
-
-    - name: Install LLVM 22 (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        brew install llvm@22
-        LLVM_PREFIX=$(brew --prefix llvm@22)
-        echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
-
-    - name: Setup LLVM 22 (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        choco install llvm --version 22.1.0 -y
-        echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+    - name: Setup LLVM 22
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: 22
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
@@ -149,27 +134,29 @@ jobs:
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install (macOS)
-      if: runner.os == 'macOS'
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
-
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
-      run: conan install . --build=missing -s:a compiler=clang -s:a compiler.version=22 -s:a compiler.libcxx=libstdc++ -s:a compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+    - name: Conan install
+      run: conan install . -pr:h profiles/clang-tidy --build=missing -o docs=False
 
     - name: Configure CMake
-      run: cmake --preset=conan-default
+      run: cmake --preset=conan-release
+
+    - name: Build (generates module files for clang-tidy)
+      run: |
+        cmake --build --preset=conan-release
+        cmake --build --preset=conan-release --target filter_comments
 
     - name: Run clang-tidy
       shell: bash
       run: |
-        BUILD_DIR=$(find build -name compile_commands.json -printf '%h' | head -1)
-        SOURCE_FILES=$(find src tests -name '*.cpp' -o -name '*.cppm')
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          CLANG_TIDY="C:/Program Files/LLVM/bin/clang-tidy.exe"
-          RUN_CLANG_TIDY="C:/Program Files/LLVM/bin/run-clang-tidy.py"
-          python "$RUN_CLANG_TIDY" -p "$BUILD_DIR" -clang-tidy-binary "$CLANG_TIDY" $SOURCE_FILES
-        else
-          run-clang-tidy-22 -p "$BUILD_DIR" -clang-tidy-binary clang-tidy-22 $SOURCE_FILES
-        fi
-
+        python3 << 'PYEOF'
+        import json, os
+        path = 'build/Release/compile_commands.json'
+        data = json.load(open(path))
+        ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
+        # Ohne Filter landet z.B. /usr/include/c++/15/bits/std.compat.cc in der Liste
+        # (clang kompiliert beim Modulbau die std-Modul-Einheit der Standardbibliothek mit)
+        filtered = [e for e in data if os.path.abspath(e['file']).startswith(ws + os.sep)]
+        json.dump(filtered, open(path, 'w'), indent=2)
+        print(f'{len(filtered)} of {len(data)} files (project files only)')
+        PYEOF
+        run-clang-tidy -p build/Release -warnings-as-errors='*'
