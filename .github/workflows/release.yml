@@ -130,8 +130,13 @@ jobs:
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install
+    - name: Conan install (macOS)
+      if: runner.os == 'macOS'
       run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
+
+    - name: Conan install (other)
+      if: runner.os != 'macOS'
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Configure CMake
       run: cmake --preset=conan-release
@@ -143,4 +148,14 @@ jobs:
 
     - name: Run clang-tidy
       shell: bash
-      run: run-clang-tidy -p build/Release -warnings-as-errors='*'
+      run: |
+        python3 << 'PYEOF'
+        import json, os
+        path = 'build/Release/compile_commands.json'
+        data = json.load(open(path))
+        ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
+        filtered = [e for e in data if os.path.abspath(e['file']).startswith(ws + os.sep)]
+        json.dump(filtered, open(path, 'w'), indent=2)
+        print(f'{len(filtered)} of {len(data)} files (project files only)')
+        PYEOF
+        run-clang-tidy -p build/Release -warnings-as-errors='*'
