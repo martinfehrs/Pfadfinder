@@ -138,8 +138,8 @@ jobs:
 
     - name: Build (generates module files for clang-tidy)
       run: |
-        cmake --build --preset=conan-release > build.log 2>&1 || (cat build.log && exit 1)
-        cmake --build --preset=conan-release --target filter_comments >> build.log 2>&1 || (cat build.log && exit 1)
+        cmake --build --preset=conan-release
+        cmake --build --preset=conan-release --target filter_comments
 
     - name: Run clang-tidy
       shell: bash
