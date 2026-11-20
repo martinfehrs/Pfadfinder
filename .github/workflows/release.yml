@@ -131,7 +131,7 @@ jobs:
       run: conan profile detect --force
 
     - name: Conan install
-      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Configure CMake
       run: cmake --preset=conan-release
