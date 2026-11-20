@@ -143,14 +143,4 @@ jobs:
 
     - name: Run clang-tidy
       shell: bash
-      run: |
-        python3 << 'PYEOF'
-        import json, os
-        path = 'build/Release/compile_commands.json'
-        data = json.load(open(path))
-        ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
-        filtered = [e for e in data if os.path.abspath(e['file']).startswith(ws + os.sep)]
-        json.dump(filtered, open(path, 'w'), indent=2)
-        print(f'{len(filtered)} of {len(data)} files (project files only)')
-        PYEOF
-        run-clang-tidy -p build/Release -warnings-as-errors='*'
+      run: run-clang-tidy -p build/Release -warnings-as-errors='*'
