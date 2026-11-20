@@ -142,17 +142,10 @@ jobs:
       run: cmake --preset=conan-release
 
     - name: Build (generates module files for clang-tidy)
-      run: cmake --build --preset=conan-release > build.log 2>&1 || (cat build.log && exit 1)
+      run: |
+        cmake --build --preset=conan-release > build.log 2>&1 || (cat build.log && exit 1)
+        cmake --build --preset=conan-release --target filter_comments >> build.log 2>&1 || (cat build.log && exit 1)
 
     - name: Run clang-tidy
       shell: bash
-      run: |
-        python3 << 'PYEOF'
-        import json
-        path = 'build/Release/compile_commands.json'
-        data = json.load(open(path))
-        filtered = [e for e in data if '/docs/' not in e['file']]
-        json.dump(filtered, open(path, 'w'), indent=2)
-        print(f'{len(filtered)} of {len(data)} files (docs/ excluded)')
-        PYEOF
-        run-clang-tidy -p build/Release -warnings-as-errors='*'
+      run: run-clang-tidy -p build/Release -warnings-as-errors='*'
