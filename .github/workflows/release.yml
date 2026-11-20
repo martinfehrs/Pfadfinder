@@ -111,11 +111,8 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-            generator: "Ninja"
           - os: windows-2026
-            generator: "Ninja"
           - os: macos-26
-            generator: "Ninja"
 
     steps:
     - uses: actions/checkout@v4
@@ -135,11 +132,11 @@ jobs:
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
-      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Conan install (other)
       if: runner.os != 'macOS'
-      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Configure CMake
       run: cmake --preset=conan-release
