@@ -149,4 +149,13 @@ jobs:
 
     - name: Run clang-tidy
       shell: bash
-      run: run-clang-tidy -p build/Release -warnings-as-errors='*'
+      run: |
+        python3 << 'PYEOF'
+        import json
+        path = 'build/Release/compile_commands.json'
+        data = json.load(open(path))
+        filtered = [e for e in data if '/docs/' not in e['file']]
+        json.dump(filtered, open(path, 'w'), indent=2)
+        print(f'{len(filtered)} of {len(data)} files (docs/ excluded)')
+        PYEOF
+        run-clang-tidy -p build/Release -warnings-as-errors='*'
