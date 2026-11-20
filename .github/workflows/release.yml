@@ -67,7 +67,7 @@ jobs:
 
     - name: Conan install (Windows)
       if: runner.os == 'Windows'
-      run: conan install . --build=missing -s compiler.cppstd=20 -s:b compiler.cppstd=17 -o doxygen/*:enable_search=False -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . --build=missing -s compiler.cppstd=20 -s:b compiler.cppstd=17 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
 
     - name: Conan install (Linux)
       if: runner.os == 'Linux'
@@ -140,7 +140,7 @@ jobs:
 
     - name: Conan install (Windows)
       if: runner.os == 'Windows'
-      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -s:b compiler.cppstd=17 -o doxygen/*:enable_search=False -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
+      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libstdc++ -s compiler.cppstd=20 -s:b compiler.cppstd=17 -c tools.cmake.cmaketoolchain:generator="Ninja" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}"
 
     - name: Conan install (Linux)
       if: runner.os == 'Linux'
