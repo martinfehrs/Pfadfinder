@@ -149,4 +149,4 @@ jobs:
 
     - name: Run clang-tidy
       shell: bash
-      run: run-clang-tidy -p build -warnings-as-errors='*'
+      run: run-clang-tidy -p build/Release -warnings-as-errors='*'
