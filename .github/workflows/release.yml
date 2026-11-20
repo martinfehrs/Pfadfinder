@@ -24,7 +24,7 @@ jobs:
             cpp_compiler: g++
             generator: "Ninja Multi-Config"
             build_type: release
-          - os: windows-2026
+          - os: windows-2025
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 18 2026"
@@ -111,7 +111,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-          - os: windows-2026
+          - os: windows-2025
           - os: macos-26
 
     steps:
