@@ -1,0 +1,11 @@
+include(default)
+
+[settings]
+compiler=clang
+compiler.version=22
+compiler.cppstd=20
+{% if platform.system() == "Darwin" %}
+compiler.libcxx=libc++
+{% else %}
+compiler.libcxx=libstdc++
+{% endif %}
