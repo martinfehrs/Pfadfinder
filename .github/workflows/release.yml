@@ -49,14 +49,11 @@ jobs:
       with:
         cache_packages: true
 
-    - name: Install macOS dependencies
+    - name: Setup LLVM 22 (macOS)
       if: runner.os == 'macOS'
-      run: |
-        brew install llvm@22
-        LLVM_PREFIX=$(brew --prefix llvm@22)
-        echo "CC=$LLVM_PREFIX/bin/clang" >> $GITHUB_ENV
-        echo "CXX=$LLVM_PREFIX/bin/clang++" >> $GITHUB_ENV
-        echo "$LLVM_PREFIX/bin" >> $GITHUB_PATH
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: 22
 
     - name: Create Conan profile
       run: conan profile detect --force
