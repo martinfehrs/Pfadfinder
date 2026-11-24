@@ -49,14 +49,14 @@ jobs:
       with:
         cache_packages: true
 
+    - name: Create Conan profile
+      run: conan profile detect --force
+
     - name: Setup LLVM 22 (macOS)
       if: runner.os == 'macOS'
       uses: ZhongRuoyu/setup-llvm@v0
       with:
         llvm-version: 22
-
-    - name: Create Conan profile
-      run: conan profile detect --force
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
