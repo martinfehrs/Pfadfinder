@@ -1,0 +1,14 @@
+include(default)
+
+[settings]
+{% if detect_api.detect_os() == "Macos" %}
+compiler=clang
+compiler.version=22
+compiler.libcxx=libc++
+{% endif %}
+compiler.cppstd=20
+
+[conf]
+{% if detect_api.detect_os() == "Macos" %}
+tools.build:compiler_executables={'c': 'clang', 'cpp': 'clang++'}
+{% endif %}
