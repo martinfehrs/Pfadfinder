@@ -60,7 +60,7 @@ jobs:
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
-      run: conan install . --build=missing -s compiler=clang -s compiler.version=22 -s compiler.libcxx=libc++ -s compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}" -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
+      run: conan install . --build=missing -s:h compiler=clang -s:h compiler.version=22 -s:h compiler.libcxx=libc++ -s:h compiler.cppstd=20 -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c tools.build:compiler_executables="{'c':'clang','cpp':'clang++'}" -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
 
     - name: Conan install (Windows)
       if: runner.os == 'Windows'
