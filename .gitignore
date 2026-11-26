@@ -70,3 +70,6 @@ _deps/
 # clangd-Cache
 .cache/
 
+
+# Lokale Install-Ausgabe
+install/

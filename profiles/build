@@ -9,6 +9,7 @@ compiler.libcxx=libc++
 compiler.cppstd=20
 
 [conf]
+tools.cmake.cmaketoolchain:generator=Ninja
 {% if detect_api.detect_os() == "Macos" %}
 tools.build:compiler_executables={'c': 'clang', 'cpp': 'clang++'}
 {% endif %}
