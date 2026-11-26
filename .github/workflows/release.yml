@@ -126,7 +126,7 @@ jobs:
       run: conan install . -pr:h profiles/clang-tidy --build=missing -o docs=False
 
     - name: Configure CMake
-      run: cmake --preset=conan-release
+      run: cmake --preset=conan-default
 
     - name: Build (generates module files for clang-tidy)
       run: |
