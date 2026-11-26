@@ -20,19 +20,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-26.04
-            c_compiler: gcc
-            cpp_compiler: g++
-            generator: "Ninja Multi-Config"
             build_type: release
           - os: windows-2022
-            c_compiler: cl
-            cpp_compiler: cl
-            generator: "Visual Studio 17 2022"
             build_type: release
           - os: macos-26
-            c_compiler: clang
-            cpp_compiler: clang++
-            generator: "Ninja Multi-Config"
             build_type: release
 
     steps:
@@ -60,11 +51,11 @@ jobs:
 
     - name: Conan install (macOS)
       if: runner.os == 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}" -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
+      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20 -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
 
     - name: Conan install (other)
       if: runner.os != 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator="${{ matrix.generator }}"
+      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20
 
     - name: Configure CMake
       run: cmake --preset=conan-default
@@ -143,7 +134,7 @@ jobs:
       run: |
         python3 << 'PYEOF'
         import json, os
-        path = 'build/Release/compile_commands.json'
+        path = 'build/compile_commands.json'
         data = json.load(open(path))
         ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
         # Ohne Filter landet z.B. /usr/include/c++/15/bits/std.compat.cc in der Liste
@@ -152,4 +143,4 @@ jobs:
         json.dump(filtered, open(path, 'w'), indent=2)
         print(f'{len(filtered)} of {len(data)} files (project files only)')
         PYEOF
-        run-clang-tidy -p build/Release -warnings-as-errors='*'
+        run-clang-tidy -p build -warnings-as-errors='*'
