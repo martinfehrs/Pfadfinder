@@ -40,10 +40,6 @@ jobs:
       with:
         cache_packages: true
 
-    - name: Setup MSVC environment (Windows)
-      if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@v1
-
     - name: Create Conan profile
       run: conan profile detect --force
 
