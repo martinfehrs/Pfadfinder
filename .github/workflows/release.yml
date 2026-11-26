@@ -33,7 +33,7 @@ jobs:
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}/build/Release" >> "$GITHUB_OUTPUT"
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
@@ -62,7 +62,7 @@ jobs:
       run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20
 
     - name: Configure CMake
-      run: cmake --preset=conan-default
+      run: cmake --preset=conan-${{ matrix.build_type }}
 
     - name: Build
       run: cmake --build --preset=conan-${{ matrix.build_type }}
@@ -126,7 +126,7 @@ jobs:
       run: conan install . -pr:h profiles/clang-tidy --build=missing -o docs=False
 
     - name: Configure CMake
-      run: cmake --preset=conan-default
+      run: cmake --preset=conan-release
 
     - name: Build (generates module files for clang-tidy)
       run: |
@@ -138,7 +138,7 @@ jobs:
       run: |
         python3 << 'PYEOF'
         import json, os
-        path = 'build/compile_commands.json'
+        path = 'build/Release/compile_commands.json'
         data = json.load(open(path))
         ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
         # Ohne Filter landet z.B. /usr/include/c++/15/bits/std.compat.cc in der Liste
@@ -147,4 +147,4 @@ jobs:
         json.dump(filtered, open(path, 'w'), indent=2)
         print(f'{len(filtered)} of {len(data)} files (project files only)')
         PYEOF
-        run-clang-tidy -p build -warnings-as-errors='*'
+        run-clang-tidy -p build/Release -warnings-as-errors='*'
