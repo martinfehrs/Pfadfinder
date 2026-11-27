@@ -40,6 +40,11 @@ jobs:
       with:
         cache_packages: true
 
+    # Ohne VS-Umgebung würde CMake c++ aus C:\mingw64\bin (MinGW) statt cl finden
+    - name: Setup MSVC environment (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+
     - name: Create Conan profile
       run: conan profile detect --force
 
@@ -48,6 +53,14 @@ jobs:
       uses: ZhongRuoyu/setup-llvm@v0
       with:
         llvm-version: 22
+
+    # setup-llvm hängt LLVM nur ans Ende des PATH (GITHUB_PATH); für die
+    # Compiler-Autoerkennung muss es vorne stehen, sonst gewinnt /usr/bin/c++
+    # (apple-clang ohne Modulunterstützung)
+    - name: LLVM 22 an den Anfang des PATH setzen (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
 
     # conan install läuft automatisch über conan_provider.cmake beim ersten find_package()
     - name: Configure CMake
@@ -103,6 +116,12 @@ jobs:
       with:
         llvm-version: 22
 
+    # setup-llvm hängt LLVM nur ans Ende des PATH; vorne stehen, damit
+    # clang/clang++ aus LLVM 22 aufgelöst werden (sonst gewinnt z.B. /usr/bin/c++)
+    - name: LLVM 22 an den Anfang des PATH setzen
+      shell: bash
+      run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
+
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
       with:
@@ -112,7 +131,7 @@ jobs:
       run: conan profile detect --force
 
     - name: Configure CMake
-      run: cmake --preset=conan-tidy
+      run: cmake --preset=conan-tidy -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
     - name: Build (generates module files for clang-tidy)
       run: |

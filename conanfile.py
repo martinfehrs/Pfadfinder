@@ -9,9 +9,10 @@ class PfadfinderConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
 
     options = {"docs": [True, False]}
-    # docs ist Opt-in (Preset conan-docs): build- und clang-tidy-Job sollen
-    # doxygen nicht in den Abhängigkeitsgraphen ziehen
-    default_options = {"docs": False}
+    # Default True: Der build-Job soll doxygen im Graphen haben, damit sicher
+    # ist, dass die Doku nach Codeänderungen noch generiert werden kann.
+    # Der clang-tidy-Job übergibt -o=docs=False.
+    default_options = {"docs": True}
 
     def requirements(self):
         self.requires("catch2/3.6.0")

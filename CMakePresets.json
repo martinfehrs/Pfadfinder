@@ -30,15 +30,8 @@
             "displayName": "clang-tidy-Variante (eigenes Profil, ohne Doxygen)",
             "inherits": "base",
             "cacheVariables": {
-                "CONAN_HOST_PROFILE": "${sourceDir}/profiles/clang-tidy"
-            }
-        },
-        {
-            "name": "conan-docs",
-            "displayName": "Variante mit Doxygen für die Dokumentationsgenerierung",
-            "inherits": "base",
-            "cacheVariables": {
-                "CONAN_INSTALL_ARGS": "--build=missing;-s:b;compiler.cppstd=20;-o=docs=True"
+                "CONAN_HOST_PROFILE": "${sourceDir}/profiles/clang-tidy",
+                "CONAN_INSTALL_ARGS": "--build=missing;-s:b;compiler.cppstd=20;-o=docs=False"
             }
         }
     ],
@@ -50,10 +43,6 @@
         {
             "name": "conan-tidy",
             "configurePreset": "conan-tidy"
-        },
-        {
-            "name": "conan-docs",
-            "configurePreset": "conan-docs"
         }
     ],
     "testPresets": [

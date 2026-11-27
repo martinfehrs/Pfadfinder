@@ -101,16 +101,6 @@ endif()
 
 # Doxygen documentation target (separates Target, nicht Teil des Haupt-Builds)
 # Optional: nur wenn doxygen verfuegbar ist (z.B. nicht im clang-tidy-Job)
-# conan_provider.cmake hat beim ersten find_package() (Catch2 in tests/) das
-# CONAN_GENERATORS_FOLDER-Property gesetzt; dort liegt die von conanfile.py
-# geschriebene doxygen_executable.cmake mit dem Pfad zum conan-doxygen
-# (das doxygen-Rezept hat cmake_find_mode=none, daher keine CMake-Config).
-get_property(_conan_generators_folder GLOBAL PROPERTY CONAN_GENERATORS_FOLDER)
-if(_conan_generators_folder AND EXISTS "${_conan_generators_folder}/doxygen_executable.cmake")
-    include("${_conan_generators_folder}/doxygen_executable.cmake")
-endif()
-unset(_conan_generators_folder)
-
 find_package(Doxygen 1.17 QUIET)
 
 # Create a small C++ program to filter comments from source files
