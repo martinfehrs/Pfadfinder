@@ -9,7 +9,9 @@ class PfadfinderConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
 
     options = {"docs": [True, False]}
-    default_options = {"docs": True}
+    # docs ist Opt-in (Preset conan-docs): build- und clang-tidy-Job sollen
+    # doxygen nicht in den Abhängigkeitsgraphen ziehen
+    default_options = {"docs": False}
 
     def requirements(self):
         self.requires("catch2/3.6.0")
@@ -29,11 +31,24 @@ class PfadfinderConan(ConanFile):
         CMakeConfigDeps(self).generate()
         if self.options.docs:
             # Das doxygen-Rezept setzt cmake_find_mode=none, conan generiert also
-            # keine CMake-Config dafür. Stattdessen den Pfad zum conan-doxygen
-            # schreiben, den CMakeLists.txt vor find_package(Doxygen) einliest.
+            # keine CMake-Config dafür. Damit find_package(Doxygen) das conan-
+            # doxygen findet, eigene Config-Dateien in den Generators-Ordner
+            # schreiben (conan_provider.cmake durchsucht diesen Ordner).
             doxygen = self.dependencies.build["doxygen"]
             exe = "doxygen.exe" if self.settings.os == "Windows" else "doxygen"
             path = os.path.join(doxygen.package_folder, doxygen.cpp_info.bindirs[0], exe)
-            save(self, "doxygen_executable.cmake",
+            save(self, "DoxygenConfig.cmake",
                  f'set(DOXYGEN_EXECUTABLE "{path.replace(chr(92), "/")}" '
-                 'CACHE FILEPATH "Doxygen executable (conan)")\n')
+                 'CACHE FILEPATH "Doxygen executable (conan)")\n'
+                 # CMakeLists.txt prüft DOXYGEN_FOUND (sonst setzt das nur das
+                 # FindDoxygen-Modul, im Config-Modus heißt es Doxygen_FOUND)
+                 'set(DOXYGEN_FOUND TRUE)\n')
+            save(self, "DoxygenConfigVersion.cmake",
+                 f'set(PACKAGE_VERSION "{doxygen.ref.version}")\n'
+                 'if(PACKAGE_FIND_VERSION VERSION_EQUAL PACKAGE_VERSION '
+                 'OR PACKAGE_FIND_VERSION VERSION_LESS PACKAGE_VERSION)\n'
+                 '    set(PACKAGE_VERSION_COMPATIBLE TRUE)\n'
+                 '    if(PACKAGE_FIND_VERSION VERSION_EQUAL PACKAGE_VERSION)\n'
+                 '        set(PACKAGE_VERSION_EXACT TRUE)\n'
+                 '    endif()\n'
+                 'endif()\n')

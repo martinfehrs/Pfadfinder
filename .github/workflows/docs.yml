@@ -34,10 +34,10 @@ jobs:
 
       # conan install läuft automatisch über conan_provider.cmake beim ersten find_package()
       - name: Configure CMake
-        run: cmake --preset=conan
+        run: cmake --preset=conan-docs
 
       - name: Generate docs
-        run: cmake --build --preset=conan --target docs
+        run: cmake --build --preset=conan-docs --target docs
 
       - name: Prepare deployment artifact
         run: |
