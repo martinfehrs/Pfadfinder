@@ -1,5 +1,5 @@
 from conan import ConanFile
-from conan.tools.cmake import CMakeDeps, CMakeToolchain, cmake_layout
+from conan.tools.cmake import CMakeConfigDeps, cmake_layout
 
 
 class PfadfinderConan(ConanFile):
@@ -10,8 +10,11 @@ class PfadfinderConan(ConanFile):
 
     def requirements(self):
         self.requires("catch2/3.6.0")
-        self.tool_requires("cmake/4.4.2")
-        self.tool_requires("ninja/1.13.2")
+        # cmake und ninja bewusst nicht als tool_requires: conan_provider.cmake
+        # kann sie nicht in den PATH legen, bevor CMake sie braucht (cmake
+        # läuft bereits, ninja wird beim Generieren im System-PATH gesucht).
+        # Doxygen dagegen wird über find_package(Doxygen) via CMakeConfigDeps
+        # aus dem conan-Cache aufgelöst.
         if self.options.docs:
             self.tool_requires("doxygen/1.17.0")
 
@@ -19,5 +22,7 @@ class PfadfinderConan(ConanFile):
         cmake_layout(self)
 
     def generate(self):
-        CMakeDeps(self).generate()
-        CMakeToolchain(self).generate()
+        # Kein CMakeToolchain: CMake erkennt den Compiler selbst (z.B. cl via
+        # VS-Installation), conan_provider.cmake ruft conan install beim
+        # ersten find_package() automatisch auf.
+        CMakeConfigDeps(self).generate()

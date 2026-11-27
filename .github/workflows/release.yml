@@ -33,16 +33,12 @@ jobs:
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build/Release" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
-
-    - name: Setup MSVC environment (Windows)
-      if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Create Conan profile
       run: conan profile detect --force
@@ -53,22 +49,15 @@ jobs:
       with:
         llvm-version: 22
 
-    - name: Conan install (macOS)
-      if: runner.os == 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20 -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
-
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20
-
+    # conan install läuft automatisch über conan_provider.cmake beim ersten find_package()
     - name: Configure CMake
-      run: cmake --preset=conan-${{ matrix.build_type }}
+      run: cmake --preset=conan
 
     - name: Build
-      run: cmake --build --preset=conan-${{ matrix.build_type }}
+      run: cmake --build --preset=conan
 
     - name: Test
-      run: ctest --preset=conan-${{ matrix.build_type }} -V
+      run: ctest --preset=conan -V
 
     - name: Install
       run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix install --config Release
@@ -122,23 +111,20 @@ jobs:
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install
-      run: conan install . -pr:h profiles/clang-tidy --build=missing -o docs=False
-
     - name: Configure CMake
-      run: cmake --preset=conan-release
+      run: cmake --preset=conan-tidy
 
     - name: Build (generates module files for clang-tidy)
       run: |
-        cmake --build --preset=conan-release
-        cmake --build --preset=conan-release --target filter_comments
+        cmake --build --preset=conan-tidy
+        cmake --build --preset=conan-tidy --target filter_comments
 
     - name: Run clang-tidy
       shell: bash
       run: |
         python3 << 'PYEOF'
         import json, os
-        path = 'build/Release/compile_commands.json'
+        path = 'build/compile_commands.json'
         data = json.load(open(path))
         ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
         # Ohne Filter landet z.B. /usr/include/c++/15/bits/std.compat.cc in der Liste
@@ -147,4 +133,4 @@ jobs:
         json.dump(filtered, open(path, 'w'), indent=2)
         print(f'{len(filtered)} of {len(data)} files (project files only)')
         PYEOF
-        run-clang-tidy -p build/Release -warnings-as-errors='*'
+        run-clang-tidy -p build -warnings-as-errors='*'
