@@ -1,0 +1,54 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 28,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_PROJECT_TOP_LEVEL_INCLUDES": "${sourceDir}/conan_provider.cmake",
+                "CONAN_HOST_PROFILE": "${sourceDir}/profiles/build",
+                "CONAN_BUILD_PROFILE": "default",
+                "CONAN_INSTALL_ARGS": "--build=missing;-s:b;compiler.cppstd=20"
+            }
+        },
+        {
+            "name": "conan",
+            "displayName": "Conan-Abhängigkeiten über conan_provider.cmake (Ninja, Release)",
+            "inherits": "base"
+        },
+        {
+            "name": "conan-tidy",
+            "displayName": "clang-tidy-Variante (eigenes Profil, ohne Doxygen)",
+            "inherits": "base",
+            "cacheVariables": {
+                "CONAN_HOST_PROFILE": "${sourceDir}/profiles/clang-tidy",
+                "CONAN_INSTALL_ARGS": "--build=missing;-s:b;compiler.cppstd=20;-o=docs=False"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "conan",
+            "configurePreset": "conan"
+        },
+        {
+            "name": "conan-tidy",
+            "configurePreset": "conan-tidy"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "conan",
+            "configurePreset": "conan"
+        }
+    ]
+}

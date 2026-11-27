@@ -33,13 +33,14 @@ jobs:
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build/Release" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
 
+    # Ohne VS-Umgebung würde CMake c++ aus C:\mingw64\bin (MinGW) statt cl finden
     - name: Setup MSVC environment (Windows)
       if: runner.os == 'Windows'
       uses: ilammy/msvc-dev-cmd@v1
@@ -53,22 +54,30 @@ jobs:
       with:
         llvm-version: 22
 
-    - name: Conan install (macOS)
+    # setup-llvm hängt LLVM nur ans Ende des PATH (GITHUB_PATH); für die
+    # Compiler-Autoerkennung muss es vorne stehen, sonst gewinnt /usr/bin/c++
+    # (apple-clang ohne Modulunterstützung)
+    - name: LLVM 22 an den Anfang des PATH setzen (macOS)
       if: runner.os == 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20 -c:b tools.build:compiler_executables="{'c':'/usr/bin/clang','cpp':'/usr/bin/clang++'}"
+      shell: bash
+      run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
 
-    - name: Conan install (other)
-      if: runner.os != 'macOS'
-      run: conan install . -pr:h profiles/build --build=missing -s:b compiler.cppstd=20
+    # conan install läuft automatisch über conan_provider.cmake beim ersten find_package()
+    # macOS: Homebrew-LLVM hat kein c++-Binary, daher Compiler explizit setzen
+    # (LLVM steht durch den PATH-Schritt oben vorne, sonst würde /usr/bin/clang++ gewinnen)
+    - name: Configure CMake (macOS)
+      if: runner.os == 'macOS'
+      run: cmake --preset=conan -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
     - name: Configure CMake
-      run: cmake --preset=conan-${{ matrix.build_type }}
+      if: runner.os != 'macOS'
+      run: cmake --preset=conan
 
     - name: Build
-      run: cmake --build --preset=conan-${{ matrix.build_type }}
+      run: cmake --build --preset=conan
 
     - name: Test
-      run: ctest --preset=conan-${{ matrix.build_type }} -V
+      run: ctest --preset=conan -V
 
     - name: Install
       run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --prefix install --config Release
@@ -114,6 +123,15 @@ jobs:
       with:
         llvm-version: 22
 
+    # setup-llvm hängt LLVM nur ans Ende des PATH; vorne stehen, damit
+    # clang/clang++ aus LLVM 22 aufgelöst werden (sonst gewinnt z.B. /usr/bin/c++).
+    # Nicht auf Windows: unix-style Pfade in GITHUB_ENV würden pwsh-Schritte brechen;
+    # dort genügen die -DCMAKE_(C|CXX)_COMPILER=clang(++)-Flags beim Configure.
+    - name: LLVM 22 an den Anfang des PATH setzen
+      if: runner.os != 'Windows'
+      shell: bash
+      run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
+
     - name: Setup Conan
       uses: conan-io/setup-conan@v1
       with:
@@ -122,23 +140,20 @@ jobs:
     - name: Create Conan profile
       run: conan profile detect --force
 
-    - name: Conan install
-      run: conan install . -pr:h profiles/clang-tidy --build=missing -o docs=False
-
     - name: Configure CMake
-      run: cmake --preset=conan-release
+      run: cmake --preset=conan-tidy -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
     - name: Build (generates module files for clang-tidy)
       run: |
-        cmake --build --preset=conan-release
-        cmake --build --preset=conan-release --target filter_comments
+        cmake --build --preset=conan-tidy
+        cmake --build --preset=conan-tidy --target filter_comments
 
     - name: Run clang-tidy
       shell: bash
       run: |
         python3 << 'PYEOF'
         import json, os
-        path = 'build/Release/compile_commands.json'
+        path = 'build/compile_commands.json'
         data = json.load(open(path))
         ws = os.path.abspath(os.environ.get('GITHUB_WORKSPACE', '.'))
         # Ohne Filter landet z.B. /usr/include/c++/15/bits/std.compat.cc in der Liste
@@ -147,4 +162,4 @@ jobs:
         json.dump(filtered, open(path, 'w'), indent=2)
         print(f'{len(filtered)} of {len(data)} files (project files only)')
         PYEOF
-        run-clang-tidy -p build/Release -warnings-as-errors='*'
+        run-clang-tidy -p build -warnings-as-errors='*'

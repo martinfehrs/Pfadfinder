@@ -12,9 +12,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # KOMPILIERUNG
 # ============================================================================
 
-# C++20-Standard aktivieren
+# C++20-Standard aktivieren (ohne Erweiterungen: gnu++20 definiert z.B. das
+# Makro "unix", was mit dem Modul-Partitionsnamen unix kollidiert)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Statische Bibliothek mit Modul-Dateisatz erstellen
 add_library(pfadfinder STATIC)
