@@ -1,5 +1,8 @@
+import os
+
 from conan import ConanFile
 from conan.tools.cmake import CMakeConfigDeps, cmake_layout
+from conan.tools.files import save
 
 
 class PfadfinderConan(ConanFile):
@@ -13,8 +16,6 @@ class PfadfinderConan(ConanFile):
         # cmake und ninja bewusst nicht als tool_requires: conan_provider.cmake
         # kann sie nicht in den PATH legen, bevor CMake sie braucht (cmake
         # läuft bereits, ninja wird beim Generieren im System-PATH gesucht).
-        # Doxygen dagegen wird über find_package(Doxygen) via CMakeConfigDeps
-        # aus dem conan-Cache aufgelöst.
         if self.options.docs:
             self.tool_requires("doxygen/1.17.0")
 
@@ -26,3 +27,13 @@ class PfadfinderConan(ConanFile):
         # VS-Installation), conan_provider.cmake ruft conan install beim
         # ersten find_package() automatisch auf.
         CMakeConfigDeps(self).generate()
+        if self.options.docs:
+            # Das doxygen-Rezept setzt cmake_find_mode=none, conan generiert also
+            # keine CMake-Config dafür. Stattdessen den Pfad zum conan-doxygen
+            # schreiben, den CMakeLists.txt vor find_package(Doxygen) einliest.
+            doxygen = self.dependencies.build["doxygen"]
+            exe = "doxygen.exe" if self.settings.os == "Windows" else "doxygen"
+            path = os.path.join(doxygen.package_folder, doxygen.cpp_info.bindirs[0], exe)
+            save(self, "doxygen_executable.cmake",
+                 f'set(DOXYGEN_EXECUTABLE "{path.replace(chr(92), "/")}" '
+                 'CACHE FILEPATH "Doxygen executable (conan)")\n')
