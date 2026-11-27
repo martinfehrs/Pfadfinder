@@ -63,7 +63,14 @@ jobs:
       run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
 
     # conan install läuft automatisch über conan_provider.cmake beim ersten find_package()
+    # macOS: Homebrew-LLVM hat kein c++-Binary, daher Compiler explizit setzen
+    # (LLVM steht durch den PATH-Schritt oben vorne, sonst würde /usr/bin/clang++ gewinnen)
+    - name: Configure CMake (macOS)
+      if: runner.os == 'macOS'
+      run: cmake --preset=conan -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+
     - name: Configure CMake
+      if: runner.os != 'macOS'
       run: cmake --preset=conan
 
     - name: Build
@@ -117,8 +124,11 @@ jobs:
         llvm-version: 22
 
     # setup-llvm hängt LLVM nur ans Ende des PATH; vorne stehen, damit
-    # clang/clang++ aus LLVM 22 aufgelöst werden (sonst gewinnt z.B. /usr/bin/c++)
+    # clang/clang++ aus LLVM 22 aufgelöst werden (sonst gewinnt z.B. /usr/bin/c++).
+    # Nicht auf Windows: unix-style Pfade in GITHUB_ENV würden pwsh-Schritte brechen;
+    # dort genügen die -DCMAKE_(C|CXX)_COMPILER=clang(++)-Flags beim Configure.
     - name: LLVM 22 an den Anfang des PATH setzen
+      if: runner.os != 'Windows'
       shell: bash
       run: echo "PATH=$(dirname "$(command -v clang-tidy)"):$PATH" >> "$GITHUB_ENV"
 
